@@ -1,0 +1,41 @@
+## Interface: 40300
+## Title: |cff0099ffLan|rUI
+## Version: 0.4a
+## Author: Lanerra
+## Notes: Lightweight UI Modification
+
+LanUI_Config.lua
+LanUI_Launch.lua
+
+lib\LibStub\LibStub.lua
+lib\CallBackHandler-1.0\CallbackHandler-1.0.lua
+lib\LibDataBroker\LibDataBroker-1.1.lua
+lib\LibBossIDs-1.0\lib.xml
+
+Modules\LanFunc.lua
+Modules\LanCore.lua
+Modules\Data\Durability.lua
+Modules\Data\GuildFriend.lua
+Modules\Data\Gold.lua
+Modules\LanCombat.lua
+Modules\LanWarning.lua
+Modules\LanTips.lua
+Modules\LanPanels.lua
+Modules\LanStats.lua
+Modules\LanNameplates.lua
+Modules\LanChat.lua
+Modules\LanLoot.lua
+Modules\LanTooltip.lua
+Modules\LanTweaks.lua
+Modules\LanThreat.lua
+Modules\LanSkin.lua
+Modules\LanDamage.lua
+Modules\LanScroll.lua
+Modules\nBuff.lua
+Modules\nRune.lua
+Modules\nMinimap\nMinimap.lua
+Modules\nMinimap\nMinimap_Clock.lua
+Modules\nMinimap\nMinimap_GameTime.lua
+Modules\nMinimap\nMinimap_InstanceDifficulty.lua
+
+Modules\OmniCC.lua

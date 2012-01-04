@@ -1,0 +1,8 @@
+## Interface: 40300
+## Title: |cffCC3333 n|rTooltip
+## OptionalDeps: !Beautycase
+
+config.lua
+core.lua
+fade.lua
+health.lua
