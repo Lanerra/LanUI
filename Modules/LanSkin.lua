@@ -85,9 +85,9 @@ LanSkin.Reskin = function(f)
 	glow:SetAlpha(0)
 	
     f:CreateBeautyBorder(12, r, g, b)
-    glow:CreateBeautyBorder(12, r, g, b)
+--~     glow:CreateBeautyBorder(12, r, g, b)
     
-	glow:SetBeautyBorderColor(r, g, b)
+--~ 	glow:SetBeautyBorderColor(r, g, b)
 	
 	f:SetBeautyBorderColor(1, 1, 1)
 	
