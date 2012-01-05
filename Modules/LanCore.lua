@@ -28,9 +28,6 @@ if LanConfig.Tweaks.AutoDEGreed == true then
     end
 end
 
---~ local a, b, c, d, e = RaidFrameNotInRaidRaidBrowserButton:GetPoint() 
---~ RaidFrameNotInRaidRaidBrowserButton:SetPoint(a, b, c, d, e - 25)
-
 TicketStatusFrame:ClearAllPoints()
 TicketStatusFrame:SetPoint('BOTTOMRIGHT', UIParent, 0, 0)
 

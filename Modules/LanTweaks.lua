@@ -129,18 +129,18 @@ LanQuest.eventFrame:SetScript('OnEvent', function(self, event, ...)
     end
 
     if (UnitLevel('player') == 85) then
---~         if event == 'QUEST_DETAIL' then
---~             AcceptQuest()
---~             CompleteQuest()
---~         elseif event == 'QUEST_COMPLETE' then
+        if event == 'QUEST_DETAIL' then
+            AcceptQuest()
+            CompleteQuest()
+        elseif event == 'QUEST_COMPLETE' then
         if event == 'QUEST_COMPLETE' then
---~             if GetNumQuestChoices() and GetNumQuestChoices() < 1 then
---~                 GetQuestReward()
---~             else
+            if GetNumQuestChoices() and GetNumQuestChoices() < 1 then
+                GetQuestReward()
+            else
                 MostValuable()
---~             end
---~         elseif event == 'QUEST_ACCEPT_CONFIRM' then
---~             ConfirmAcceptQuest()
+            end
+        elseif event == 'QUEST_ACCEPT_CONFIRM' then
+            ConfirmAcceptQuest()
         end
     else
         if (event == 'QUEST_DETAIL') then
