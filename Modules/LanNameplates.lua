@@ -1,4 +1,5 @@
 
+
     -- local stuff for faster usage
     
 local ColorBeautyBorder = _G.ColorBeautyBorder
@@ -151,11 +152,7 @@ local function ThreatUpdate(self, elapsed)
         if (self:IsVisible()) then
             ColorHealthBar(self)
             
-            if (IsTarget(self)) then
-                self.Health:SetBeautyBorderTexture('white')
-            else
-                self.Health:SetBeautyBorderTexture('default')
-            end
+            self.Health:SetBeautyBorderTexture('default')
             
             if (not self.oldGlow:IsShown()) then
                 if (self.Health.bg:IsShown()) then
