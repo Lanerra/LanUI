@@ -8,127 +8,121 @@ CHAT_FRAME_FADE_OUT_TIME = 0.5
 CHAT_FRAME_FADE_TIME = 0.1
 
 function Spam(self, event, arg1)
-    if strfind(arg1, "You have unlearned") or strfind(arg1,"You have learned a new spell:") or strfind(arg1, "You have learned a new ability:") or strfind(arg1, "Your pet has unlearned") then
+    if strfind(arg1, 'You have unlearned') or strfind(arg1,'You have learned a new spell:') or strfind(arg1, 'You have learned a new ability:') or strfind(arg1, 'Your pet has unlearned') then
        return true
     end
     
-    if strfind(arg1, "Welcome to World of Warcraft!") or strfind(arg1,"We care about player security and encourage you to") or strfind(arg1, "visit http://us.battle.net/security/ for helpful information") or strfind(arg1, "and tips.") then
+    if strfind(arg1, 'Welcome to World of Warcraft!') or strfind(arg1,'We care about player security and encourage you to') or strfind(arg1, 'visit http://us.battle.net/security/ for helpful information') or strfind(arg1, 'and tips.') then
         return true
     end
     
-    if strfind(arg1, "AucAdvanced: Util:AutoMagic loaded!") or strfind(arg1, "AucAdvanced: Util:EasyBuyout loaded!") or strfind(arg1, "AucAdvanced: Util:GlypherPost loaded!") or strfind(arg1, "Auctioneer: Util:ScanFinish loaded!") or strfind(arg1, "AucAdvanced: Util:ScanStart loaded!") then
+    if strfind(arg1, 'AucAdvanced: Util:AutoMagic loaded!') or strfind(arg1, 'AucAdvanced: Util:EasyBuyout loaded!') or strfind(arg1, 'AucAdvanced: Util:GlypherPost loaded!') or strfind(arg1, 'Auctioneer: Util:ScanFinish loaded!') or strfind(arg1, 'AucAdvanced: Util:ScanStart loaded!') then
         return true
     end
 end
 
-ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", Spam)
+ChatFrame_AddMessageEventFilter('CHAT_MSG_SYSTEM', Spam)
 
 for i = 1, NUM_CHAT_WINDOWS do
-    local cf = _G["ChatFrame" .. i]
+    local cf = _G['ChatFrame' .. i]
     cf:SetFading(nil)
 end
 
 local events = {
-    CHAT_MSG_SAY = "chatBubbles",
-    CHAT_MSG_YELL = "chatBubbles",
-    CHAT_MSG_PARTY = "chatBubblesParty",
-    CHAT_MSG_PARTY_LEADER = "chatBubblesParty",
-    CHAT_MSG_MONSTER_SAY = "chatBubbles",
-    CHAT_MSG_MONSTER_YELL = "chatBubbles",
-    CHAT_MSG_MONSTER_PARTY = "chatBubblesParty",
+    CHAT_MSG_SAY = 'chatBubbles', 
+    CHAT_MSG_YELL = 'chatBubbles',
+    CHAT_MSG_PARTY = 'chatBubblesParty', 
+    CHAT_MSG_PARTY_LEADER = 'chatBubblesParty',
+    CHAT_MSG_MONSTER_SAY = 'chatBubbles', 
+    CHAT_MSG_MONSTER_YELL = 'chatBubbles', 
+    CHAT_MSG_MONSTER_PARTY = 'chatBubblesParty',
 }
 
 local function SkinFrame(frame)
-	for i=1, frame:GetNumRegions() do
-		local region = select(i, frame:GetRegions())
-		if region:GetObjectType() == 'Texture' then
-			region:SetTexture(nil)
-		elseif region:GetObjectType() == 'FontString' then
-			frame.text = region
-		end
-	end
-    frame.text:SetFont('Fonts\\ARIALN.ttf', 14, "THINOUTLINE")
-    frame.text:SetJustifyH("LEFT")
-	frame.text:SetNonSpaceWrap(true)
-	frame.text:SetWidth(120)
-   
-    frame.sender = frame:CreateFontString()
-    frame.sender:SetPoint("TOP", 0, -10)
-    frame.sender:SetPoint("LEFT", frame.text)
-    frame.sender:SetPoint("RIGHT", frame.text)
-    frame.sender:SetFont('Fonts\\ARIALN.ttf', 12, "THINOUTLINE")
-    frame.sender:SetJustifyH("LEFT")
-	frame.sender:SetNonSpaceWrap(true)
-	frame.sender:SetWidth(70)
+    for i = 1, select('#', frame:GetRegions()) do
+        local region = select(i, frame:GetRegions())
+        if (region:GetObjectType() == 'FontString') then
+            frame.text = region
+        else
+            region:Hide()
+        end
+    end
 
-    frame:ClearAllPoints()
-    frame:SetPoint("TOPLEFT", frame.text, -10, 25)
-    frame:SetPoint("BOTTOMRIGHT", frame.text, 10, -10)
+    frame.text:SetFontObject('GameFontHighlight')
+    frame.text:SetJustifyH('LEFT')
+
+	frame:ClearAllPoints()
+	frame:SetPoint('TOPLEFT', frame.text, -10, 25)
+	frame:SetPoint('BOTTOMRIGHT', frame.text, 10, -10)
 	frame:SetBackdrop({
-        bgFile = [[Interface\Buttons\WHITE8x8]],
+        bgFile = LanConfig.Media.Backdrop,
 		insets = {top = 1, left = 1, bottom = 1, right = 1},
 	})
-	frame:SetBackdropColor(0, 0, 0, .5)
+	frame:SetBackdropColor(unpack(LanConfig.Media.BackdropColor))
     
 	frame:CreateBeautyBorder(12, 1, 1, 1)
-	
-    frame:HookScript("OnHide", function() frame.inUse = false end)
+    frame.sender = frame:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
+    frame.sender:SetPoint('BOTTOMLEFT', frame.text, 'TOPLEFT', 0, 4)
+    frame.sender:SetJustifyH('LEFT')
+
+    frame:HookScript('OnHide', function()
+		frame.inUse = false
+	end)
 end
 
 local function UpdateFrame(frame, guid, name)
-	if not frame.text then SkinFrame(frame) end
-	frame.inUse = true
-	
-	local class
-	if guid ~= nil and guid ~= "" then
-		_, class, _, _, _, _ = GetPlayerInfoByGUID(guid)
-	end
-	
-	if name then
-		local color = RAID_CLASS_COLORS[class] or { r = 1, g = 1, b = 1 }
-		frame.sender:SetText(("|cFF%2x%2x%2x%s|r"):format(color.r*255, color.g*255, color.b*255, name))
-		if frame.text:GetWidth() < frame.sender:GetWidth() then
-			frame.text:SetWidth(frame.sender:GetWidth())
-		end
-	end
+    if (not frame.text) then 
+        SkinFrame(frame) 
+    end
+    frame.inUse = true
+
+    local class
+    if (guid ~= nil and guid ~= '') then
+        _, class, _, _, _, _ = GetPlayerInfoByGUID(guid)
+    end
+
+    if (name) then
+        local color = RAID_CLASS_COLORS[class] or { r = 0.5, g = 0.5, b = 0.5 }
+        frame.sender:SetText(('|cFF%2x%2x%2x%s|r'):format(color.r * 255, color.g * 255, color.b * 255, name))
+        if frame.text:GetWidth() < frame.sender:GetWidth() then
+            frame.text:SetWidth(frame.sender:GetWidth())
+        end
+    end
 end
 
 local function FindFrame(msg)
-	for i = 1, WorldFrame:GetNumChildren() do
-		local frame = select(i, WorldFrame:GetChildren())
-		if not frame:GetName() and not frame.inUse then
-			for i = 1, select("#", frame:GetRegions()) do
-				local region = select(i, frame:GetRegions())
-				if region:GetObjectType() == "FontString" and region:GetText() == msg then
-					return frame
-				end
-			end
-
-		end
-	end
+    for i = 1, WorldFrame:GetNumChildren() do
+        local frame = select(i, WorldFrame:GetChildren())
+        if (not frame:GetName() and not frame.inUse) then
+            for i = 1, select('#', frame:GetRegions()) do
+                local region = select(i, frame:GetRegions())
+                if region:GetObjectType() == 'FontString' and region:GetText() == msg then
+                    return frame
+                end
+            end
+        end
+    end
 end
 
-local f = CreateFrame("Frame")
-for e, _ in pairs(events) do f:RegisterEvent(e) end
+local f = CreateFrame('Frame')
+for event, cvar in pairs(events) do 
+    f:RegisterEvent(event) 
+end
 
-f:SetScript("OnEvent", function(_, event, ...)
-	for e, cvar in pairs(events) do
-		if event == e and GetCVarBool(cvar) then
-			local msg, sender, _, _, _, _, _, _, _, _, _, guid = ...
-			f.elapsed = 0
-			f:SetScript("OnUpdate", function(self, elapsed)
-				self.elapsed = self.elapsed + elapsed
-				local frame = FindFrame(msg)
-				if frame or self.elapsed > 0.3 then
-					f:SetScript("OnUpdate", nil)
-                    local capture = {}
-                    string.gsub(sender, "(%w+)", function(x) table.insert(capture, x); end)
-                    local name = capture[1]
-					if frame then UpdateFrame(frame, guid, name) end
-				end
-			end)
-		end
-	end
+f:SetScript('OnEvent', function(self, event, msg, sender, _, _, _, _, _, _, _, _, _, guid)
+    if (GetCVarBool(events[event])) then
+        f.elapsed = 0
+        f:SetScript('OnUpdate', function(self, elapsed)
+            self.elapsed = self.elapsed + elapsed
+            local frame = FindFrame(msg)
+            if (frame or self.elapsed > 0.3) then
+                f:SetScript('OnUpdate', nil)
+                if (frame) then 
+                    UpdateFrame(frame, guid, sender) 
+                end
+            end
+        end)
+    end
 end)
 
 CHAT_FONT_HEIGHTS = {
@@ -157,8 +151,8 @@ CHAT_YELL_GET = '%s:\32'
 CHAT_WHISPER_GET = '[from] %s:\32'
 CHAT_WHISPER_INFORM_GET = '[to] %s:\32'
 
-CHAT_BN_WHISPER_GET = "[from] %s:\32"
-CHAT_BN_WHISPER_INFORM_GET = "[to] %s:\32"
+CHAT_BN_WHISPER_GET = '[from] %s:\32'
+CHAT_BN_WHISPER_INFORM_GET = '[to] %s:\32'
 
 CHAT_GUILD_GET = '[|Hchannel:Guild|hG|h] %s:\32'
 CHAT_OFFICER_GET = '[|Hchannel:o|hO|h] %s:\32'
@@ -232,11 +226,11 @@ for i = 1, NUM_CHAT_WINDOWS do
     _G['ChatFrame'..i..'EditBox']:CreateBeautyBorder(12, 1, 1, 1, -2, -1, -2, -1, -2, -1, -2, -1)
 end
 
-hooksecurefunc("ChatEdit_UpdateHeader", function(editbox)
+hooksecurefunc('ChatEdit_UpdateHeader', function(editbox)
 	if ACTIVE_CHAT_EDIT_BOX then
-		local type = editbox:GetAttribute("chatType")
-		if ( type == "CHANNEL" ) then
-			local id = GetChannelName(editbox:GetAttribute("channelTarget"))
+		local type = editbox:GetAttribute('chatType')
+		if ( type == 'CHANNEL' ) then
+			local id = GetChannelName(editbox:GetAttribute('channelTarget'))
 			if id == 0 then	
 				ChatFrame1EditBox:SetBeautyBorderColor(1, 1, 1)
 				ChatFrame1EditBox:SetBackdropColor(1/10, 1/10, 1/10, 0.75)
@@ -269,7 +263,7 @@ ChatFrame2:CreateBeautyBorder(12, 5, 5, 5, 5, 27, 5, 27, 5, 6, 5, 6)
 ChatFrame3:CreateBeautyBorder(12, 5, 5, 5, 5, 5, 5, 5, 5, 6, 5, 6)
 
 -- Fix positioning of CombatLogQuickButtonFrame to align better to our Chatframe
-ChatFrame2:SetScript("OnShow", function(self)
+ChatFrame2:SetScript('OnShow', function(self)
     CombatLogQuickButtonFrame_Custom:ClearAllPoints()
     CombatLogQuickButtonFrame_Custom:SetPoint('BOTTOMLEFT', ChatFrame2, 'TOPLEFT', -2, 0)
     CombatLogQuickButtonFrame_Custom:SetPoint('BOTTOMRIGHT', ChatFrame2, 'TOPRIGHT', 2, 0)
@@ -331,20 +325,20 @@ for i = 1, NUM_CHAT_WINDOWS do
             return
         end
 
-        tab.backdrop = CreateFrame("Frame", nil, tab)
+        tab.backdrop = CreateFrame('Frame', nil, tab)
         
         LanFunc.Skin(tab.backdrop, 12, 1)
         
         tab.backdrop:SetFrameStrata('BACKGROUND')
         tab.backdrop:SetFrameLevel(_G['ChatFrame'..i]:GetFrameLevel() - 1)
-        tab.backdrop:SetPoint("TOPLEFT")
-        tab.backdrop:SetPoint("BOTTOMRIGHT")
+        tab.backdrop:SetPoint('TOPLEFT')
+        tab.backdrop:SetPoint('BOTTOMRIGHT')
 
         -- always set tab text centered
         local name = tab:GetName()
-        _G[name.."Text"]:ClearAllPoints()
-        _G[name.."Text"]:SetPoint("CENTER")
-        _G[name.."Text"].SetPoint = LanFunc.dummy
+        _G[name..'Text']:ClearAllPoints()
+        _G[name..'Text']:SetPoint('CENTER')
+        _G[name..'Text'].SetPoint = LanFunc.dummy
     end
     
     local tabText = _G['ChatFrame'..i..'TabText']
@@ -421,7 +415,7 @@ end
 BNToastFrame:CreateBeautyBorder(12, 1, 1, 1)
 
 BNToastFrame:ClearAllPoints()
-BNToastFrame:SetPoint("BOTTOMLEFT", ChatFrame1, "TOPLEFT", -5, 5)
+BNToastFrame:SetPoint('BOTTOMLEFT', ChatFrame1, 'TOPLEFT', -5, 5)
 BNToastFrame.SetPoint = LanFunc.dummy
 BNToastFrame.SetAllPoints = LanFunc.dummy
 BNToastFrame.ClearAllPoints = LanFunc.dummy
@@ -445,25 +439,25 @@ BNToastFrameBottomLine:SetFont(LanConfig.Media.Font, 12, nil)
 FriendsMicroButton:Hide()
 FriendsMicroButton.Show = FriendsMicroButton.Hide
 
-GeneralDockManagerOverflowButton:SetScript("OnShow", GeneralDockManagerOverflowButton.Hide)
+GeneralDockManagerOverflowButton:SetScript('OnShow', GeneralDockManagerOverflowButton.Hide)
 GeneralDockManagerOverflowButton:Hide()
 
 -- Skin those tabs!
-local x = CreateFrame("Frame")
-x:RegisterEvent("PLAYER_LOGIN")
-x:SetScript("OnEvent", function()
+local x = CreateFrame('Frame')
+x:RegisterEvent('PLAYER_LOGIN')
+x:SetScript('OnEvent', function()
 	ChatFrame1Tab:SetHeight(24)
     ChatFrame2Tab:SetHeight(24)
     ChatFrame3Tab:SetHeight(24)
 
     ChatFrame1Tab:ClearAllPoints()
     ChatFrame1Tab.ClearAllPoints = LanFunc.dummy
-    ChatFrame1Tab:SetPoint("TOPLEFT", ChatFrame1, "BOTTOMLEFT", -5, -7)
+    ChatFrame1Tab:SetPoint('TOPLEFT', ChatFrame1, 'BOTTOMLEFT', -5, -7)
     ChatFrame1Tab.SetPoint = LanFunc.dummy
 
     ChatFrame3Tab:ClearAllPoints()
     ChatFrame3Tab.ClearAllPoints = LanFunc.dummy
-    ChatFrame3Tab:SetPoint("TOPRIGHT", ChatFrame3, "BOTTOMRIGHT", 5, -7)
+    ChatFrame3Tab:SetPoint('TOPRIGHT', ChatFrame3, 'BOTTOMRIGHT', 5, -7)
     ChatFrame3Tab.SetPoint = LanFunc.dummy
     FCF_SavePositionAndDimensions(DEFAULT_CHAT_FRAME)
     

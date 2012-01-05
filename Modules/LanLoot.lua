@@ -2,16 +2,23 @@ _G["LootFrame"]:GetRegions():Hide()
 _G["LootCloseButton"]:Hide()
 
 local LootBG = CreateFrame('Frame', nil, _G["LootFrame"])
-LootBG:SetPoint('TOPLEFT', 0, 0)
-LootBG:SetPoint('RIGHT', 0, 0)
+--LootBG:SetPoint('TOPLEFT', 0, 0)
+--LootBG:SetPoint('RIGHT', 0, 0)
+LootBG:SetPoint('TOPLEFT')
+LootBG:SetPoint('RIGHT')
 LootBG:SetFrameStrata("LOW")	
-LootBG:SetBackdrop({			
+--[[LootBG:SetBackdrop({
     bgFile = LanConfig.Media.Backdrop,
 	insets = {top = 5, left = 5, bottom = 5, right = 5},
+})]]
+LootBG:SetBackdrop({
+    bgFile = LanConfig.Media.Backdrop,
+	insets = {top = 1, left = 1, bottom = 1, right = 1},
 })
 LootBG:SetBackdropColor(LanConfig.Media.BackdropColor)
 
-LootBG:CreateBeautyBorder(12, R, G, B, -4)
+--LootBG:CreateBeautyBorder(12, R, G, B, -4)
+LootBG:CreateBeautyBorder(12, R, G, B, 1)
 
 for i = 1, 4 do
     local text = _G['LootButton'..i..'Text']
