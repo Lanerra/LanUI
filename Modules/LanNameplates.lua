@@ -276,10 +276,14 @@ local function SkinPlate(self)
     
     if (not self.Health.bg) then
         self.Health.bg = CreateFrame('Frame', nil, self.Health)
-        self.Health.bg:SetPoint('TOP', self.Health, 0, 3)
-        self.Health.bg:SetPoint('BOTTOM', self.Health, 0, -3)
-        self.Health.bg:SetPoint('LEFT', self.Health, -3, 0)
-        self.Health.bg:SetPoint('RIGHT', self.Health, 3, 0)
+--~         self.Health.bg:SetPoint('TOP', self.Health, 0, 3)
+--~         self.Health.bg:SetPoint('BOTTOM', self.Health, 0, -3)
+--~         self.Health.bg:SetPoint('LEFT', self.Health, -3, 0)
+--~         self.Health.bg:SetPoint('RIGHT', self.Health, 3, 0)
+        self.Health.bg:SetPoint('TOP', self.Health)
+        self.Health.bg:SetPoint('BOTTOM', self.Health)
+        self.Health.bg:SetPoint('LEFT', self.Health)
+        self.Health.bg:SetPoint('RIGHT', self.Health)
         self.Health.bg:Hide()
 
         self.Health.bg:CreateBeautyBorder(7.3333334)
