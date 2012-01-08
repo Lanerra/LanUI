@@ -7,7 +7,7 @@ LanFunc.playerLevel = UnitLevel('player')
 LanFunc.playerRealm = GetRealmName()
 LanFunc.locale = GetLocale()
 
-LanFunc.KeepFS = function(frame, hide)
+ function LanFunc.KeepFS(frame, hide)
     if not frame then return end
 
     for i = 1, frame:GetNumRegions() do
@@ -18,7 +18,7 @@ LanFunc.KeepFS = function(frame, hide)
     end
 end
 
-LanFunc.RevTable = function(curTab)
+function LanFunc.RevTable(curTab)
     if not curTab then return end
     local revTab = {}
 
@@ -29,7 +29,7 @@ LanFunc.RevTable = function(curTab)
     return revTab
 end
 
-LanFunc.KeepRegions = function(frame, regions)
+function LanFunc.KeepRegions(frame, regions)
     if not frame then return end
     regions = LanFunc.RevTable(regions)
 
@@ -42,7 +42,7 @@ LanFunc.KeepRegions = function(frame, regions)
     end
 end
 
-LanFunc.RemoveRegions = function(frame, regions)
+function LanFunc.RemoveRegions(frame, regions)
     if not frame then return end
    
     regions = LanFunc.RevTable(regions)
@@ -55,7 +55,7 @@ LanFunc.RemoveRegions = function(frame, regions)
     end
 end
 
-LanFunc.CallAllRegions = function(frame, type, method, ...)
+function LanFunc.CallAllRegions(frame, type, method, ...)
    if frame.GetRegions and method then
         local regions, region = { frame:GetRegions() }
         for index = 1, #regions do
@@ -74,14 +74,14 @@ EventFrame:SetScript('OnEvent', function(self, event, ...)
     end
 end)
 
-LanFunc.CreateBD = function(f)
+function LanFunc.CreateBD(f)
 	f:SetBackdrop({
 		bgFile = LanConfig.Media.Backdrop,
     })
 	f:SetBackdropColor(unpack(LanConfig.Media.BackdropColor))
 end
 
-LanFunc.Kill = function(object)
+function LanFunc.Kill(object)
     local objectReference = object
     if type(object) == 'string' then
         objectReference = _G[object]
@@ -100,7 +100,7 @@ LanFunc.Kill = function(object)
     objectReference:Hide()
 end
 
-LanFunc.StripTextures = function(object, kill)
+function LanFunc.StripTextures(object, kill)
     for i=1, object:GetNumRegions() do
         local region = select(i, object:GetRegions())
         if region:GetObjectType() == "Texture" then
@@ -113,7 +113,7 @@ LanFunc.StripTextures = function(object, kill)
     end		
 end
 
-LanFunc.Skin = function(f, size, pad)
+function LanFunc.Skin(f, size, pad)
     if (not f.LanSkin) then
         LanFunc.StripTextures(f)
         LanFunc.CreateBD(f)
@@ -126,7 +126,7 @@ LanFunc.Skin = function(f, size, pad)
     end
 end
 
-LanFunc.utf8sub = function(string, index, dots)
+function LanFunc.utf8sub(string, index, dots)
     local bytes = string:len()
     if bytes <= index then
         return string
@@ -159,14 +159,14 @@ LanFunc.utf8sub = function(string, index, dots)
     end
 end
 
-LanFunc.RGBToHex = function(r, g, b)
+function LanFunc.RGBToHex(r, g, b)
 	r = r <= 1 and r >= 0 and r or 0
 	g = g <= 1 and g >= 0 and g or 0
 	b = b <= 1 and b >= 0 and b or 0
 	return string.format('|cff%02x%02x%02x', r*255, g*255, b*255)
 end
 
-LanFunc.ShortValue = function(v)
+function LanFunc.ShortValue(v)
 	if (v >= 1e6) then
 		return ('%.1fm'):format(v / 1e6):gsub('%.?0+([km])$', '%1')
 	elseif (v >= 1e3 or v <= -1e3) then
