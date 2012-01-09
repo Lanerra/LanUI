@@ -8,12 +8,12 @@ if LanConfig.Tweaks.AutoDEGreed == true then
             return
         else
             if not id then return end -- What the fuck?
-            local _, _, _, quality, bop, _, _, canDE = GetLootRollItemInfo(id)
-            if (quality == 2 or 3 and bop) then
-                RollOnLoot(id, canDE and 3 or 2)
-            elseif (quality == 2 and not bop) then
-                RollOnLoot(id, canDE and 3 or 2)
-            elseif (quality == 4) then
+            local _, Name, _, Quality, BoP, _, _, CanDE = GetLootRollItemInfo(id)
+            if (Quality == 2 or 3 and BoP) then
+                RollOnLoot(id, CanDE and 3 or 2)
+            elseif (Quality == 2 and not BoP) then
+                RollOnLoot(id, CanDE and 3 or 2)
+            elseif (Quality == 4) then
                 return
             end
         end
