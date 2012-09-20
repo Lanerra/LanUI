@@ -1,6 +1,6 @@
 ## Interface: 40300
 ## Title: |cff0099ffLan|rUI
-## Version: 0.4a
+## Version: 0.5a
 ## Author: Lanerra
 ## Notes: Lightweight UI Modification
 
