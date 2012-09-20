@@ -424,7 +424,6 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 		end
 		FriendsFrameTitleText:Hide()
 		SpellBookFramePortrait:Hide()
-		SpellBookCompanionModelFrameShadowOverlay:Hide()
 		PVPFramePortrait:Hide()
 		PVPHonorFrameBGTex:Hide()
 --~ 		LFRParentFrameIcon:Hide()
@@ -453,7 +452,6 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 		for i = 8, 11 do
 			select(i, DressUpFrame:GetRegions()):Hide()
 		end
-		TaxiFrameTitleText:Hide()
 		TradeFrameRecipientPortrait:Hide()
 		TradeFramePlayerPortrait:Hide()
 		--TradeFrame:GetRegions():Hide()
@@ -471,7 +469,6 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 		TabardFrame:GetRegions():Hide()
 		BNToastFrameCloseButton:SetAlpha(0)
 		PetStableModelShadow:Hide()
-		LFDParentFrameEyeFrame:Hide()
 		RaidInfoFrame:GetRegions():Hide()
 		RaidInfoDetailFooter:Hide()
 		RaidInfoDetailHeader:Hide()
@@ -494,7 +491,6 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 			select(i, HelpFrameLeftInset:GetRegions()):Hide()
 		end
 		LFDParentFrameRoleBackground:Hide()
-		LFDQueueFrameCapBarShadow:Hide()
 		LFDQueueFrameBackground:Hide()
 		select(4, HelpFrameTicket:GetChildren()):Hide()
 		HelpFrameKnowledgebaseStoneTex:Hide()
@@ -512,7 +508,7 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 		local slots = {
 			'Head', 'Neck', 'Shoulder', 'Shirt', 'Chest', 'Waist', 'Legs', 'Feet', 'Wrist',
 			'Hands', 'Finger0', 'Finger1', 'Trinket0', 'Trinket1', 'Back', 'MainHand',
-			'SecondaryHand', 'Ranged', 'Tabard',
+			'SecondaryHand', 'Tabard',
 		}
 
 		for i = 1, getn(slots) do
@@ -533,7 +529,6 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 		if not IsAddOnLoaded('Butsu') and not IsAddOnLoaded('XLoot') and not IsAddOnLoaded('Tukui') then
 			LootFramePortraitOverlay:Hide()
 			select(3, LootFrame:GetRegions()):Hide()
-			LootCloseButton:Hide()
 
 			-- LootFrame:SetWidth(190)
 			LootFrame:SetHeight(.001)
@@ -694,13 +689,13 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 			end
 		end)
 		function PaperDollFrame_SetLevel()
-			local primaryTalentTree = GetPrimaryTalentTree()
+			local primaryTalentTree = GetSpecialization('player')
 			local classDisplayName, class = UnitClass('player')
 			local classColorString = format('ff%.2x%.2x%.2x', c.r * 255, c.g * 255, c.b * 255)
 			local specName
 
 			if (primaryTalentTree) then
-				_, specName = GetTalentTabInfo(primaryTalentTree)
+				_, specName = GetSpecializationInfo(primaryTalentTree)
 			end
 
 			if (specName and specName ~= '') then
@@ -764,9 +759,6 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 		RaidFrameConvertToRaidButton:SetPoint('TOPLEFT', FriendsFrame, 'TOPLEFT', 30, -44)
 		RaidFrameRaidInfoButton:ClearAllPoints()
 		RaidFrameRaidInfoButton:SetPoint('TOPRIGHT', FriendsFrame, 'TOPRIGHT', -70, -44)
-
-		TaxiFrameCloseButton:ClearAllPoints()
-		TaxiFrameCloseButton:SetPoint('TOPRIGHT', TaxiRouteMap, 'TOPRIGHT')
 
 		local a1, p, a2, x, y = ReputationDetailFrame:GetPoint()
 		ReputationDetailFrame:SetPoint(a1, p, a2, x + 10, y)

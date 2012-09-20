@@ -47,8 +47,7 @@ f:SetScript('OnEvent', function(_, event, ...)
 		
 		SetCVar('UberTooltips', 1) -- Über Tooltips! Wunderbar!
 		SetCVar('showTutorials', 0) -- Not a n00b. Don't show tutorials
-	    SetCVar('showNewbieTips', 0) -- Hold on...nope, still not a n00b. Don't show newbie tooltips
-		
+	    		
 	    SetCVar('bloatthreat', 0) -- Don't make nameplates larger or smaller as threat changes
 		
 		if LanConfig.Tweaks.Sticky == true then

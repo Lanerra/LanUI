@@ -1,5 +1,4 @@
 _G["LootFrame"]:GetRegions():Hide()
-_G["LootCloseButton"]:Hide()
 
 local LootBG = CreateFrame('Frame', nil, _G["LootFrame"])
 --LootBG:SetPoint('TOPLEFT', 0, 0)
@@ -7,10 +6,6 @@ local LootBG = CreateFrame('Frame', nil, _G["LootFrame"])
 LootBG:SetPoint('TOPLEFT')
 LootBG:SetPoint('RIGHT')
 LootBG:SetFrameStrata("LOW")	
---[[LootBG:SetBackdrop({
-    bgFile = LanConfig.Media.Backdrop,
-	insets = {top = 5, left = 5, bottom = 5, right = 5},
-})]]
 LootBG:SetBackdrop({
     bgFile = LanConfig.Media.Backdrop,
 	insets = {top = 1, left = 1, bottom = 1, right = 1},

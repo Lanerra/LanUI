@@ -5,8 +5,7 @@ local display_frame = CreateFrame("Frame", "LanThreat", UIParent)
 local table_sort, string_format = table.sort, string.format
 local math_floor, tonumber = math.floor, tonumber
 local UnitName = UnitName
-local GetNumRaidMembers = GetNumRaidMembers
-local GetNumPartyMembers = GetNumPartyMembers
+local GetNumGroupMembers = GetNumGroupMembers
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
 local need_reset = true
 local in_raid, in_party, warning_played, i_am_tank, target_okay
@@ -225,17 +224,17 @@ local function UpdateThreat()
     if not target_okay then
         UpdateDisplay()
     end
-    in_party = GetNumPartyMembers() > 0
-    in_raid = GetNumRaidMembers() > 0
+    in_party = GetNumGroupMembers() > 0
+    in_raid = GetNumGroupMembers() > 0
 
     if in_raid or in_party then
         if in_raid then
-            for i = 1, GetNumRaidMembers() do
+            for i = 1, GetNumGroupMembers() do
                 UpdateUnitThreat(string_format("raid%d", i))
                 UpdateUnitThreat(string_format("raidpet%d", i))
             end
         else
-            for i = 1, GetNumPartyMembers() do
+            for i = 1, GetNumGroupMembers() do
                 UpdateUnitThreat(string_format("party%d", i))
                 UpdateUnitThreat(string_format("partypet%d", i))
             end

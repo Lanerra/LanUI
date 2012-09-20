@@ -15,8 +15,7 @@ local slotInfo = {
 	[7] = {7, 'Legs'},
 	[8] = {8, 'Feet'},
 	[9] = {16, 'MainHand'},
-	[10] = {17, 'SecondaryHand'},
-	[11] = {18, 'Ranged'}
+	[10] = {17, 'SecondaryHand'}
 }
 
 local f = CreateFrame('Frame', 'DuraFrame')

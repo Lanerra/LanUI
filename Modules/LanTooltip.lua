@@ -256,9 +256,7 @@ local SlotName = {
         'Trinket0',
         'Trinket1',
         'MainHand',
-        'SecondaryHand',
-        'Ranged',
-        'Ammo'
+        'SecondaryHand'
     }
 
 local function GetItemLVL(unit)

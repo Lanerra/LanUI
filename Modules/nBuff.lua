@@ -35,7 +35,7 @@ ConsolidatedBuffsCount:SetPoint('CENTER', ConsolidatedBuffsIcon)
 ConsolidatedBuffsCount:SetFont(LanConfig.Media.Font, 16, 'OUTLINE')
 ConsolidatedBuffsCount:SetShadowOffset(0, 0)
 
-ConsolidatedBuffsContainer:SetScale(0.57)
+--~ ConsolidatedBuffsContainer:SetScale(0.57)
 ConsolidatedBuffsTooltip:SetScale(1.2)
 
 local BUFF_NEW_INDEX = 1
