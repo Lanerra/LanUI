@@ -1,3 +1,4 @@
+
 CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1.0
 CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 1.0     -- set to 0 if u want to hide the tabs when no mouse is over them or the chat
     

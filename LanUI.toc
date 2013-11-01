@@ -12,6 +12,8 @@ lib\LibBossIDs-1.0\lib.xml
 lib\LibDataBroker\LibDataBroker-1.1.lua
 lib\LibStub\LibStub.lua
 
+Modules\LanFunc.lua
+
 Modules\Data\Durability.lua
 Modules\Data\GuildFriend.lua
 Modules\Data\Gold.lua
@@ -25,7 +27,6 @@ Modules\LanChat.lua
 Modules\LanCombat.lua
 Modules\LanCore.lua
 Modules\LanDamage.lua
-Modules\LanFunc.lua
 Modules\LanLoot.lua
 Modules\LanNameplates.lua
 Modules\LanPanels.lua

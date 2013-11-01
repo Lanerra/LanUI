@@ -2,7 +2,6 @@
 Contains changes to the default appearance of Blizzard Frames. This could get pretty nasty...
 --]]
 
-
 -- Functions all up in this mother fucker!
 
 local c = LanFunc.playerColor

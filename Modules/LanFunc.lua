@@ -1,3 +1,4 @@
+
 LanFunc = {}
 
 LanFunc.playerClass = select(2, UnitClass('player'))
