@@ -26,7 +26,7 @@ f:SetScript('OnEvent', function(_, event, ...)
         16 core/8 core with hyperthreading = 65535 (Untested)
         ]]
 
-        SetCVar('ProcessAffinityMask', 15)
+        SetCVar('ProcessAffinityMask', 255)
 
 		SetCVar('consolidateBuffs', 0) -- Disable Consolidated Buffs
 

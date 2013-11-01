@@ -119,7 +119,7 @@ function LanFunc.Skin(f, size, pad)
         LanFunc.CreateBD(f)
         f:CreateBeautyBorder(size)
         f:SetBeautyBorderPadding(pad)
-
+        
         f.LanSkin = true
     else
         print(f..' has already been skinned.')

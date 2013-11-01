@@ -155,12 +155,12 @@ local powerColors = {
     [1]    = "|cffAF5050",    -- Rage -- |cffFF0000 -- 175, 80, 80
     [2]    = "|cffB46E46",    -- Focus -- |cff643219 -- 180, 110, 70
     [3]    = "|cffA5A05A",    -- Energy -- |cffFFFF00 -- 165, 160, 90
---~     [4]    = "|cff329696",    -- Happiness -- cff00FFFF -- 50, 150, 150
     [5]    = "|cff8C919B",    -- Runes -- |cff323232 -- 140, 145, 155
     [6]    = "|cff005264",    -- Runic Power
     [7]    = "|cffD4A017", -- Soul Shards(Needs color correction)
     [8]    = "|cffD4A017", -- Eclipse (Needs color correction)
     [9]    = "|cffD4A017", -- Holy Power (Needs color correction)
+    [10]   = "|cffD4A017", -- Chi
 }
 
 setmetatable(powerColors, {__index = function(t, k) return "|cffD7BEA5" end})
@@ -170,12 +170,12 @@ local powerStrings = {
     [SPELL_POWER_RAGE] = RAGE, -- 1
     [SPELL_POWER_FOCUS] = FOCUS, -- 2
     [SPELL_POWER_ENERGY] = ENERGY, -- 3
---~     [SPELL_POWER_HAPPINESS] = HAPPINESS, -- 4
     [SPELL_POWER_RUNES] = RUNES, -- 5
     [SPELL_POWER_RUNIC_POWER] = RUNIC_POWER, -- 6
     [SPELL_POWER_SOUL_SHARDS] = SOUL_SHARDS, -- 7
     [SPELL_POWER_ECLIPSE] = ECLIPSE, -- 8
     [SPELL_POWER_HOLY_POWER] = HOLY_POWER, -- 9
+    [SPELL_POWER_CHI] = CHI, -- 10
 }
 
 local eventTable = {

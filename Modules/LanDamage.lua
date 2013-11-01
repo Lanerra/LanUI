@@ -321,14 +321,7 @@ local UpdateBars = function()
 			bar[i] = CreateBar()
 			bar[i]:SetPoint("TOP", 0, -(barheight + spacing) * (i-1))
 		end
---~         if not bar[i] then 
---~             bar[i] = CreateBar()
---~             if (i == 1) then
---~                 bar[i]:SetPoint('TOP', 0, -4)
---~             else
---~                 bar[i]:SetPoint("TOP", 0, -1)
---~             end
---~         end
+
 		bar[i].id = i + offset
 		bar[i]:SetValue(100 * cur[sMode].amount / max[sMode].amount)
 		color = RAID_CLASS_COLORS[cur.class]

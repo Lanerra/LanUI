@@ -22,6 +22,8 @@ LanSkin.CreateBD = function(f, a)
             f:SetBackdropBorderColor(0, 0, 0)
             
             f:CreateBeautyBorder(12, 1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 1)
+        else
+            return
         end
     end
 end
@@ -85,9 +87,6 @@ LanSkin.Reskin = function(f)
 	glow:SetAlpha(0)
 	
     f:CreateBeautyBorder(12, r, g, b)
---~     glow:CreateBeautyBorder(12, r, g, b)
-    
---~ 	glow:SetBeautyBorderColor(r, g, b)
 	
 	f:SetBeautyBorderColor(1, 1, 1)
 	
@@ -152,7 +151,6 @@ Skin:SetScript('OnEvent', function(self, event, addon)
             'DropDownList2Backdrop',
             'DropDownList1MenuBackdrop',
             'DropDownList2MenuBackdrop',
---~             'LFDSearchStatus',
             'FriendsTooltip',
             'GhostFrame',
             'GhostFrameContentsFrame',
@@ -174,11 +172,9 @@ Skin:SetScript('OnEvent', function(self, event, addon)
             'InterfaceOptionsFrame',
             'VideoOptionsFrame',
             'AudioOptionsFrame',
---~             'LFDDungeonReadyStatus',
             'ChatConfigFrame',
             'SpellBookFrame',
             'CharacterFrame',
-            'PVPFrame',
             'WorldStateScoreFrame',
             'StackSplitFrame',
             'AddFriendFrame',
@@ -186,11 +182,9 @@ Skin:SetScript('OnEvent', function(self, event, addon)
             'ColorPickerFrame',
             'ReadyCheckFrame',
             'PetStableFrame',
---~             'LFDDungeonReadyDialog',
             'ReputationDetailFrame',
             'LFDRoleCheckPopup',
             'RaidInfoFrame',
-            'PVPBannerFrame',
             'RolePollPopup',
             'LFDParentFrame'
         }
@@ -234,35 +228,26 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 			select(3, tab:GetRegions()):SetTexCoord(.08, .92, .08, .92)
 			select(4, tab:GetRegions()):SetTexCoord(.08, .92, .08, .92)
 		end
-        
+    
 		-- [[ Backdrop frames ]]
 
 		FriendsBD = CreateFrame('Frame', nil, FriendsFrame)
 		FriendsBD:SetPoint('TOPLEFT', 10, -30)
 		FriendsBD:SetPoint('BOTTOMRIGHT', -34, 76)
 
-		QuestBD = CreateFrame('Frame', nil, QuestLogFrame)
-		QuestBD:SetPoint('TOPLEFT', 6, -9)
-		QuestBD:SetPoint('BOTTOMRIGHT', -2, 6)
-		QuestBD:SetFrameLevel(QuestLogFrame:GetFrameLevel()-1)
-
 		QFBD = CreateFrame('Frame', nil, QuestFrame)
 		QFBD:SetPoint('TOPLEFT', 6, -15)
 		QFBD:SetPoint('BOTTOMRIGHT', -26, 64)
 		QFBD:SetFrameLevel(QuestFrame:GetFrameLevel()-1)
-
-		QDBD = CreateFrame('Frame', nil, QuestLogDetailFrame)
-		QDBD:SetPoint('TOPLEFT', 6, -9)
-		QDBD:SetPoint('BOTTOMRIGHT', 0, 0)
-		QDBD:SetFrameLevel(QuestLogDetailFrame:GetFrameLevel()-1)
+        
+        QNBD = CreateFrame('Frame', nil, QuestNPCModel)
+        QNBD:SetPoint('TOPLEFT', QuestNPCModel, -4, 4)
+        QNBD:SetPoint('BOTTOMRIGHT', QuestNPCModelTextFrame, 4, 0)
+        QNBD:SetFrameLevel(QuestNPCModel:GetFrameLevel()-1)
 
 		GossipBD = CreateFrame('Frame', nil, GossipFrame)
 		GossipBD:SetPoint('TOPLEFT', 6, -15)
 		GossipBD:SetPoint('BOTTOMRIGHT', -26, 64)
-
---~ 		LFRBD = CreateFrame('Frame', nil, LFRParentFrame)
---~ 		LFRBD:SetPoint('TOPLEFT', 10, -10)
---~ 		LFRBD:SetPoint('BOTTOMRIGHT', 0, 4)
 
 		MerchBD = CreateFrame('Frame', nil, MerchantFrame)
 		MerchBD:SetPoint('TOPLEFT', 10, -10)
@@ -289,11 +274,6 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 		TaxiBD:SetFrameStrata('LOW')
 		TaxiBD:SetFrameLevel(TaxiFrame:GetFrameLevel()-1)
 
-		NPCBD = CreateFrame('Frame', nil, QuestNPCModel)
-		NPCBD:SetPoint('TOPLEFT', 9, -6)
-		NPCBD:SetPoint('BOTTOMRIGHT', 4, -66)
-		NPCBD:SetFrameLevel(QuestNPCModel:GetFrameLevel()-1)
-
 		TradeBD = CreateFrame('Frame', nil, TradeFrame)
 		TradeBD:SetPoint('TOPLEFT', 10, -12)
 		TradeBD:SetPoint('BOTTOMRIGHT', -30, 52)
@@ -316,11 +296,9 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 
 		local FrameBDs = {
             'FriendsBD',
-            'QuestBD',
             'QFBD',
-            'QDBD',
+            'QNBD',
             'GossipBD',
---~             'LFRBD',
             'MerchBD',
             'MailBD',
             'OMailBD',
@@ -329,7 +307,7 @@ Skin:SetScript('OnEvent', function(self, event, addon)
             'TradeBD',
             'ItemBD',
             'TabardBD',
-            'GMBD'
+            'GMBD',
         }
         
 		for i = 1, getn(FrameBDs) do
@@ -340,8 +318,6 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 			end
 		end
 
-		LanSkin.CreateBD(NPCBD)
-        
         local line = CreateFrame('Frame', nil, QuestNPCModel)
 		line:SetPoint('BOTTOMLEFT', 0, -1)
 		line:SetPoint('BOTTOMRIGHT', 0, -1)
@@ -363,14 +339,6 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 			end
 
 			PetModelFrameShadowOverlay:Hide()
-			PetPaperDollFrameExpBar:GetRegions():Hide()
-			select(2, PetPaperDollFrameExpBar:GetRegions()):Hide()
-
-			local bbg = CreateFrame('Frame', nil, PetPaperDollFrameExpBar)
-			bbg:SetPoint('TOPLEFT', -1, 1)
-			bbg:SetPoint('BOTTOMRIGHT', 1, -1)
-			bbg:SetFrameLevel(PetPaperDollFrameExpBar:GetFrameLevel()-1)
-			LanSkin.CreateBD(bbg, .25)
 		end
 		
         PaperDollSidebarTab3:HookScript('OnClick', function()
@@ -397,7 +365,7 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 		GhostBD:SetPoint('TOPLEFT', GhostFrameContentsFrameIcon, -1, 1)
 		GhostBD:SetPoint('BOTTOMRIGHT', GhostFrameContentsFrameIcon, 1, -1)
 		LanSkin.CreateBD(GhostBD, 0)
-        
+
 		-- [[ Hide regions ]]
 
 		CharacterFramePortrait:Hide()
@@ -406,15 +374,22 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 		end
 		for i = 1, 3 do
 			select(i, QuestLogFrame:GetRegions()):Hide()
-			for j = 1, 2 do
-				select(i, _G['PVPBannerFrameCustomization'..j]:GetRegions()):Hide()
-			end
 		end
 		QuestLogDetailFrame:GetRegions():Hide()
 		QuestFramePortrait:Hide()
 		GossipFramePortrait:Hide()
 
-		--QuestFrame:GetRegions():Hide()
+        LanFunc.StripTextures(QuestLogDetailFrame)
+        QuestLogDetailFrameInset:Hide()
+        LanFunc.Skin(QuestLogDetailFrame, 12)
+        
+		LanFunc.Skin(QuestLogFrame, 12)
+        LanFunc.StripTextures(QuestLogScrollFrame)
+        LanFunc.StripTextures(QuestLogDetailScrollFrame)
+        LanFunc.StripTextures(QuestLogFrameInset)
+        LanFunc.StripTextures(QuestNPCModel)
+        LanFunc.StripTextures(QuestNPCModelTextFrame)
+        LanFunc.Skin(QNBD, 12)
 		--GossipFrame:GetRegions():Hide()
 		for i = 1, 6 do
 			for j = 1, 3 do
@@ -424,9 +399,8 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 		end
 		FriendsFrameTitleText:Hide()
 		SpellBookFramePortrait:Hide()
-		PVPFramePortrait:Hide()
-		PVPHonorFrameBGTex:Hide()
---~ 		LFRParentFrameIcon:Hide()
+-- 		LanFunc.Skin(PVPUIFrame, 12)
+
 		for i = 1, 5 do
 			select(i, MailFrame:GetRegions()):Hide()
 		end
@@ -480,7 +454,7 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 			select(i, FriendsFrameBroadcastInput:GetRegions()):Hide()
 			select(i, HelpFrameKnowledgebaseSearchBox:GetRegions()):Hide()
 		end
-		select(3, PVPBannerFrame:GetRegions()):Hide()
+-- 		select(3, PVPBannerFrame:GetRegions()):Hide()
 		for i = 1, 9 do
 			select(i, HelpFrame:GetRegions()):Hide()
 		end
@@ -523,7 +497,7 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 		end	
 
 		_G['ReadyCheckFrame']:HookScript('OnShow', function(self) if UnitIsUnit('player', self.initiator) then self:Hide() end end)
-
+    
 		-- [[ Loot ]]
 
 		if not IsAddOnLoaded('Butsu') and not IsAddOnLoaded('XLoot') and not IsAddOnLoaded('Tukui') then
@@ -710,7 +684,7 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 		hooksecurefunc('SpellButton_UpdateButton', newspellbookcolor)
 		hooksecurefunc('FormatProfession', newprofcolor)
 		hooksecurefunc('UpdateProfessionButton', newprofbuttoncolor)
-		
+	
 		-- [[ Change positions ]]
 
 		ChatConfigFrameDefaultButton:SetWidth(125)
@@ -786,7 +760,7 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 
 		OpenMailReplyButton:ClearAllPoints()
 		OpenMailReplyButton:SetPoint('RIGHT', OpenMailDeleteButton, 'LEFT', -1, 0)
-
+    
 		-- [[ Tabs ]]
 
 		for i = 1, 5 do
@@ -801,12 +775,10 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 		end
 
 		for i = 1, 3 do
-			LanSkin.CreateTab(_G['PVPFrameTab'..i])
 			LanSkin.CreateTab(_G['WorldStateScoreFrameTab'..i])
 		end
 
 		for i = 1, 2 do
---~ 			LanSkin.CreateTab(_G['LFRParentFrameTab'..i])
 			LanSkin.CreateTab(_G['MerchantFrameTab'..i])
 			LanSkin.CreateTab(_G['MailFrameTab'..i])
 		end
@@ -916,8 +888,7 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 				print('Button '..i..' was not found.')
 			end
 		end
-
-		LanSkin.Reskin(select(6, PVPBannerFrame:GetChildren()))
+-- 		LanSkin.Reskin(select(6, PVPBannerFrame:GetChildren()))
 
 	-- [[ Load on Demand Addons ]]
 
@@ -967,13 +938,7 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 		LanSkin.CreateSD(AuctionBD)
 		LanSkin.CreateBD(AuctionProgressFrame)
 		LanSkin.CreateSD(AuctionProgressFrame)
---~ 		AuctionDressUpFrame:ClearAllPoints()
---~ 		AuctionDressUpFrame:SetPoint('LEFT', AuctionFrame, 'RIGHT', 10, 0)
---~ 		AuctionDressUpFrameCloseButton:ClearAllPoints()
---~ 		AuctionDressUpFrameCloseButton:SetPoint('TOPRIGHT', AuctionDressUpModel, 'TOPRIGHT')
---~ 		LanSkin.CreateBD(AuctionDressUpFrame)
 		LanSkin.CreateBD(BrowseName, .25)
---~ 		LanSkin.CreateSD(AuctionDressUpFrame)
 
 		local ABBD = CreateFrame('Frame', nil, AuctionProgressBar)
 
@@ -991,9 +956,6 @@ Skin:SetScript('OnEvent', function(self, event, addon)
         
 		select(2, AuctionProgressBar:GetRegions()):Hide()
         
---~ 		for i = 1, 4 do
---~ 			select(i, AuctionDressUpFrame:GetRegions()):Hide()
---~ 		end
 		for i = 4, 8 do
 			select(i, BrowseName:GetRegions()):Hide()
 		end
@@ -1012,7 +974,6 @@ Skin:SetScript('OnEvent', function(self, event, addon)
             'BidBuyoutButton',
             'BidCloseButton',
             'AuctionsCloseButton',
---~             'AuctionDressUpFrameResetButton',
             'AuctionsCancelAuctionButton',
             'AuctionsCreateAuctionButton',
             'AuctionsNumStacksMaxButton',
@@ -1685,7 +1646,6 @@ MainMenuExpBar:SetWidth(511)
 MainMenuExpBar.SetWidth = LanFunc.dummy
 MainMenuExpBar.SetPoint = LanFunc.dummy
 
---~ CreateBorder(MainMenuExpBar, 12, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2)
 MainMenuExpBar:CreateBeautyBorder(12, 1, 1, 1, 1)
 
 local buttons = {

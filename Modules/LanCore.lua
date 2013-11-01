@@ -4,7 +4,7 @@ if LanConfig.Tweaks.AutoDEGreed == true then
      
     f:RegisterEvent('START_LOOT_ROLL')
     f:SetScript('OnEvent', function(_, _, id)
-        if ((UnitLevel('player') < 85)) then
+        if ((UnitLevel('player') < 90)) then
             return
         else
             if not id then return end -- What the fuck?
@@ -30,8 +30,6 @@ end
 
 TicketStatusFrame:ClearAllPoints()
 TicketStatusFrame:SetPoint('BOTTOMRIGHT', UIParent, 0, 0)
-
-WorldMapShowDigSites:HookScript('OnShow', function(self) self:Hide() end)
 
 -- Custodial Stuff :P
 local eventCount = 0
@@ -117,3 +115,113 @@ end)
 hooksecurefunc(GameMenuFrame, 'Hide', function()
     securecall('UIFrameFadeOut', sh, 0.235, sh:GetAlpha(), 0)
 end)
+
+-- Raid Faker
+SlashCmdList['RAIDFAKER'] = function()
+    local RAIDMEMBER = 25;
+
+    local allClasses = { "WARRIOR", "ROGUE", "PRIEST", "SHAMAN", "DEATHKNIGHT", "HUNTER", "PALADIN", "MAGE", "WARLOCK", "DRUID" };
+    local simParty = {};
+    for i=1, 4, 1 do
+        simParty[i] = {};
+        simParty[i].class = allClasses[math.floor(math.random()*10)+1]
+        simParty[i].name = "Party #"..i;
+        simParty["party"..i] = simParty[i];
+    end
+    for i=1, (RAIDMEMBER-1), 1 do
+        simParty[i] = {};
+        simParty[i].class = allClasses[math.floor(math.random()*10)+1];
+        simParty[i].name = "Raid #"..i;
+        simParty[i].subGroup = math.floor((i-1)/5)+1;
+        simParty["raid"..i] = simParty[i];
+    end
+
+    local OriginalUnitClass = UnitClass
+    function UnitClass(unit)
+        if ( unit == "raid"..RAIDMEMBER ) then
+            return OriginalUnitClass("player");
+        elseif ( simParty[unit] ) then
+            return simParty[unit].class, simParty[unit].class;
+        end
+        return OriginalUnitClass(unit);
+    end
+
+    local OriginalUnitName = UnitName
+    function UnitName(unit)
+        if ( unit == "raid"..RAIDMEMBER ) then
+            return OriginalUnitName("player");
+        elseif ( simParty[unit] ) then
+            return simParty[unit].name;
+        end
+        return OriginalUnitName(unit);
+    end
+
+    local OriginalUnitIsUnit = UnitIsUnit
+    function UnitIsUnit(u1,u2)
+        if ( ( u1 == "raid"..RAIDMEMBER and u2 == "player" ) or ( u1 == "player" and u2 == "raid"..RAIDMEMBER ) ) then
+            return true;
+        end
+        return OriginalUnitIsUnit(u1, u2);
+    end
+
+    local OriginalUnitHealth = UnitHealth
+    function UnitHealth(unit)
+        if ( unit == "raid"..RAIDMEMBER ) then
+            return OriginalUnitHealth("player");
+        elseif ( simParty[unit] ) then
+            return simParty[unit].health;
+        end
+        return OriginalUnitHealth(unit);
+    end
+
+    local OriginalUnitHealthMax = UnitHealthMax
+    function UnitHealthMax(unit)
+        if ( unit == "raid"..RAIDMEMBER ) then
+            return OriginalUnitHealthMax("player");
+        elseif ( simParty[unit] ) then
+            return simParty[unit].maxhealth;
+        end
+        return OriginalUnitHealthMax(unit);
+    end
+
+    local OriginalUnitPower = UnitPower
+    function UnitPower(unit, type)
+        if ( unit == "raid"..RAIDMEMBER ) then
+            return OriginalUnitPower("player", type);
+        elseif ( simParty[unit] ) then
+            return simParty[unit].power, 0;
+        end
+        return OriginalUnitPower(unit, type);
+    end
+
+    local OriginalUnitPowerMax = UnitPowerMax
+    function UnitPowerMax(unit, type)
+        if ( unit == "raid"..RAIDMEMBER ) then
+            return OriginalUnitPowerMax("player", type);
+        elseif ( simParty[unit] ) then
+            return simParty[unit].maxpower, 0;
+        end
+        return OriginalUnitPowerMax(unit, type);
+    end
+    UnitMana = UnitPower;
+    UnitManaMax = UnitPowerMax;
+
+    function GetNumRaidMembers()
+        return RAIDMEMBER;
+    end
+
+    function IsRaidLeader()
+        return true;
+    end
+
+    function GetRaidRosterInfo(unit)
+        if ( unit == RAIDMEMBER ) then
+            local _,cls=UnitClass("player")
+            return UnitName("player"), 2, (math.floor((RAIDMEMBER-1)/5)+1), 80, cls, cls, "", true, false, nil, nil;
+        elseif ( simParty[unit] ) then
+            return simParty[unit].name, 0, simParty[unit].subGroup, 80, simParty[unit].class, simParty[unit].class, "", true, false, nil, nil;
+        end
+        return nil;
+    end
+end
+SLASH_RAIDFAKER1 = "/faker"

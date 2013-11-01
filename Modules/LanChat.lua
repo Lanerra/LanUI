@@ -179,8 +179,6 @@ ChatTypeInfo['GUILD'].sticky = 1
 ChatTypeInfo['OFFICER'].sticky = 1
 ChatTypeInfo['PARTY'].sticky = 1
 ChatTypeInfo['RAID'].sticky = 1
-ChatTypeInfo['BATTLEGROUND'].sticky = 1
-ChatTypeInfo['BATTLEGROUND_LEADER'].sticky = 1
 ChatTypeInfo['WHISPER'].sticky = 0
 
 local AddMessage = ChatFrame1.AddMessage
@@ -240,7 +238,6 @@ hooksecurefunc('ChatEdit_UpdateHeader', function(editbox)
 			end
 		else
 			ChatFrame1EditBox:SetBeautyBorderColor(ChatTypeInfo[type].r, ChatTypeInfo[type].g, ChatTypeInfo[type].b)
---~ 			ChatFrame1EditBox:SetBackdropColor(ChatTypeInfo[type].r/10, ChatTypeInfo[type].g/10, ChatTypeInfo[type].b/10, 0.75)
 		end
 	else
 		ChatFrame1EditBox:SetBeautyBorderColor(1, 1, 1)

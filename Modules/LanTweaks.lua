@@ -43,6 +43,16 @@ collapseButton:HookScript('OnClick', function()
     end
 end)
 
+hooksecurefunc("SetItemButtonTexture", function(button, texture)
+    if button:GetName():match("WatchFrameItem%d+") and not button.skinned then
+        local icon, border = _G[button:GetName() .. "IconTexture"], _G[button:GetName() .. "NormalTexture"]	
+        button:SetSize(32, 32)      
+		button:CreateBeautyBorder(12)
+		border:SetAlpha(0)
+        button.skinned = true
+    end
+end)
+
 ---------------------
 -- Quest modification
 ---------------------
@@ -128,12 +138,12 @@ LanQuest.eventFrame:SetScript('OnEvent', function(self, event, ...)
 
     end
 
-    if (UnitLevel('player') == 85) then
---~         if event == 'QUEST_DETAIL' then
---~             AcceptQuest()
---~             CompleteQuest()
---~         elseif event == 'QUEST_COMPLETE' then
-        if event == 'QUEST_COMPLETE' then
+    if (UnitLevel('player') == 90) then
+        if event == 'QUEST_DETAIL' then
+            AcceptQuest()
+            CompleteQuest()
+        elseif event == 'QUEST_COMPLETE' then
+--~         if event == 'QUEST_COMPLETE' then
             if GetNumQuestChoices() and GetNumQuestChoices() < 1 then
                 GetQuestReward()
             else

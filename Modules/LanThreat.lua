@@ -1,4 +1,4 @@
-local round_off = true            -- Should we leave 2 decimal places, or round the threat off?  This is for display only, internally the values will retain their precision.
+local round_off = true -- Should we leave 2 decimal places, or round the threat off?  This is for display only, internally the values will retain their precision.
 
 raid_threat = {}
 local display_frame = CreateFrame("Frame", "LanThreat", UIParent)

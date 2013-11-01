@@ -1,8 +1,6 @@
 _G["LootFrame"]:GetRegions():Hide()
 
 local LootBG = CreateFrame('Frame', nil, _G["LootFrame"])
---LootBG:SetPoint('TOPLEFT', 0, 0)
---LootBG:SetPoint('RIGHT', 0, 0)
 LootBG:SetPoint('TOPLEFT')
 LootBG:SetPoint('RIGHT')
 LootBG:SetFrameStrata("LOW")	
@@ -12,7 +10,6 @@ LootBG:SetBackdrop({
 })
 LootBG:SetBackdropColor(LanConfig.Media.BackdropColor)
 
---LootBG:CreateBeautyBorder(12, R, G, B, -4)
 LootBG:CreateBeautyBorder(12, R, G, B, 1)
 
 for i = 1, 4 do
@@ -49,7 +46,7 @@ f:SetScript("OnEvent", function(self, event, id, rollType)
 end)
 
 StaticPopupDialogs["LOOT_BIND"].OnCancel = function(self, slot)
-	if GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0 then ConfirmLootSlot(slot) end
+	if GetNumGroupMembers() == 0 and GetNumRaidMembers() == 0 then ConfirmLootSlot(slot) end
 end
 
 local TEST = false

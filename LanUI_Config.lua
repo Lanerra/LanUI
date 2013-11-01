@@ -1,6 +1,23 @@
 LanConfig = {
     FirstTime = false, -- How sweet! Fresh meat!
     
+    nMinimap = {
+        tab = {
+            show = true,
+            showAlways = false,
+
+            alphaMouseover = 1,
+            alphaNoMouseover = 0.5,
+
+            showBelowMinimap = true,
+        },
+
+        mouseover = {
+            zoneText = true,
+            instanceDifficulty = false,
+        },
+    },
+    
     Media = {
         Font = [[Interface\Addons\LanUI\Media\Expressway.ttf]], -- Default font
         FontSize = 15,
@@ -9,7 +26,7 @@ LanConfig = {
         DebuffBorder = [[Interface\Addons\LanUI\Media\textureDebuff]], -- Debuff border texture
         OverlayBorder = [[Interface\Addons\LanUI\Media\textureOverlay]], -- Overlay border for other elements
         Backdrop = [[Interface\BUTTONS\WHITE8X8]], -- Background texture for panels/skinning
-        BackdropColor = {0, 0, 0, 0.75}, -- Background color for panels/skinning
+        BackdropColor = {0, 0, 0, 0.5}, -- Background color for panels/skinning
     },
     Panels = {
         ABPanel = true, -- Panel for action bars

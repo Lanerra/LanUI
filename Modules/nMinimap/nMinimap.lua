@@ -20,25 +20,6 @@ MiniMapMailFrame.Text:SetPoint('BOTTOMRIGHT', MiniMapMailFrame)
 MiniMapMailFrame.Text:SetTextColor(1, 0, 1)
 MiniMapMailFrame.Text:SetText('N')
 
-   -- modify the battlefield frame
---~    
---~ MiniMapBattlefieldFrame:ClearAllPoints()
---~ MiniMapBattlefieldFrame:SetPoint('BOTTOMLEFT', Minimap, 5, 5)
---~ MiniMapBattlefieldFrame:SetSize(14, 14)
-
---~ hooksecurefunc(MiniMapBattlefieldFrame, 'Show', function()
---~     MiniMapBattlefieldIcon:SetTexture(nil)
---~     MiniMapBattlefieldBorder:SetTexture(nil)
---~     BattlegroundShine:SetTexture(nil)
---~ end)
-
---~ MiniMapBattlefieldFrame.Text = MiniMapBattlefieldFrame:CreateFontString(nil, 'OVERLAY')
---~ MiniMapBattlefieldFrame.Text:SetParent(MiniMapBattlefieldFrame)
---~ MiniMapBattlefieldFrame.Text:SetFont(LanConfig.Media.Font, 15, 'OUTLINE')
---~ MiniMapBattlefieldFrame.Text:SetPoint('BOTTOMLEFT', MiniMapBattlefieldFrame)
---~ MiniMapBattlefieldFrame.Text:SetTextColor(0, 0.75, 1)
---~ MiniMapBattlefieldFrame.Text:SetText('P')
-
     -- hide all unwanted things
     
 MinimapZoomIn:Hide()
