@@ -1,3 +1,4 @@
+local F, C, G = unpack(select(2, ...))
     
     -- a 'new' mail notification    
 
@@ -15,7 +16,7 @@ end)
 
 MiniMapMailFrame.Text = MiniMapMailFrame:CreateFontString(nil, 'OVERLAY')
 MiniMapMailFrame.Text:SetParent(MiniMapMailFrame)
-MiniMapMailFrame.Text:SetFont(LanConfig.Media.Font, 15, 'OUTLINE')
+MiniMapMailFrame.Text:SetFont(C.Media.Font, 15, 'OUTLINE')
 MiniMapMailFrame.Text:SetPoint('BOTTOMRIGHT', MiniMapMailFrame)
 MiniMapMailFrame.Text:SetTextColor(1, 0, 1)
 MiniMapMailFrame.Text:SetText('N')
@@ -100,7 +101,7 @@ TicketStatusFrame:SetPoint('BOTTOMRIGHT', UIParent, 0, 0)
 
 TicketStatusFrameButton:HookScript('OnShow', function(self)
 	self:SetBackdrop({
-        bgFile = LanConfig.Media.Backdrop, 
+        bgFile = C.Media.Backdrop, 
         insets = {
             left = 3, 
             right = 3, 
@@ -108,7 +109,7 @@ TicketStatusFrameButton:HookScript('OnShow', function(self)
             bottom = 3
         }
     })
-    self:SetBackdropColor(LanConfig.Media.BackdropColor)
+    self:SetBackdropColor(C.Media.BackdropColor)
     self:CreateBeautyBorder(12)
 end)
 

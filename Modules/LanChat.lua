@@ -1,3 +1,4 @@
+local F, C, G = unpack(select(2, ...))
 
 CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1.0
 CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 1.0     -- set to 0 if u want to hide the tabs when no mouse is over them or the chat
@@ -56,10 +57,10 @@ local function SkinFrame(frame)
 	frame:SetPoint('TOPLEFT', frame.text, -10, 25)
 	frame:SetPoint('BOTTOMRIGHT', frame.text, 10, -10)
 	frame:SetBackdrop({
-        bgFile = LanConfig.Media.Backdrop,
+        bgFile = C.Media.Backdrop,
 		insets = {top = 1, left = 1, bottom = 1, right = 1},
 	})
-	frame:SetBackdropColor(unpack(LanConfig.Media.BackdropColor))
+	frame:SetBackdropColor(unpack(C.Media.BackdropColor))
     
 	frame:CreateBeautyBorder(12, 1, 1, 1)
     frame.sender = frame:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
@@ -232,17 +233,25 @@ hooksecurefunc('ChatEdit_UpdateHeader', function(editbox)
 			local id = GetChannelName(editbox:GetAttribute('channelTarget'))
 			if id == 0 then	
 				ChatFrame1EditBox:SetBeautyBorderColor(1, 1, 1)
-				ChatFrame1EditBox:SetBackdropColor(1/10, 1/10, 1/10, 0.75)
+				ChatFrame1EditBox:SetBackdropColor(1/10, 1/10, 1/10, 0.5)
+                SetTexture(ChatFrame1EditBox, 'white')
 			else 
 				ChatFrame1EditBox:SetBeautyBorderColor(ChatTypeInfo[type..id].r, ChatTypeInfo[type..id].g, ChatTypeInfo[type..id].b)
 				ChatFrame1EditBox:SetBackdropColor(ChatTypeInfo[type..id].r/10, ChatTypeInfo[type..id].g/10, ChatTypeInfo[type..id].b/10, 0.75)
+                SetTexture(ChatFrame1EditBox, 'white')
 			end
-		else
+		elseif (type == 'SAY') then
+            ChatFrame1EditBox:SetBeautyBorderColor(1, 1, 1)
+            ChatFrame1EditBox:SetBackdropColor(0, 0, 0, 0.5)
+            SetTexture(ChatFrame1EditBox, 'default')
+        else
 			ChatFrame1EditBox:SetBeautyBorderColor(ChatTypeInfo[type].r, ChatTypeInfo[type].g, ChatTypeInfo[type].b)
+            SetTexture(ChatFrame1EditBox, 'white')
 		end
 	else
 		ChatFrame1EditBox:SetBeautyBorderColor(1, 1, 1)
-		ChatFrame1EditBox:SetBackdropColor(0, 0, 0, 0.75)
+		ChatFrame1EditBox:SetBackdropColor(0, 0, 0, 0.5)
+        SetTexture(ChatFrame1EditBox, 'default')
 	end
 end)
 
@@ -316,16 +325,16 @@ for i = 1, NUM_CHAT_WINDOWS do
         chat.AddMessage = FCF_AddMessage
     end
     
-    LanFunc.Kill(_G['ChatFrame'..i..'ButtonFrame'])
+    _G['ChatFrame'..i..'ButtonFrame']:Kill()
     
-    local function SkinTab(tab)
+    --[[local function SkinTab(tab)
         if (not tab) then
             return
         end
 
         tab.backdrop = CreateFrame('Frame', nil, tab)
         
-        LanFunc.Skin(tab.backdrop, 12, 1)
+        F.Skin(tab.backdrop, 12, 1)
         
         tab.backdrop:SetFrameStrata('BACKGROUND')
         tab.backdrop:SetFrameLevel(_G['ChatFrame'..i]:GetFrameLevel() - 1)
@@ -336,13 +345,14 @@ for i = 1, NUM_CHAT_WINDOWS do
         local name = tab:GetName()
         _G[name..'Text']:ClearAllPoints()
         _G[name..'Text']:SetPoint('CENTER')
-        _G[name..'Text'].SetPoint = LanFunc.dummy
-    end
+        _G[name..'Text'].SetPoint = F.Dummy
+    end]]
     
     local tabText = _G['ChatFrame'..i..'TabText']
-    tabText:SetFont('Fonts\\ARIALN.ttf', 14, 'OUTLINE')
+    tabText:SetFont(C.Media.Font, 12)
     tabText:SetShadowOffset(0, 0)   -- (1, -1)
     tabText:SetJustifyH('CENTER')
+    tabText:SetPoint('CENTER', 0, 5)
     tabText:SetWidth(60)
 
     local tabGlow = _G['ChatFrame'..i..'TabGlow']
@@ -375,8 +385,8 @@ for i = 1, NUM_CHAT_WINDOWS do
         tabText:SetTextColor(r, g, b)
     end)
     
-    LanFunc.StripTextures(tab)
-    SkinTab(tab)
+    tab:StripTextures()
+    tab:SkinTab()
     
     local p1, frame, p2, x, y = tab:GetPoint()
     tab:SetPoint(p1, frame, p2, x, y + 1)
@@ -414,13 +424,13 @@ BNToastFrame:CreateBeautyBorder(12, 1, 1, 1)
 
 BNToastFrame:ClearAllPoints()
 BNToastFrame:SetPoint('BOTTOMLEFT', ChatFrame1, 'TOPLEFT', -5, 5)
-BNToastFrame.SetPoint = LanFunc.dummy
-BNToastFrame.SetAllPoints = LanFunc.dummy
-BNToastFrame.ClearAllPoints = LanFunc.dummy
+BNToastFrame.SetPoint = F.Dummy
+BNToastFrame.SetAllPoints = F.Dummy
+BNToastFrame.ClearAllPoints = F.Dummy
 BNToastFrameCloseButton:Hide()
 
 BNToastFrame:SetBackdrop({
-    bgFile = LanConfig.Media.Backdrop,
+    bgFile = C.Media.Backdrop,
     insets = { 
         left = 1, 
         right = 1, 
@@ -428,11 +438,11 @@ BNToastFrame:SetBackdrop({
         bottom = 1 
     },
 })
-BNToastFrame:SetBackdropColor(unpack(LanConfig.Media.BackdropColor))
-BNToastFrame.SetBackdrop = LanFunc.dummy
-BNToastFrame.SetBackdropColor = LanFunc.dummy
-BNToastFrameTopLine:SetFont(LanConfig.Media.Font, 12, nil)
-BNToastFrameBottomLine:SetFont(LanConfig.Media.Font, 12, nil)
+BNToastFrame:SetBackdropColor(unpack(C.Media.BackdropColor))
+BNToastFrame.SetBackdrop = F.Dummy
+BNToastFrame.SetBackdropColor = F.Dummy
+BNToastFrameTopLine:SetFont(C.Media.Font, 12, nil)
+BNToastFrameBottomLine:SetFont(C.Media.Font, 12, nil)
 
 FriendsMicroButton:Hide()
 FriendsMicroButton.Show = FriendsMicroButton.Hide
@@ -449,22 +459,22 @@ x:SetScript('OnEvent', function()
     ChatFrame3Tab:SetHeight(24)
 
     ChatFrame1Tab:ClearAllPoints()
-    ChatFrame1Tab.ClearAllPoints = LanFunc.dummy
+    ChatFrame1Tab.ClearAllPoints = F.Dummy
     ChatFrame1Tab:SetPoint('TOPLEFT', ChatFrame1, 'BOTTOMLEFT', -5, -7)
-    ChatFrame1Tab.SetPoint = LanFunc.dummy
+    ChatFrame1Tab.SetPoint = F.Dummy
 
     ChatFrame3Tab:ClearAllPoints()
-    ChatFrame3Tab.ClearAllPoints = LanFunc.dummy
+    ChatFrame3Tab.ClearAllPoints = F.Dummy
     ChatFrame3Tab:SetPoint('TOPRIGHT', ChatFrame3, 'BOTTOMRIGHT', 5, -7)
-    ChatFrame3Tab.SetPoint = LanFunc.dummy
+    ChatFrame3Tab.SetPoint = F.Dummy
     FCF_SavePositionAndDimensions(DEFAULT_CHAT_FRAME)
     
     ChatFrame1Tab:SetAlpha(1)
-    ChatFrame1Tab.SetAlpha = LanFunc.dummy
+    ChatFrame1Tab.SetAlpha = F.Dummy
     ChatFrame2Tab:SetAlpha(1)
-    ChatFrame2Tab.SetAlpha = LanFunc.dummy
+    ChatFrame2Tab.SetAlpha = F.Dummy
     ChatFrame3Tab:SetAlpha(1)
-    ChatFrame3Tab.SetAlpha = LanFunc.dummy
+    ChatFrame3Tab.SetAlpha = F.Dummy
     
     ChatFrame1EditBox:Hide()
     ChatFrame2Tab:Hide()

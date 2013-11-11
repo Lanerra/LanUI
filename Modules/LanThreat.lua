@@ -1,3 +1,5 @@
+local F, C, G = unpack(select(2, ...))
+
 local round_off = true -- Should we leave 2 decimal places, or round the threat off?  This is for display only, internally the values will retain their precision.
 
 raid_threat = {}
@@ -276,7 +278,7 @@ local function MakeDisplay()
     f.texture:SetDrawLayer("BACKGROUND")
 
     f.titletext = f:CreateFontString(nil, "ARTWORK")
-    f.titletext:SetFont(LanConfig.Media.Font, 11)
+    f.titletext:SetFont(C.Media.Font, 11)
     f.titletext:SetText("Threat")
     f.titletext:SetPoint("TOP", f, "TOP", 0, -5)
 
@@ -289,7 +291,7 @@ local function MakeDisplay()
         f.bars[i]:SetMinMaxValues(0, 1)
         f.bars[i]:SetOrientation("HORIZONTAL")
         f.bars[i]:SetStatusBarColor(1, 1, 1, 0.8)
-        f.bars[i]:SetStatusBarTexture(LanConfig.Media.StatusBar)
+        f.bars[i]:SetStatusBarTexture(C.Media.StatusBar)
         if i == 1 then
             f.bars[i]:SetPoint("TOP", f.titletext, "BOTTOM", 0, -2)
         else
@@ -297,11 +299,11 @@ local function MakeDisplay()
             f.bars[i]:SetPoint("TOPRIGHT", f.bars[i-1], "BOTTOMRIGHT", 0, -1)
         end
         f.bars[i].lefttext = f.bars[i]:CreateFontString(nil, "ARTWORK")
-        f.bars[i].lefttext:SetFont(LanConfig.Media.Font, 11)
+        f.bars[i].lefttext:SetFont(C.Media.Font, 11)
         f.bars[i].lefttext:SetPoint("LEFT", f.bars[i], "LEFT", 2, 0)
         f.bars[i].lefttext:Show()
         f.bars[i].righttext = f.bars[i]:CreateFontString(nil, "ARTWORK")
-        f.bars[i].righttext:SetFont(LanConfig.Media.Font, 11)
+        f.bars[i].righttext:SetFont(C.Media.Font, 11)
         f.bars[i].righttext:SetPoint("RIGHT", f.bars[i], "RIGHT", -2, 0)
         SetBarValues(i)
     end

@@ -1,3 +1,5 @@
+local F, C, G = unpack(select(2, ...))
+
 --------------------------------------------------------------------
 -- GOLD
 --------------------------------------------------------------------
@@ -12,7 +14,7 @@ GoldFrame:SetFrameLevel(3)
 GoldFrame:SetPoint('BOTTOM', UIParent, 0, 3)
 
 local Gold = GoldFrame:CreateFontString(nil, "OVERLAY")
-Gold:SetFont(LanConfig.Media.Font, 8)
+Gold:SetFont(C.Media.Font, 8)
 Gold:SetParent(GoldFrame)
 Gold:SetHeight(12)
 Gold:SetWidth(40)

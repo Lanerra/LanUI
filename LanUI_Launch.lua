@@ -1,8 +1,10 @@
+local F, C, G = unpack(LanUI)
+
 local f = CreateFrame('Frame')
 f:RegisterEvent('PLAYER_LOGIN')
 f:SetScript('OnEvent', function(_, event, ...)
     if (event == 'PLAYER_LOGIN') then
-	    if LanConfig.FirstTime == true then
+	    if C.FirstTime == true then
 	        print('|cff0099ffWelcome to LanUI|r')
 		    print('|cff0099ffIf you find a bug, please let me know via GitHub|r')
 		    print('|cff0099ffFor UI usage info type in /UIHelp|r')
@@ -50,11 +52,11 @@ f:SetScript('OnEvent', function(_, event, ...)
 	    		
 	    SetCVar('bloatthreat', 0) -- Don't make nameplates larger or smaller as threat changes
 		
-		if LanConfig.Tweaks.Sticky == true then
+		if C.Tweaks.Sticky == true then
 		    SetCVar('deselectOnClick', 1) -- Allow clearing of our target by clicking on the world
 		end
 
-		if LanConfig.Tweaks.LanNames == true then -- Personal name display preferences
+		if C.Tweaks.LanNames == true then -- Personal name display preferences
 		    SetCVar('UnitNameOwn', 0) -- I know my own name, thanks
 	        SetCVar('UnitNameNPC', 0) -- Don't show NPC names
 	        SetCVar('UnitNameNonCombatCreatureName', 0) -- Don't need to know critter names, either
@@ -70,7 +72,7 @@ f:SetScript('OnEvent', function(_, event, ...)
 	        SetCVar('UnitNameEnemyTotemName', 0) -- Or your totems :P
 		end
 		
-		if LanConfig.Tweaks.LanNameplates == true then -- Personal nameplate display preferences
+		if C.Tweaks.LanNameplates == true then -- Personal nameplate display preferences
 	        SetCVar('nameplateShowFriends', 0) -- Don't display for friends
 	        SetCVar('nameplateShowFriendlyPets', 0) -- Or friends' pets
 	        SetCVar('nameplateShowFriendlyGuardians', 0) -- Or guardians
@@ -81,7 +83,7 @@ f:SetScript('OnEvent', function(_, event, ...)
 	        SetCVar('nameplateShowEnemyTotems', 0) -- Or totems
 		end
 
-		if LanConfig.Tweaks.ChatSetup == true then -- Auto configure chat frames when you make a new character/make sure chat frames don't get messed up
+		if C.Tweaks.ChatSetup == true then -- Auto configure chat frames when you make a new character/make sure chat frames don't get messed up
 		    ChatFrame1:ClearAllPoints()
 	        ChatFrame1:SetPoint('BOTTOMLEFT', UIParent, 33, 59)
 	        ChatFrame1:SetHeight(150)

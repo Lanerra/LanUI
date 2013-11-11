@@ -1,31 +1,31 @@
-if LanConfig.Panels.ABPanel == true then
-	local ABPanel = CreateFrame('Frame', 'ABPanel', UIParent)
-	
-	ABPanel:SetPoint('TOPLEFT', ActionButton1, -7, 5)
-    ABPanel:SetPoint('BOTTOMRIGHT', MultiBarBottomLeftButton12, 7, -5)
-    ABPanel:SetFrameStrata('BACKGROUND')
-	
-	LanFunc.Skin(ABPanel, 12, 1)
+local F, C, G = unpack(select(2, ...))
+
+if C.ActionBars.Bar2 == true then
+    if C.Panels.ABPanel == true then
+        local ABPanel = CreateFrame('Frame', 'ABPanel', UIParent)
+    
+        ABPanel:SetPoint('TOPLEFT', ActionButton1, -6, 5)
+        ABPanel:SetPoint('BOTTOMRIGHT', MultiBarBottomLeftButton12, 6, -5)
+        ABPanel:SetFrameStrata('BACKGROUND')
+        
+        ABPanel:SetTemplate()
+    end
+else
+    return
 end
 
-if LanConfig.Panels.BP == true then
+if C.Panels.BP == true then
     local BottomPanel = CreateFrame('Frame', 'BottomPanel', UIParent)
 	
-    BottomPanel:SetPoint('BOTTOM', 0, -2)
+    BottomPanel:SetPoint('BOTTOM', 0, -4)
 	BottomPanel:SetFrameStrata('LOW')
-    BottomPanel:SetHeight(22)
+    BottomPanel:SetHeight(24)
     BottomPanel:SetWidth(2000)
 
-    LanFunc.Skin(BottomPanel, 12, 1)
-    	
-    if LanConfig.Panels.BPClass == true then
-        BottomPanel:SetBackdropColor(LanFunc.playerColor.r*0.8, LanFunc.playerColor.g*0.8, LanFunc.playerColor.b*0.8, 0.9)
-    else
-        BottomPanel:SetBackdropColor(unpack(LanConfig.Media.BackdropColor))
-    end
+    BottomPanel:SetTemplate()
 end
 
-if LanConfig.Panels.TP == true then
+if C.Panels.TP == true then
     local TopPanel = CreateFrame('Frame', 'TopPanel', UIParent)
 	
     TopPanel:SetPoint('TOP', 0, 2)
@@ -34,11 +34,5 @@ if LanConfig.Panels.TP == true then
     TopPanel:SetHeight(18)
     TopPanel:SetWidth(2000)
 
-    LanFunc.Skin(TopPanel, 12, 1)
-	
-    if LanConfig.Panels.TPClass == true then
-        TopPanel:SetBackdropColor(LanFunc.playerColor.r*0.8, LanFunc.playerColor.g*0.8, LanFunc.playerColor.b*0.8, 0.8)
-    else
-        TopPanel:SetBackdropColor(unpack(LanConfig.Media.BackdropColor))
-    end
+    TopPanel:SetTemplate()
 end

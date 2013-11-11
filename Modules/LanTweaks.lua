@@ -1,57 +1,63 @@
+local F, C, G = unpack(select(2, ...))
+
 local _, LanQuest = ...
 
-local dummy = LanFunc.dummy
+local dummy = F.Dummy
 
 -------------------
 -- Setup WatchFrame
 -------------------
 
-local height = GetScreenHeight() / 1.6
+if IsAddOnLoaded('Carbonite') then
+    select(5, NxQuestWatch:GetChildren()):SetTemplate()
+else
+    local height = GetScreenHeight() / 1.6
 
-local watchFrame = _G['WatchFrame']
-watchFrame:SetHeight(height)
-watchFrame:ClearAllPoints()	
-watchFrame.ClearAllPoints = LanFunc.dummy
-watchFrame:SetPoint('TOP', Minimap, 'BOTTOM', 0, -30)
-watchFrame.SetPoint = LanFunc.dummy
-watchFrame:SetScale(1.01)
-LanFunc.Skin(watchFrame, 12, 1)
+    local watchFrame = _G['WatchFrame']
+    watchFrame:SetHeight(height)
+    watchFrame:ClearAllPoints()	
+    watchFrame.ClearAllPoints = F.Dummy
+    watchFrame:SetPoint('TOP', Minimap, 'BOTTOM', 0, -30)
+    watchFrame.SetPoint = F.Dummy
+    watchFrame:SetScale(1.01)
+    watchFrame:SetTemplate()
 
-local watchHead = _G['WatchFrameHeader']
-local p1, frame, p2, x, y = watchHead:GetPoint()
-watchHead:SetPoint(p1, frame, p2, x + 6, y)
+    local watchHead = _G['WatchFrameHeader']
+    local p1, frame, p2, x, y = watchHead:GetPoint()
+    watchHead:SetPoint(p1, frame, p2, x + 6, y)
 
-local p1, frame, p2, x, y = nil
+    local p1, frame, p2, x, y = nil
 
-local watchLines = _G['WatchFrameLines']
-local p1, frame, p2, x, y = watchLines:GetPoint()
-watchLines:SetPoint(p1, frame, p2, x + 6, y)
+    local watchLines = _G['WatchFrameLines']
+    local p1, frame, p2, x, y = watchLines:GetPoint()
+    watchLines:SetPoint(p1, frame, p2, x + 6, y)
 
-local watchHeadTitle = _G['WatchFrameTitle']
-watchHeadTitle:SetFont('Fonts\\ARIALN.ttf', 15)
-watchHeadTitle:SetTextColor(LanFunc.playerColor.r, LanFunc.playerColor.g, LanFunc.playerColor.b)
+    local watchHeadTitle = _G['WatchFrameTitle']
+    watchHeadTitle:SetFont('Fonts\\ARIALN.ttf', 15)
+    watchHeadTitle:SetTextColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
 
-local collapseButton = _G['WatchFrameCollapseExpandButton']
-collapseButton:ClearAllPoints()
-collapseButton:SetPoint('TOPRIGHT', watchFrame, -6, -6)
+    local collapseButton = _G['WatchFrameCollapseExpandButton']
+    collapseButton:ClearAllPoints()
+    collapseButton:SetPoint('TOPRIGHT', watchFrame, -6, -6)
 
-collapseButton:HookScript('OnClick', function()
-    if watchFrame.collapsed then
-        watchFrame:SetHeight(25)
-    else
-        watchFrame:SetHeight(height)
-    end
-end)
+    collapseButton:HookScript('OnClick', function()
+        if watchFrame.collapsed then
+            watchFrame:SetHeight(25)
+        else
+            watchFrame:SetHeight(height)
+        end
+    end)
 
-hooksecurefunc("SetItemButtonTexture", function(button, texture)
-    if button:GetName():match("WatchFrameItem%d+") and not button.skinned then
-        local icon, border = _G[button:GetName() .. "IconTexture"], _G[button:GetName() .. "NormalTexture"]	
-        button:SetSize(32, 32)      
-		button:CreateBeautyBorder(12)
-		border:SetAlpha(0)
-        button.skinned = true
-    end
-end)
+    hooksecurefunc("SetItemButtonTexture", function(button, texture)
+        if button:GetName():match("WatchFrameItem%d+") and not button.skinned then
+            local icon, border = _G[button:GetName() .. "IconTexture"], _G[button:GetName() .. "NormalTexture"]	
+            button:SetSize(32, 32)      
+            CreateBorderLight(button, 12)
+            border:SetAlpha(0)
+            button.skinned = true
+        end
+    end)
+end
 
 ---------------------
 -- Quest modification

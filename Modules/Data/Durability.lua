@@ -1,3 +1,4 @@
+local F, C, G = unpack(select(2, ...))
 
 local gradientColor = {
     1, 0, 0, 
@@ -20,22 +21,20 @@ local slotInfo = {
 
 local f = CreateFrame('Frame', 'DuraFrame')
 f:SetSize(99, 32)
-f:SetFrameStrata(PaperDollFrame:GetFrameStrata())
-f:SetFrameLevel(PaperDollFrame:GetFrameLevel() - 1)
+f:SetFrameStrata(CharacterFrame:GetFrameStrata())
+f:SetFrameLevel(CharacterFrame:GetFrameLevel() - 1)
 f:EnableMouse(false)
 f:SetScale(0.94)
 f:SetPoint('TOP', PaperDollFrame, 'BOTTOM', 170, 1)
-f:SetParent(PaperDollFrame)
+f:SetParent(CharacterFrame)
 f:RegisterEvent('PLAYER_ENTERING_WORLD')
 f:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
 f:RegisterEvent('MERCHANT_SHOW')
-LanFunc.Skin(f, 12, 1)
+f:SetTemplate()
 
 f.Text = f:CreateFontString(nil, 'OVERLAY')
 f.Text:SetFont('Fonts\\ARIALN.ttf', 13)
-f.Text:SetPoint('CENTER', f, 0, 3)
-f.Text:SetShadowColor(0, 0, 0, 0)
-f.Text:SetShadowOffset(1, -1)
+f.Text:SetPoint('CENTER', f)
 f.Text:SetParent(f)
 f.Text:SetJustifyH('CENTER')
 

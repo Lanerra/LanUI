@@ -1,8 +1,10 @@
+local F, C, G = unpack(select(2, ...))
+
 -------------------------------------------------------------------
 --  Author: Wimpface (waStats) modifyed by Game92 @ Wowinterface --
 -------------------------------------------------------------------
 
-if (LanConfig.Tweaks.StatsFrame) then
+if (C.Tweaks.StatsFrame) then
     local statsframe = CreateFrame('Frame', 'StatsTextFrame', UIParent)
     statsframe:SetHeight(25)
     statsframe:SetPoint('TOPLEFT', Minimap, 'BOTTOMLEFT', -4, -5)
@@ -12,8 +14,8 @@ if (LanConfig.Tweaks.StatsFrame) then
     statstext:SetPoint('CENTER', statsframe)
     statstext:SetHeight(10) 
     statstext:SetWidth(160)
-    statstext:SetFont(LanConfig.Media.Font, 18, 'THINOUTLINE')
-    statstext:SetTextColor(LanFunc.playerColor.r, LanFunc.playerColor.g, LanFunc.playerColor.b)
+    statstext:SetFont(C.Media.Font, 18, 'THINOUTLINE')
+    statstext:SetTextColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
 
     local colorlag = function(number)
         if number <= 100 then

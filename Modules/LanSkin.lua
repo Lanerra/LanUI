@@ -17,7 +17,7 @@ LanSkin.CreateBD = function(f, a)
             f:SetBackdrop({
                 bgFile = LanSkin.Backdrop,
             })
-            f:SetBackdropColor(0, 0, 0, a or .75)
+            f:SetBackdropColor(0, 0, 0, a or .5)
             f:SetBackdropBorderColor(0, 0, 0)
             
             f:CreateBeautyBorder(12, 1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 1)
@@ -28,14 +28,19 @@ LanSkin.CreateBD = function(f, a)
 end
 
 LanSkin.CreateSD = function(parent, size, r, g, b, alpha, offset)
-	local sd = CreateFrame('Frame', nil, parent)
+    local sd = CreateFrame('Frame', nil, parent)
+    
+    if not r then
+        r, g, b = 1, 1, 1
+    end
+    
 	sd:SetBackdrop({
 		edgeFile = LanSkin.Glow,
 	})
 	sd:SetBackdropBorderColor(0, 0, 0)
 	sd:SetAlpha(0)
 	
-    sd:CreateBeautyBorder(12, 1, 1, 1, 1, 2, 2, 2, 1, 1, 2, 1)
+    sd:CreateBeautyBorder(12, r, g, b, 1, 2, 2, 2, 1, 1, 2, 1)
 end
 
 LanSkin.CreatePulse = function(frame, speed, mult, alpha) -- pulse function originally by nightcracker
@@ -60,6 +65,8 @@ LanSkin.CreatePulse = function(frame, speed, mult, alpha) -- pulse function orig
 end
 
 LanSkin.CreateTab = function(f)
+    LanFunc.StripTextures(f)
+
 	local sd = CreateFrame('Frame', nil, f)
 	sd:SetBackdrop({
 		bgFile = LanSkin.Backdrop,
@@ -76,6 +83,8 @@ end
 LanSkin.Reskin = function(f)
 	local glow = CreateFrame('Frame', nil, f)
 	
+    --LanFunc.StripTextures(f)
+    
 	glow:SetBackdrop({
 		edgeFile = LanSkin.Glow,
 		edgeSize = 9,
@@ -85,7 +94,7 @@ LanSkin.Reskin = function(f)
 	glow:SetBackdropBorderColor(c.r, c.g, c.b)
 	glow:SetAlpha(0)
 	
-    f:CreateBeautyBorder(12, r, g, b)
+    f:CreateBeautyBorder(12)
 	
 	f:SetBeautyBorderColor(1, 1, 1)
 	
@@ -887,7 +896,6 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 				print('Button '..i..' was not found.')
 			end
 		end
--- 		LanSkin.Reskin(select(6, PVPBannerFrame:GetChildren()))
 
 	-- [[ Load on Demand Addons ]]
 
@@ -1053,7 +1061,7 @@ Skin:SetScript('OnEvent', function(self, event, addon)
 					select(j, _G['AchievementFrameTab'..i]:GetRegions()):Hide()
 					select(j, _G['AchievementFrameTab'..i]:GetRegions()).Show = LanFunc.dummy
 				end
-				local sd = CreateFrame('Frame', nil, _G['AchievementFrameTab'..i])
+				--[[local sd = CreateFrame('Frame', nil, _G['AchievementFrameTab'..i])
 				sd:SetPoint('TOPLEFT', 6, -4)
 				sd:SetPoint('BOTTOMRIGHT', -6, -2)
 				sd:SetFrameStrata('LOW')
@@ -1069,7 +1077,8 @@ Skin:SetScript('OnEvent', function(self, event, addon)
                         },
 					})
 				sd:SetBackdropColor(unpack(LanConfig.Media.BackdropColor))
-				sd:SetBackdropBorderColor(0, 0, 0)
+				sd:SetBackdropBorderColor(0, 0, 0)]]
+                LanSkin.CreateTab(_G['AchievementFrameTab'..i])
 			end
 		end
 	elseif addon == 'Blizzard_BindingUI' then

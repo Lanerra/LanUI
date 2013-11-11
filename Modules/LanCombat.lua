@@ -1,4 +1,6 @@
-﻿-- New combat log
+﻿local F, C, G = unpack(select(2, ...))
+
+-- New combat log
 local LanCombat = {}
 
 LanCombat.frame = CreateFrame("Frame", "LanCombat", UIParent)
@@ -67,7 +69,7 @@ LanCombat.frame.columns = {}
 for i = 1, 3 do
     local smf = CreateFrame("ScrollingMessageFrame", nil, LanCombat.frame)
     smf:SetMaxLines(1000)
-    smf:SetFont(LanConfig.Media.Font, 11)
+    smf:SetFont(C.Media.Font, 11)
     smf:SetSpacing(2)
     smf:SetFading(true)
     smf:SetFadeDuration(5)

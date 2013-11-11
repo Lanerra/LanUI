@@ -1,3 +1,5 @@
+local F, C, G = unpack(select(2, ...))
+
 _G["LootFrame"]:GetRegions():Hide()
 
 local LootBG = CreateFrame('Frame', nil, _G["LootFrame"])
@@ -5,10 +7,10 @@ LootBG:SetPoint('TOPLEFT')
 LootBG:SetPoint('RIGHT')
 LootBG:SetFrameStrata("LOW")	
 LootBG:SetBackdrop({
-    bgFile = LanConfig.Media.Backdrop,
+    bgFile = C.Media.Backdrop,
 	insets = {top = 1, left = 1, bottom = 1, right = 1},
 })
-LootBG:SetBackdropColor(LanConfig.Media.BackdropColor)
+LootBG:SetBackdropColor(C.Media.BackdropColor)
 
 LootBG:CreateBeautyBorder(12, R, G, B, 1)
 
@@ -118,7 +120,7 @@ local function Button_OnClick(self)
 end
 
 local backdrop = {
-	bgFile = LanConfig.Media.Backdrop,
+	bgFile = C.Media.Backdrop,
 	insets = {top = -1, left = -1, bottom = -1, right = -1},
 }
 
@@ -138,7 +140,7 @@ local function CreateRollFrame()
 		frame:SetPoint('TOP', frames[#frames], 'BOTTOM', 0, -12)
 	end
 	
-	frame:SetStatusBarTexture(LanConfig.Media.StatusBar)
+	frame:SetStatusBarTexture(C.Media.StatusBar)
 	frame:SetScript('OnUpdate', OnUpdate)
 	frame:SetScript('OnMouseUp', OnClick)
 	frame:RegisterEvent('CANCEL_LOOT_ROLL')
@@ -148,8 +150,8 @@ local function CreateRollFrame()
 	
 	frame.background = frame:CreateTexture('$parentBackground', 'BORDER')
 	frame.background:SetAllPoints()
-	frame.background:SetTexture(LanConfig.Media.Backdrop)
-	frame.background:SetVertexColor(unpack(LanConfig.Media.BackdropColor))
+	frame.background:SetTexture(C.Media.Backdrop)
+	frame.background:SetVertexColor(unpack(C.Media.BackdropColor))
 	
 	frame.button = {}
 
@@ -217,7 +219,7 @@ local function CreateRollFrame()
     iconframe:SetWidth(31)
 	iconframe:ClearAllPoints()
 	iconframe:SetBackdrop(backdrop)
-	iconframe:SetBackdropColor(unpack(LanConfig.Media.BackdropColor))
+	iconframe:SetBackdropColor(unpack(C.Media.BackdropColor))
 	iconframe:SetPoint('RIGHT', frame, 'LEFT', -8, 0)
 	
 	iconframe:CreateBeautyBorder(12, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2)

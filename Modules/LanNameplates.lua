@@ -17,9 +17,9 @@ local UnitChannelInfo = UnitChannelInfo
 local borderColor = {0.47, 0.47, 0.47}
 local noThreatColor = {0, 1, 0}
 
-local glowTexture = 'Interface\\AddOns\\LanUI\\media\\textureNewGlow'
-local overlayTexture = 'Interface\\AddOns\\LanUI\\media\\textureOverlayPlate'
-local whiteOverlay = 'Interface\\AddOns\\LanUI\\media\\textureIconOverlay'
+local glowTexture = 'Interface\\AddOns\\LanUI\\Media\\textureNewGlow'
+local overlayTexture = 'Interface\\AddOns\\LanUI\\Media\\textureOverlayPlate'
+local whiteOverlay = 'Interface\\AddOns\\LanUI\\Media\\textureIconOverlay'
 
 local f = CreateFrame('Frame', nil, UIParent)
 
@@ -305,6 +305,8 @@ local function SkinPlate(self, nameFrame)
         insets = { left = -1, right = -1, top = -1, bottom = -1 }
     })
     self.Health:SetBackdropColor(0, 0, 0, 0.55)
+    
+    self.Health:SetStatusBarTexture('Interface\\Addons\\oUF_Lanerra\\Media\\statusbarTexture.tga')
 
     self.Health:SetScript('OnValueChanged', function()
         UpdateHealthText(self)

@@ -1,3 +1,5 @@
+local F, C, G = unpack(select(2, ...))
+
 --[[
 	OmniCC Basic
     
@@ -8,7 +10,7 @@
 OmniCC = true                               -- hack to work around detection from other addons for OmniCC
 
 local FONT_COLOR = {1, 1, 1}
-local FONT_FACE, FONT_SIZE = 'Fonts\\ARIALN.ttf', 18 
+local FONT_FACE, FONT_SIZE = C.Media.Font, 18
 
 local MIN_DURATION = 2.5                    -- the minimum duration to show cooldown text for
 local DECIMAL_THRESHOLD = 2                 -- threshold in seconds to start showing decimals
@@ -115,7 +117,7 @@ local function Timer_Create(self)
     timer:SetScript('OnUpdate', Timer_OnUpdate)
 
     local text = timer:CreateFontString(nil, 'BACKGROUND ')
-    text:SetPoint('TOPLEFT', 1, -1)
+    text:SetPoint('CENTER')
     text:SetJustifyH("CENTER")
     timer.text = text
 

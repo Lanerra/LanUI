@@ -1,3 +1,5 @@
+local F, C, G = unpack(select(2, ...))
+
 for _, font in pairs({
 	
     _G['GameFontHighlight'],
@@ -9,7 +11,7 @@ for _, font in pairs({
 	_G['DialogButtonNormalText'],
 	
 }) do
-    font:SetFont(LanConfig.Media.Font, 12, 'THINOUTLINE')
+    font:SetFont(C.Media.Font, 12)
 end
 
 -- mail box font
@@ -21,7 +23,7 @@ for _, font in pairs({
 	_G['MailTextFontNormal'],
 	
 }) do
-   font:SetFont(LanConfig.Media.Font, 13, 'THINOUTLINE')
+   font:SetFont(C.Media.Font, 13)
    font:SetTextColor(1, 1, 1)
 end   
 
@@ -32,7 +34,7 @@ for _, font in pairs({
     _G['GameFontDisableSmall'],
 	
 }) do
-    font:SetFont(LanConfig.Media.Font, 11, 'THINOUTLINE')
+    font:SetFont(C.Media.Font, 11)
 end
 
 -- small font in the spell book.
@@ -42,7 +44,7 @@ for _, font in pairs({
 	_G['SubSpellFont'],
 	
 }) do
-    font:SetFont(LanConfig.Media.Font, 11, 'THINOUTLINE')
+    font:SetFont(C.Media.Font, 11)
 	font:SetTextColor(1, 1, 1)
 end	
 
@@ -51,7 +53,7 @@ for _, font in pairs({
 	_G['NumberFontNormalSmall'],
 	
 }) do
-    font:SetFont(LanConfig.Media.Font, 13, 'THINOUTLINE')
+    font:SetFont(C.Media.Font, 13)
 end
 
 for _, font in pairs({
@@ -60,7 +62,7 @@ for _, font in pairs({
     _G['MovieSubtitleFont'],
 	
 }) do
-    font:SetFont(LanConfig.Media.Font, 14, 'THINOUTLINE')
+    font:SetFont(C.Media.Font, 14)
 end	
 
 for _, font in pairs({
@@ -68,7 +70,7 @@ for _, font in pairs({
     _G['NumberFontNormal'],
 	
 }) do
-    font:SetFont(LanConfig.Media.Font, 14, 'THINOUTLINE')
+    font:SetFont(C.Media.Font, 14)
 end
 
 for _, font in pairs({
@@ -79,7 +81,7 @@ for _, font in pairs({
 	_G['GameFontNormalLarge'],
 	
 }) do
-    font:SetFont(LanConfig.Media.Font, 14, 'THINOUTLINE')
+    font:SetFont(C.Media.Font, 14)
 end
 
 for _, font in pairs({
@@ -90,7 +92,7 @@ for _, font in pairs({
 	_G['QuestLogTitleText'],
 	
 }) do
-   font:SetFont(LanConfig.Media.Font, 14, 'THINOUTLINE')
+   font:SetFont(C.Media.Font, 14)
    font:SetTextColor(1, 1, 1)
 end
 
@@ -100,7 +102,7 @@ for _, font in pairs({
     _G['QuestFont'],
 
 }) do
-   font:SetFont(LanConfig.Media.Font, 14, 'THINOUTLINE')
+   font:SetFont(C.Media.Font, 14)
    font:SetTextColor(1, 1, 1)
 end
 	
@@ -111,7 +113,7 @@ for _, font in pairs({
     _G['AchievementDateFont'],
 	
 }) do
-    font:SetFont(LanConfig.Media.Font, 12, 'THINOUTLINE')
+    font:SetFont(C.Media.Font, 12)
 end
  
 for _, font in pairs({
@@ -120,7 +122,7 @@ for _, font in pairs({
     _G['AchievementDescriptionFont'],
 
 }) do
-   font:SetFont(LanConfig.Media.Font, 12)
+   font:SetFont(C.Media.Font, 12)
    font:SetTextColor(1, 1, 1)
 end
 
@@ -133,7 +135,7 @@ for _, font in pairs({
     _G['PVPInfoTextFont'],
 	
 }) do
-   font:SetFont(LanConfig.Media.Font, 35, 'THINOUTLINE')
+   font:SetFont(C.Media.Font, 35)
 end	
 
 -- Friend List / Real ID
@@ -146,7 +148,7 @@ for _, font in pairs({
 	_G['FriendsFont_UserText'], 
 
 }) do
-   font:SetFont(LanConfig.Media.Font, 11, 'THINOUTLINE')
+   font:SetFont(C.Media.Font, 11)
 end
 
 -- Tooltip Font.
@@ -157,7 +159,7 @@ for _, font in pairs({
 
 
 }) do
-   font:SetFont(LanConfig.Media.Font, 15, 'THINOUTLINE')
+   font:SetFont(C.Media.Font, 15)
 end
 
 for _, font in pairs({
@@ -166,7 +168,7 @@ for _, font in pairs({
 
 
 }) do
-   font:SetFont(LanConfig.Media.Font, 12, 'THINOUTLINE')
+   font:SetFont(C.Media.Font, 12)
 end
 
 for _, font in pairs({
@@ -175,7 +177,7 @@ for _, font in pairs({
 
 
 }) do
-   font:SetFont(LanConfig.Media.Font, 11, 'THINOUTLINE')
+   font:SetFont(C.Media.Font, 11)
 end
 
 -- Bag Frame Money Font.
@@ -191,7 +193,7 @@ for _, font in pairs({
     
 
 }) do
-    font:SetFont(LanConfig.Media.Font, 14, 'THINOUTLINE')
+    font:SetFont(C.Media.Font, 14)
 end	
 
 for _, font in pairs({
@@ -201,7 +203,7 @@ for _, font in pairs({
 	_G["BackpackTokenFrameToken3Count"],
 
 }) do
-    font:SetFont(LanConfig.Media.Font, 12, 'THINOUTLINE')
+    font:SetFont(C.Media.Font, 12)
 end
 
 --- THANKS HANKTHETANK I LOVE YOU --------
@@ -414,17 +416,17 @@ CHAT_FLAG_DND = '[DND] '
 CHAT_FLAG_GM = '[GM] '
 CHAT_SAY_GET = '%s:\32'
 CHAT_YELL_GET = '%s:\32'
-CHAT_GUILD_GET = 'g - %s:\32'
-CHAT_OFFICER_GET = 'Officer - %s:\32'
-CHAT_PARTY_GUIDE_GET  = 'dg - %s:\32' 
-CHAT_PARTY_GET = 'p - %s:\32'
-CHAT_PARTY_LEADER_GET = 'pl - %s:\32'
+CHAT_GUILD_GET = '[G] %s:\32'
+CHAT_OFFICER_GET = '[O] %s:\32'
+CHAT_PARTY_GUIDE_GET  = '[PG] %s:\32' 
+CHAT_PARTY_GET = '[P] %s:\32'
+CHAT_PARTY_LEADER_GET = '[PL] %s:\32'
 CHAT_MONSTER_PARTY_GET = '[|Hchannel:raid|hR|h] %s:\32'
-CHAT_RAID_GET = 'r - %s:\32'
-CHAT_RAID_WARNING_GET = 'rw - %s:\32'
-CHAT_RAID_LEADER_GET = 'rl - %s:\32'
-CHAT_BATTLEGROUND_GET = 'bg - %s:\32'
-CHAT_BATTLEGROUND_LEADER_GET = 'bgl - %s:\32'
+CHAT_RAID_GET = '[R] %s:\32'
+CHAT_RAID_WARNING_GET = '[RW] %s:\32'
+CHAT_RAID_LEADER_GET = '[RL] %s:\32'
+CHAT_BATTLEGROUND_GET = '[BG] %s:\32'
+CHAT_BATTLEGROUND_LEADER_GET = '[BL] %s:\32'
 CHAT_YOU_CHANGED_NOTICE = '# |Hchannel:%d|h%s|h'
 CHAT_YOU_JOINED_NOTICE = '+ |Hchannel:%d|h%s|h'
 CHAT_YOU_LEFT_NOTICE = '- |Hchannel:%d|h%s|h'

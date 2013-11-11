@@ -1,4 +1,5 @@
-﻿
+﻿local F, C, G = unpack(select(2, ...))
+
 local select = select
 local modf = math.modf
 local sort = table.sort
@@ -168,11 +169,11 @@ if (not IsAddOnLoaded("Blizzard_TimeManager")) then
     LoadAddOn("Blizzard_TimeManager")
 end
 
-LanFunc.Skin(TimeManagerFrame, 12, 1)
+TimeManagerFrame:SetTemplate()
 
-TimeManagerClockTicker:SetFont(LanConfig.Media.Font, 15, 'OUTLINE')
+TimeManagerClockTicker:SetFont(C.Media.Font, 15, 'OUTLINE')
 TimeManagerClockTicker:SetShadowOffset(0, 0)
-TimeManagerClockTicker:SetTextColor(LanFunc.playerColor.r, LanFunc.playerColor.g, LanFunc.playerColor.b)
+TimeManagerClockTicker:SetTextColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
 TimeManagerClockTicker:SetPoint('TOPRIGHT', TimeManagerClockButton, 0, 0)
 
 TimeManagerClockButton:GetRegions():Hide()
@@ -188,7 +189,7 @@ hooksecurefunc(TimeManagerAlarmFiredTexture, 'Show', function()
 end)
 
 hooksecurefunc(TimeManagerAlarmFiredTexture, 'Hide', function()
-    TimeManagerClockTicker:SetTextColor(LanFunc.playerColor.r, LanFunc.playerColor.g, LanFunc.playerColor.b)
+    TimeManagerClockTicker:SetTextColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
 end)
 
 local entry

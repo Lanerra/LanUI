@@ -1,4 +1,5 @@
-﻿
+﻿local F, C, G = unpack(select(2, ...))
+
     -- import globals for faster usage
     
 local _G = _G
@@ -45,7 +46,7 @@ local function ApplyTooltipStyle(self)
     end
     
     self:SetBackdrop({
-        bgFile = LanConfig.Media.Backdrop,
+        bgFile = C.Media.Backdrop,
         insets = {
             left = bgsize, 
             right = bgsize, 
@@ -55,7 +56,7 @@ local function ApplyTooltipStyle(self)
     })
     
     self:HookScript('OnShow', function(self)
-        self:SetBackdropColor(unpack(LanConfig.Media.BackdropColor))
+        self:SetBackdropColor(unpack(C.Media.BackdropColor))
     end)
     
     self:CreateBeautyBorder(bsize)
@@ -126,7 +127,6 @@ end
                 
             if (item) then
                 local quality = select(3, GetItemInfo(item))
-                    
                 if (quality) then
                     local r, g, b = GetItemQualityColor(quality)
                     self:SetBeautyBorderTexture('white')
@@ -458,7 +458,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
  	                self.text:SetPoint('LEFT', GameTooltipStatusBar, 'LEFT', 10, 1)
                 end
                     
-                self.text:SetFont(LanConfig.Media.Font, LanConfig.Media.FontSize)
+                self.text:SetFont(C.Media.Font, C.Media.FontSize)
                 self.text:SetShadowOffset(1, -1)
                     
                 self.text:Show()

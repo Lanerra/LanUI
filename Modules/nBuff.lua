@@ -1,3 +1,5 @@
+local F, C, G = unpack(LanUI)
+
 --[[
 
     nBuff
@@ -6,8 +8,7 @@
 
 --]]
 
-local PlayerColor = RAID_CLASS_COLORS[select(2, UnitClass('player'))]
-local classColor = LanFunc.RGBToHex(PlayerColor.r, PlayerColor.g, PlayerColor.b)
+local classColor = F.RGBToHex(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
 
 DAY_ONELETTER_ABBR    = '|cffffffff%d|r'..classColor..'d|r'
 HOUR_ONELETTER_ABBR   = '|cffffffff%d|r'..classColor..'h|r'
@@ -16,23 +17,23 @@ SECOND_ONELETTER_ABBR = '|cffffffff%d|r'
 
 TemporaryEnchantFrame:ClearAllPoints()
 TemporaryEnchantFrame:SetPoint('TOPRIGHT', Minimap, 'TOPLEFT', -15, 0)
-TemporaryEnchantFrame.SetPoint = LanFunc.dummy
+TemporaryEnchantFrame.SetPoint = F.Dummy
 
 TempEnchant2:ClearAllPoints()
-TempEnchant2:SetPoint('TOPRIGHT', TempEnchant1, 'TOPLEFT', -LanConfig.Buffs.PadX, 0)
+TempEnchant2:SetPoint('TOPRIGHT', TempEnchant1, 'TOPLEFT', -C.Buffs.PadX, 0)
 
 ConsolidatedBuffs:SetHeight(20)
 ConsolidatedBuffs:SetWidth(20)
 
 ConsolidatedBuffs:ClearAllPoints()
 ConsolidatedBuffs:SetPoint('BOTTOM', TempEnchant1, 'TOP', 0, 5)
-ConsolidatedBuffs.SetPoint = LanFunc.dummy
+ConsolidatedBuffs.SetPoint = F.Dummy
 
 ConsolidatedBuffsIcon:SetAlpha(0)
 	
 ConsolidatedBuffsCount:ClearAllPoints()
 ConsolidatedBuffsCount:SetPoint('CENTER', ConsolidatedBuffsIcon)
-ConsolidatedBuffsCount:SetFont(LanConfig.Media.Font, 16, 'OUTLINE')
+ConsolidatedBuffsCount:SetFont(C.Media.Font, 16, 'OUTLINE')
 ConsolidatedBuffsCount:SetShadowOffset(0, 0)
 
 ConsolidatedBuffsTooltip:SetScale(1.2)
@@ -48,13 +49,13 @@ local function BuffFrame_SetPoint(self)
             return
         else
             if (hasMainHandEnchant and hasOffHandEnchant and hasThrownEnchant) then
-                self:SetPoint('TOPRIGHT', TempEnchant3, 'TOPLEFT', -LanConfig.Buffs.PadX, 0)
+                self:SetPoint('TOPRIGHT', TempEnchant3, 'TOPLEFT', -C.Buffs.PadX, 0)
                 return
 			elseif (hasMainHandEnchant and hasOffHandEnchant) or (hasMainHandEnchant and hasThrownEnchant) or (hasOffHandEnchant and hasThrownEnchant) then
-				self:SetPoint('TOPRIGHT', TempEnchant2, 'TOPLEFT', -LanConfig.Buffs.PadX, 0)
+				self:SetPoint('TOPRIGHT', TempEnchant2, 'TOPLEFT', -C.Buffs.PadX, 0)
 				return
             elseif (hasMainHandEnchant or hasOffHandEnchant or hasThrownEnchant) then
-                self:SetPoint('TOPRIGHT', TempEnchant1, 'TOPLEFT', -LanConfig.Buffs.PadX, 0)
+                self:SetPoint('TOPRIGHT', TempEnchant1, 'TOPLEFT', -C.Buffs.PadX, 0)
                 return
             elseif (not hasMainHandEnchant and not hasOffHandEnchant and not hasThrownEnchant) then
                 self:SetPoint('TOPRIGHT', TempEnchant1)
@@ -112,17 +113,17 @@ hooksecurefunc('BuffFrame_UpdateAllBuffAnchors', function()
 			end
                 
             buff:ClearAllPoints()
-            if (numBuffs > 1 and mod(numBuffs, LanConfig.Buffs.PerRow) == 1) then
-                if (numBuffs == LanConfig.Buffs.PerRow + 1) then
-                    buff:SetPoint('TOP', TempEnchant1, 'BOTTOM', 0, -LanConfig.Buffs.PadY)
+            if (numBuffs > 1 and mod(numBuffs, C.Buffs.PerRow) == 1) then
+                if (numBuffs == C.Buffs.PerRow + 1) then
+                    buff:SetPoint('TOP', TempEnchant1, 'BOTTOM', 0, -C.Buffs.PadY)
                 else
-                    buff:SetPoint('TOP', BUFF_ABOVE, 'BOTTOM', 0, -LanConfig.Buffs.PadY)
+                    buff:SetPoint('TOP', BUFF_ABOVE, 'BOTTOM', 0, -C.Buffs.PadY)
                 end
                 BUFF_ABOVE = buff
             elseif (numBuffs == 1) then
                 BuffFrame_SetPoint(buff)
             else
-                buff:SetPoint('RIGHT', BUFF_PREVIOUS, 'LEFT', -LanConfig.Buffs.PadX, 0)
+                buff:SetPoint('RIGHT', BUFF_PREVIOUS, 'LEFT', -C.Buffs.PadX, 0)
             end
             
             BUFF_PREVIOUS = buff
@@ -134,9 +135,9 @@ end)
 hooksecurefunc('DebuffButton_UpdateAnchors', function(self, index)
     local BUFF_NEW_SPACE, BUFF_NEW_ROW, BUFF_NUM_ROWS, BUFF_NUM_BUFFS
 
-    BUFF_NEW_SPACE = 31 + LanConfig.Buffs.PadY
+    BUFF_NEW_SPACE = 31 + C.Buffs.PadY
     BUFF_NUM_BUFFS = (BUFF_NEW_INDEX > 0 and BUFF_NEW_INDEX) or 1
-    BUFF_NUM_ROWS  = ceil(BUFF_NUM_BUFFS/LanConfig.Buffs.PerRow)
+    BUFF_NUM_ROWS  = ceil(BUFF_NUM_BUFFS/C.Buffs.PerRow)
     
     if (BUFF_NUM_ROWS and BUFF_NUM_ROWS > 1) then
         BUFF_NEW_ROW = -BUFF_NUM_ROWS * BUFF_NEW_SPACE
@@ -148,18 +149,18 @@ hooksecurefunc('DebuffButton_UpdateAnchors', function(self, index)
     buff:ClearAllPoints()
     if (index == 1) then
         buff:SetPoint('TOP', TempEnchant1, 'BOTTOM', 0, BUFF_NEW_ROW)
-	elseif (index >= 2 and mod(index, LanConfig.Buffs.PerRow) == 1) then
-		buff:SetPoint('TOP', _G[self..(index-LanConfig.Buffs.PerRow)], 'BOTTOM', 0, -LanConfig.Buffs.PadY)
+	elseif (index >= 2 and mod(index, C.Buffs.PerRow) == 1) then
+		buff:SetPoint('TOP', _G[self..(index-C.Buffs.PerRow)], 'BOTTOM', 0, -C.Buffs.PadY)
 	else
-		buff:SetPoint('RIGHT', _G[self..(index-1)], 'LEFT', -LanConfig.Buffs.PadX, 0)
+		buff:SetPoint('RIGHT', _G[self..(index-1)], 'LEFT', -C.Buffs.PadX, 0)
 	end
 end)
 
 for i = 1, 3 do
     local button = _G['TempEnchant'..i]
-    button:SetScale(LanConfig.Buffs.Scale)
-    button:SetWidth(LanConfig.Buffs.Size)
-    button:SetHeight(LanConfig.Buffs.Size)
+    button:SetScale(C.Buffs.Scale)
+    button:SetWidth(C.Buffs.Size)
+    button:SetHeight(C.Buffs.Size)
 
     local icon = _G['TempEnchant'..i..'Icon']
     icon:SetTexCoord(0.03, 0.97, 0.03, 0.97)
@@ -167,7 +168,7 @@ for i = 1, 3 do
     local duration = _G['TempEnchant'..i..'Duration']
     duration:ClearAllPoints()
     duration:SetPoint('BOTTOM', button, 'BOTTOM', 0, -2)
-    duration:SetFont(LanConfig.Media.Font, LanConfig.Buffs.DurationSize,'OUTLINE')
+    duration:SetFont(C.Media.Font, C.Buffs.DurationSize,'OUTLINE')
     duration:SetShadowOffset(0, 0)
     duration:SetDrawLayer('OVERLAY')
 
@@ -175,7 +176,7 @@ for i = 1, 3 do
     border:ClearAllPoints()
     border:SetPoint('TOPRIGHT', button, 1, 1)
     border:SetPoint('BOTTOMLEFT', button, -1, -1)    
-    border:SetTexture(LanConfig.Media.DebuffBorder)
+    border:SetTexture(C.Media.DebuffBorder)
     border:SetTexCoord(0, 1, 0, 1)
     border:SetVertexColor(0.9, 0.25, 0.9)
 end
@@ -183,9 +184,9 @@ end
 hooksecurefunc('AuraButton_Update', function(self, index)
     local button = _G[self..index]
     if (button) then
-        button:SetWidth(LanConfig.Buffs.Size)
-        button:SetHeight(LanConfig.Buffs.Size)
-        button:SetScale(LanConfig.Buffs.Scale)
+        button:SetWidth(C.Buffs.Size)
+        button:SetHeight(C.Buffs.Size)
+        button:SetScale(C.Buffs.Scale)
     end
         
     local icon = _G[self..index..'Icon']
@@ -197,7 +198,7 @@ hooksecurefunc('AuraButton_Update', function(self, index)
     if (duration) then
         duration:ClearAllPoints()
         duration:SetPoint('BOTTOM', button, 'BOTTOM', 0, -2)
-        duration:SetFont(LanConfig.Media.Font, LanConfig.Buffs.DurationSize,'OUTLINE')
+        duration:SetFont(C.Media.Font, C.Buffs.DurationSize,'OUTLINE')
         duration:SetShadowOffset(0, 0)
         duration:SetDrawLayer('OVERLAY')
     end
@@ -206,14 +207,14 @@ hooksecurefunc('AuraButton_Update', function(self, index)
     if (count) then
         count:ClearAllPoints()
         count:SetPoint('TOPRIGHT', button)
-        count:SetFont(LanConfig.Media.Font, LanConfig.Buffs.CountSize, 'OUTLINE')
+        count:SetFont(C.Media.Font, C.Buffs.CountSize, 'OUTLINE')
         count:SetShadowOffset(0, 0)
         count:SetDrawLayer('OVERLAY')
     end
         
     local border = _G[self..index..'Border']
     if (border) then
-        border:SetTexture(LanConfig.Media.DebuffBorder)
+        border:SetTexture(C.Media.DebuffBorder)
         border:SetPoint('TOPRIGHT', button, 1, 1)
         border:SetPoint('BOTTOMLEFT', button, -1, -1)
         border:SetTexCoord(0, 1, 0, 1)
@@ -223,10 +224,10 @@ hooksecurefunc('AuraButton_Update', function(self, index)
         if (not button.texture) then
             button.texture = button:CreateTexture('$parentOverlay', 'ARTWORK')
             button.texture:SetParent(button)
-            button.texture:SetTexture(LanConfig.Media.BuffBorder)
+            button.texture:SetTexture(C.Media.BuffBorder)
             button.texture:SetPoint('TOPRIGHT', button, 1, 1)
             button.texture:SetPoint('BOTTOMLEFT', button, -1, -1)
-            button.texture:SetVertexColor(unpack(LanConfig.Buffs.BorderColor))
+            button.texture:SetVertexColor(unpack(C.Buffs.BorderColor))
         end
     end
 end)

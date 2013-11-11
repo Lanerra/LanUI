@@ -4,15 +4,18 @@
 ## Author: Lanerra
 ## Notes: Lightweight UI Modification
 
+Init.lua
 LanUI_Config.lua
+Modules\Core\LanFunc.lua
+Modules\Core\LanCore.lua
+Modules\Beautycase\Beautycase.lua
+
 LanUI_Launch.lua
 
 lib\CallBackHandler-1.0\CallbackHandler-1.0.lua
 lib\LibBossIDs-1.0\lib.xml
 lib\LibDataBroker\LibDataBroker-1.1.lua
 lib\LibStub\LibStub.lua
-
-Modules\LanFunc.lua
 
 Modules\Data\Durability.lua
 Modules\Data\GuildFriend.lua
@@ -23,15 +26,17 @@ Modules\nMinimap\nMinimap_Clock.lua
 Modules\nMinimap\nMinimap_GameTime.lua
 Modules\nMinimap\nMinimap_InstanceDifficulty.lua
 
+Modules\ActionBars\LanBars.lua
+Modules\ActionBars\BarStyle.lua
+Modules\ActionBars\Cooldown.lua
 Modules\LanChat.lua
 Modules\LanCombat.lua
-Modules\LanCore.lua
 Modules\LanDamage.lua
 Modules\LanLoot.lua
 Modules\LanNameplates.lua
 Modules\LanPanels.lua
 Modules\LanScroll.lua
-Modules\LanSkin.lua
+#Modules\LanSkin.lua
 Modules\LanStats.lua
 Modules\LanThreat.lua
 Modules\LanTips.lua
@@ -40,4 +45,4 @@ Modules\LanTweaks.lua
 Modules\LanWarning.lua
 Modules\nBuff.lua
 Modules\nRunes.lua
-Modules\OmniCC.lua
+#Modules\tempSkin.lua

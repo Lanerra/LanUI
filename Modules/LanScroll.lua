@@ -1,3 +1,5 @@
+local F, C, G = unpack(select(2, ...))
+
 --Initialization Steps
 LanScroll = {}
 LanScroll.empty_strings = {}
@@ -60,8 +62,8 @@ end
 
 
 -- Font Settings
-LanScroll.font_face                       = LanConfig.Media.Font
-LanScroll.font_face_sticky                = LanConfig.Media.Font
+LanScroll.font_face                       = C.Media.Font
+LanScroll.font_face_sticky                = C.Media.Font
 LanScroll.font_flags                      = "OUTLINE"    -- Some text can be hard to read without it.
 LanScroll.font_flags_sticky               = "OUTLINE"
 LanScroll.font_size                       = 11

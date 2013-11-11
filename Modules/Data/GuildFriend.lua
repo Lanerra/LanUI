@@ -1,4 +1,6 @@
-local cfg = LanConfig.nMinimap
+local F, C, G = unpack(select(2, ...))
+
+local cfg = C.Minimap
 
 if (not cfg.tab.show) then
     return
@@ -407,7 +409,7 @@ local function GuildTip(self)
 
     if (GetGuildLevel() ~= 25) then
         local currentXP, nextLevelXP, percentTotal = unpack(guildXP)
-        GameTooltip:AddLine(format(GUILD_EXPERIENCE_CURRENT, '|r |cFFFFFFFF'..LanFunc.ShortValue(currentXP), LanFunc.ShortValue(nextLevelXP), percentTotal))
+        GameTooltip:AddLine(format(GUILD_EXPERIENCE_CURRENT, '|r |cFFFFFFFF'..F.ShortValue(currentXP), F.ShortValue(nextLevelXP), percentTotal))
     end
 
     if (online > 1) then
@@ -432,14 +434,14 @@ local function GuildTip(self)
 
                 local classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class], GetQuestDifficultyColor(level)
                 if (IsShiftKeyDown()) then
-                    GameTooltip:AddDoubleLine(format('|cff%02x%02x%02x%d|r %s |r', levelc.r*255, levelc.g*255, levelc.b*255, level, name), LanFunc.RGBToHex(0.75, 0.75, 0.75)..rank, classc.r, classc.g, classc.b)
+                    GameTooltip:AddDoubleLine(format('|cff%02x%02x%02x%d|r %s |r', levelc.r*255, levelc.g*255, levelc.b*255, level, name), F.RGBToHex(0.75, 0.75, 0.75)..rank, classc.r, classc.g, classc.b)
 
                     if (note ~= '') then
                         GameTooltip:AddLine(format('        |cffffffff%s|r', note), 1, 1, 0, 1)
                     end
 
                     if (officernote ~= '') then
-                        GameTooltip:AddLine(format(LanFunc.RGBToHex(0.3, 1, 0)..'        %s', officernote), 1, 0, 1, 1)
+                        GameTooltip:AddLine(format(F.RGBToHex(0.3, 1, 0)..'        %s', officernote), 1, 0, 1, 1)
                     end
                 else
                     GameTooltip:AddDoubleLine(format('|cff%02x%02x%02x%d|r %s %s', levelc.r*255, levelc.g*255, levelc.b*255, level, name, status), zone, classc.r, classc.g, classc.b, zonec.r, zonec.g, zonec.b)

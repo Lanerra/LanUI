@@ -1,3 +1,5 @@
+local F, C, G = unpack(select(2, ...))
+
 if select(2, UnitClass('player')) ~= 'DEATHKNIGHT' then
     return
 end
@@ -47,18 +49,18 @@ Rune.Power = CreateFrame('StatusBar', nil, UIParent)
 Rune.Power:SetHeight(3)
 Rune.Power:SetWidth(198)
 Rune.Power:SetPoint('TOP', Rune, 'BOTTOM', 0, -7)
-Rune.Power:SetStatusBarTexture(LanConfig.Media.StatusBar)
+Rune.Power:SetStatusBarTexture(C.Media.StatusBar)
 Rune.Power:SetStatusBarColor(0.45, 0.85, 1, 1)
 Rune.Power:SetAlpha(0)
 
 Rune.Power.Value = Rune.Power:CreateFontString(nil, 'ARTWORK')
-Rune.Power.Value:SetFont(LanConfig.Media.Font, 20, 'OUTLINE')
+Rune.Power.Value:SetFont(C.Media.Font, 20, 'OUTLINE')
 Rune.Power.Value:SetPoint('CENTER', Rune.Power, 0, 1.5)
 Rune.Power.Value:SetVertexColor(0.45, 0.85, 1)
 
 Rune.Power.Background = Rune.Power:CreateTexture(nil, 'BACKGROUND')
 Rune.Power.Background:SetAllPoints(Rune.Power)
-Rune.Power.Background:SetTexture(LanConfig.Media.StatusBar)
+Rune.Power.Background:SetTexture(C.Media.StatusBar)
 Rune.Power.Background:SetVertexColor(0.25, 0.25, 0.25, 1)
 
 Rune.Power.Background.Shadow = CreateFrame('Frame', nil, Rune.Power)
@@ -66,7 +68,7 @@ Rune.Power.Background.Shadow:SetFrameStrata('BACKGROUND')
 Rune.Power.Background.Shadow:SetPoint('TOPLEFT', -4, 4)
 Rune.Power.Background.Shadow:SetPoint('BOTTOMRIGHT', 4, -4)
 Rune.Power.Background.Shadow:SetBackdrop({
-	BgFile = LanConfig.Media.Backdrop,
+	BgFile = C.Media.Backdrop,
 	edgeFile = 'Interface\\Addons\\LanUI\\media\\glowTex', edgeSize = 4,
 	insets = {left = 3, right = 3, top = 3, bottom = 3}
 })

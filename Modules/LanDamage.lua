@@ -1,3 +1,4 @@
+local F, C, G = unpack(select(2, ...))
 
 -- Config start
 local anchor = "TOPLEFT"
@@ -5,20 +6,21 @@ local x, y = 15, -15
 local barheight = 12.35
 local spacing = 1
 local maxbars = 10
-local width, height = 161, maxbars * (barheight + spacing) - spacing
+local width, height = 161, 140
 local maxfights = 5
 local reportstrings = 5
-local texture = LanConfig.Media.StatusBar
-local backdrop_color = LanConfig.Media.BackdropColor
+local texture = C.Media.StatusBar
+local backdrop_color = C.Media.BackdropColor
 local border_color = {0, 0, 0, 0}
 local border_size = 2
-local font = LanConfig.Media.Font
+local font = C.Media.Font
 local font_style = "" 
 local font_size = 11
 local hidetitle = true
 local classcolorbar = true
 local classcolorname = false
 local mergeHealAbsorbs = false
+
 -- Config end
 
 local addon_name, ns = ...
@@ -34,7 +36,7 @@ local raidFlags = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFILIATI
 local petFlags = COMBATLOG_OBJECT_TYPE_PET + COMBATLOG_OBJECT_TYPE_GUARDIAN
 local npcFlags = COMBATLOG_OBJECT_TYPE_NPC+COMBATLOG_OBJECT_CONTROL_NPC
 local backdrop = {
-    bgFile = LanConfig.Media.Backdrop,
+    bgFile = C.Media.Backdrop,
 	edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = border_size,
     insets = {top = 2, left = 2, bottom = 2, right = 2},
 }
@@ -77,7 +79,7 @@ local shields = {}
 
 local menuFrame = CreateFrame("Frame", "LanDamageMeterMenu", UIParent, "UIDropDownMenuTemplate")
 
-local dummy = LanFunc.Dummy
+local dummy = F.Dummy
 
 local truncate = function(value)
     if value >= 1e6 then
@@ -111,17 +113,6 @@ local CreateFS = CreateFS or function(frame)
 	fstring:SetShadowColor(0, 0, 0, 1)
 	fstring:SetShadowOffset(1, -1)
 	return fstring
-end
-
-local CreateBG = CreateBG or function(parent)
-	local bg = CreateFrame("Frame", nil, parent)
-	bg:SetPoint("TOPLEFT", -border_size, border_size)
-	bg:SetPoint("BOTTOMRIGHT", border_size, -border_size)
-	bg:SetFrameLevel(parent:GetFrameLevel() - 1)
-	bg:SetBackdrop(backdrop)
-	bg:SetBackdropColor(unpack(backdrop_color))
-	bg:SetBackdropBorderColor(unpack(border_color))
-	return bg
 end
 
 local tcopy = function(src)
@@ -320,7 +311,7 @@ local UpdateBars = function()
 		if cur[sMode].amount == 0 then break end
 		if not bar[i] then 
 			bar[i] = CreateBar()
-			bar[i]:SetPoint("TOP", 0, -(barheight + spacing) * (i-1))
+			bar[i]:SetPoint("TOP", 0, -13 * (i-1))
 		end
 
 		bar[i].id = i + offset
@@ -659,10 +650,9 @@ local OnEvent = function(self, event, ...)
 		local name = ...
 		if name == addon_name then
 			self:UnregisterEvent(event)
-			MainFrame = CreateFrame("Frame", addon_name.."Frame", UIParent)
+			MainFrame = CreateFrame("Frame", 'LanDmgFrame', UIParent)
 			MainFrame:SetSize(width, height)
 			MainFrame:SetPoint(anchor, x, y)
-			MainFrame.bg = CreateBG(MainFrame)
 			MainFrame:SetMovable(true)
 			MainFrame:EnableMouse(true)
 			MainFrame:EnableMouseWheel(true)
@@ -684,8 +674,10 @@ local OnEvent = function(self, event, ...)
 			UIDropDownMenu_Initialize(menuFrame, CreateMenu, "MENU")
 			CheckRoster()
 
-			MainFrame:CreateBeautyBorder(12, 1, 1, 1)
+			MainFrame:SetTemplate()
             MainFrame:SetScale(1.2)
+			
+			MainFrame:Hide()
 		end
 	elseif event == "VARIABLES_LOADED" then
 		MainFrame:SetSize(width, height)
@@ -698,6 +690,8 @@ local OnEvent = function(self, event, ...)
 	elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
 		CheckRoster()
 	elseif event == "PLAYER_REGEN_DISABLED" then
+		MainFrame:Show()
+		
 		if not combatstarted then
 			StartCombat()
 		end
