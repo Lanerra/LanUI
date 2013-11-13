@@ -143,37 +143,60 @@ CHAT_FONT_HEIGHTS = {
     [13] = 20,
 }
 
+CURRENCY_GAINED = "+ |cffffffff%s|r"
+CURRENCY_GAINED_MULTIPLE = "+ |cffffffff%s|r x|cffffffff%d|r"
+
+LOOT_MONEY = '|cffffff00+|r |cffffffff%s'
+YOU_LOOT_MONEY = '|cffffff00+|r |cffffffff%s'
+YOU_LOOT_MONEY_GUILD = '|cffffff00+|r |cffffffff%s|r |cffffff00+|r |cffffffff( %s )|r'
+LOOT_MONEY_SPLIT_GUILD = '|cffffff00+|r |cffffffff%s|r |cffffff00+|r |cffffffff( %s )|r'
+LOOT_MONEY_SPLIT = '|cffffff00+|r |cffffffff%s'
+
+LOOT_ITEM = '%s |cffffff00+|r %s'
+LOOT_ITEM_MULTIPLE = '%s |cffffff00+|r %sx%d'
+LOOT_ITEM_SELF = '|cffffff00+|r %s'
+LOOT_ITEM_SELF_MULTIPLE = '|cffffff00+|r %sx%d'
+LOOT_ITEM_PUSHED_SELF = '|cffffff00+|r %s'
+LOOT_ITEM_PUSHED_SELF_MULTIPLE = '|cffffff00+|r %sx%d'
+LOOT_ROLL_ALL_PASSED = 'All passed on %s'
+LOOT_ROLL_PASSED_AUTO = '%s passed %s (auto)'
+LOOT_ROLL_PASSED_SELF_AUTO = 'pass %s (auto)'
+
+ACHIEVEMENT_BROADCAST = '%s achieved %s!'
+ERR_AUCTION_SOLD_S = "|cff1eff00%s|r |cffFF0000Sold.|r"
+ERR_SKILL_UP_SI = '%s |cff1eff00%d|r'
+NORMAL_QUEST_DISPLAY = "|cffffffff%s|r"
+TRIVIAL_QUEST_DISPLAY = "|cffffffff%s (low level)|r"
+FACTION_STANDING_DECREASED = '|3-7(%s) -%d'
+FACTION_STANDING_INCREASED = '|3-7(%s) +%d'
 CHAT_FLAG_AFK = '[AFK] '
 CHAT_FLAG_DND = '[DND] '
 CHAT_FLAG_GM = '[GM] '
-
 CHAT_SAY_GET = '%s:\32'
 CHAT_YELL_GET = '%s:\32'
-
-CHAT_WHISPER_GET = '[from] %s:\32'
-CHAT_WHISPER_INFORM_GET = '[to] %s:\32'
-
-CHAT_BN_WHISPER_GET = '[from] %s:\32'
-CHAT_BN_WHISPER_INFORM_GET = '[to] %s:\32'
-
-CHAT_GUILD_GET = '[|Hchannel:Guild|hG|h] %s:\32'
-CHAT_OFFICER_GET = '[|Hchannel:o|hO|h] %s:\32'
-
-CHAT_PARTY_GET = '[|Hchannel:party|hP|h] %s:\32'
-CHAT_PARTY_LEADER_GET = '[|Hchannel:party|hPL|h] %s:\32'
-CHAT_PARTY_GUIDE_GET = '[|Hchannel:party|hDG|h] %s:\32'
+CHAT_GUILD_GET = '[G] %s:\32'
+CHAT_OFFICER_GET = '[O] %s:\32'
+CHAT_PARTY_GUIDE_GET  = '[PG] %s:\32' 
+CHAT_PARTY_GET = '[P] %s:\32'
+CHAT_PARTY_LEADER_GET = '[PL] %s:\32'
 CHAT_MONSTER_PARTY_GET = '[|Hchannel:raid|hR|h] %s:\32'
+CHAT_RAID_GET = '[R] %s:\32'
+CHAT_RAID_WARNING_GET = '[RW] %s:\32'
+CHAT_RAID_LEADER_GET = '[RL] %s:\32'
+CHAT_BATTLEGROUND_GET = '[BG] %s:\32'
+CHAT_BATTLEGROUND_LEADER_GET = '[BL] %s:\32'
+CHAT_YOU_CHANGED_NOTICE = '# |Hchannel:%d|h%s|h'
+CHAT_YOU_JOINED_NOTICE = '+ |Hchannel:%d|h%s|h'
+CHAT_YOU_LEFT_NOTICE = '- |Hchannel:%d|h%s|h'
+BN_INLINE_TOAST_FRIEND_OFFLINE = '%s has gone |cffff0000offline|r!'
+BN_INLINE_TOAST_FRIEND_ONLINE = '%s has come |cff00ff00online|r!'
+CHAT_BN_WHISPER_GET = 'From %s:\32'
+CHAT_BN_WHISPER_INFORM_GET = '|cffad2424@|r %s:\32'
+CHAT_WHISPER_GET = 'f - %s:\32'
+CHAT_WHISPER_INFORM_GET = '|cffad2424@|r %s:\32'
+ERR_FRIEND_OFFLINE_S = '%s has gone |cffff0000offline|r!'
+ERR_FRIEND_ONLINE_SS = '|Hplayer:%s|h[%s]|h has come |cff00ff00online|r!'
 
-CHAT_RAID_GET = '[|Hchannel:raid|hR|h] %s:\32'
-CHAT_RAID_WARNING_GET = '[RW!] %s:\32'
-CHAT_RAID_LEADER_GET = '[|Hchannel:raid|hL|h] %s:\32'
-
-CHAT_BATTLEGROUND_GET = '[|Hchannel:Battleground|hBG|h] %s:\32'
-CHAT_BATTLEGROUND_LEADER_GET = '[|Hchannel:Battleground|hBL|h] %s:\32'
-
-CHAT_YOU_CHANGED_NOTICE_BN = '# |Hchannel:%d|h%s|h'
-CHAT_YOU_JOINED_NOTICE_BN = '+ |Hchannel:%d|h%s|h'
-CHAT_YOU_LEFT_NOTICE_BN = '- |Hchannel:%d|h%s|h'
 CHAT_SUSPENDED_NOTICE_BN = '- |Hchannel:%d|h%s|h'
 
 ChatTypeInfo['CHANNEL'].sticky = 1
@@ -264,10 +287,18 @@ function FCF_FlashTab(self)
 	UIFrameFlash(tabFlash, 0.25, 0.25, 5, nil, 0.5, 0.5)
 end
 
+ChatFrame1Background:Kill()
+ChatFrame2Background:Kill()
+ChatFrame3Background:Kill()
+
 -- Frame up our Chatframes
 ChatFrame1:CreateBeautyBorder(12, 5, 5, 5, 5, 5, 5, 5, 5, 6, 5, 6)
 ChatFrame2:CreateBeautyBorder(12, 5, 5, 5, 5, 27, 5, 27, 5, 6, 5, 6)
 ChatFrame3:CreateBeautyBorder(12, 5, 5, 5, 5, 5, 5, 5, 5, 6, 5, 6)
+
+ChatFrame1:SetBeautyBorderColor(RAID_CLASS_COLORS[UnitClass('player')])
+ChatFrame2:SetBeautyBorderColor(RAID_CLASS_COLORS[UnitClass('player')])
+ChatFrame3:SetBeautyBorderColor(RAID_CLASS_COLORS[UnitClass('player')])
 
 -- Fix positioning of CombatLogQuickButtonFrame to align better to our Chatframe
 ChatFrame2:SetScript('OnShow', function(self)
@@ -326,27 +357,6 @@ for i = 1, NUM_CHAT_WINDOWS do
     end
     
     _G['ChatFrame'..i..'ButtonFrame']:Kill()
-    
-    --[[local function SkinTab(tab)
-        if (not tab) then
-            return
-        end
-
-        tab.backdrop = CreateFrame('Frame', nil, tab)
-        
-        F.Skin(tab.backdrop, 12, 1)
-        
-        tab.backdrop:SetFrameStrata('BACKGROUND')
-        tab.backdrop:SetFrameLevel(_G['ChatFrame'..i]:GetFrameLevel() - 1)
-        tab.backdrop:SetPoint('TOPLEFT')
-        tab.backdrop:SetPoint('BOTTOMRIGHT')
-
-        -- always set tab text centered
-        local name = tab:GetName()
-        _G[name..'Text']:ClearAllPoints()
-        _G[name..'Text']:SetPoint('CENTER')
-        _G[name..'Text'].SetPoint = F.Dummy
-    end]]
     
     local tabText = _G['ChatFrame'..i..'TabText']
     tabText:SetFont(C.Media.Font, 12)
@@ -420,7 +430,8 @@ for i = 2, NUM_CHAT_WINDOWS do
     chatMinimize:SetPoint('TOPRIGHT', chat, 'TOPLEFT', -2, 0)
 end
 
-BNToastFrame:CreateBeautyBorder(12, 1, 1, 1)
+--BNToastFrame:CreateBeautyBorder(12, 1, 1, 1)
+BNToastFrame:SetTemplate()
 
 BNToastFrame:ClearAllPoints()
 BNToastFrame:SetPoint('BOTTOMLEFT', ChatFrame1, 'TOPLEFT', -5, 5)
@@ -429,7 +440,7 @@ BNToastFrame.SetAllPoints = F.Dummy
 BNToastFrame.ClearAllPoints = F.Dummy
 BNToastFrameCloseButton:Hide()
 
-BNToastFrame:SetBackdrop({
+--[[BNToastFrame:SetBackdrop({
     bgFile = C.Media.Backdrop,
     insets = { 
         left = 1, 
@@ -437,8 +448,9 @@ BNToastFrame:SetBackdrop({
         top = 1, 
         bottom = 1 
     },
-})
-BNToastFrame:SetBackdropColor(unpack(C.Media.BackdropColor))
+})]]
+
+--BNToastFrame:SetBackdropColor(unpack(C.Media.BackdropColor))
 BNToastFrame.SetBackdrop = F.Dummy
 BNToastFrame.SetBackdropColor = F.Dummy
 BNToastFrameTopLine:SetFont(C.Media.Font, 12, nil)

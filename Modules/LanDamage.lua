@@ -16,7 +16,7 @@ local border_size = 2
 local font = C.Media.Font
 local font_style = "" 
 local font_size = 11
-local hidetitle = true
+local hidetitle = false
 local classcolorbar = true
 local classcolorname = false
 local mergeHealAbsorbs = false
@@ -695,6 +695,8 @@ local OnEvent = function(self, event, ...)
 		if not combatstarted then
 			StartCombat()
 		end
+	elseif event == 'PLAYER_REGEN_ENABLED' then
+		MainFrame:Hide()
 	elseif event == "UNIT_PET" then
 		local unit = ...
 		local pet = unit .. "pet"

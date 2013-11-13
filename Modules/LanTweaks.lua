@@ -249,7 +249,7 @@ merchant:SetScript('OnEvent', function(self, event)
         local cost, needed = GetRepairAllCost()
         if needed then
             local GuildWealth = CanGuildBankRepair() and GetGuildBankWithdrawMoney() > cost
-            if GuildWealth then
+            if GuildWealth and GetNumGroupMembers() > 5 then
                 RepairAllItems(1)
                 print(format('|cff0099ffLan|rUI: Guild bank repaired for %s.', formatMoney(cost)))
             elseif cost < GetMoney() then

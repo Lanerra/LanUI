@@ -355,43 +355,21 @@ bar:SetScript("OnEvent", function(self, event, unit, ...)
 	elseif event == "UPDATE_VEHICLE_ACTIONBAR" or event == "UPDATE_OVERRIDE_ACTIONBAR" then
 		if HasVehicleActionBar() or HasOverrideActionBar() then
 			if not self.inVehicle then
-				if LanBar2 ~= nil then
-					LanBar2Button:Hide()
-				end
-				
-				if LanBar3 ~= nil then
-					LanBar3Button:Hide()
-				end
-				
-				if LanBar4 ~= nil then
-					LanBar4Button:Hide()
-				end
-				
-				if LanBar5 ~= nil then
-					LanBar5ButtonTop:Hide()
-					LanBar5ButtonBottom:Hide()
-				end
+				LanBar2Button:Hide()
+				LanBar3Button:Hide()
+				LanBar4Button:Hide()
+				LanBar5ButtonTop:Hide()
+				LanBar5ButtonBottom:Hide()
 				
 				self.inVehicle = true
 			end
 		else
 			if self.inVehicle then
-				if LanBar2 ~= nil then
-					LanBar2Button:Show()
-				end
-				
-				if LanBar3 ~= nil then
-					LanBar3Button:Show()
-				end
-				
-				if LanBar4 ~= nil then
-					LanBar4Button:Show()
-				end
-				
-				if LanBar5 ~= nil then
-					LanBar5ButtonTop:Show()
-					LanBar5ButtonBottom:Show()
-				end
+				LanBar2Button:Show()
+				LanBar3Button:Show()
+				LanBar4Button:Show()
+				LanBar5ButtonTop:Show()
+				LanBar5ButtonBottom:Show()
 				
 				self.inVehicle = false
 			end
@@ -440,7 +418,7 @@ petbar:SetScript("OnEvent", function(self, event, arg1)
 			
 			G.ActionBars.Pet["Button"..i] = button
 		end
-		RegisterStateDriver(self, "visibility", "[pet,nopetbattle,novehicleui,nooverridebar,nobonuspetbar:5] hide; show")
+		RegisterStateDriver(self, "visibility", "[pet,nopetbattle,novehicleui,nooverridebar] show; hide")
 		
 		hooksecurefunc("PetActionBar_Update", F.PetBarUpdate)
 	elseif event == "PET_BAR_UPDATE" or event == "UNIT_PET" and arg1 == "player" 
