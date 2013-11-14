@@ -351,6 +351,8 @@ bar:SetScript("OnEvent", function(self, event, unit, ...)
 				local previous = _G["ActionButton"..i-1]
 				button:SetPoint("LEFT", previous, "RIGHT", C.ActionBars.ButtonSpacing, 0)
 			end
+			
+			button:SetTemplate()
 		end
 	elseif event == "UPDATE_VEHICLE_ACTIONBAR" or event == "UPDATE_OVERRIDE_ACTIONBAR" then
 		if HasVehicleActionBar() or HasOverrideActionBar() then
@@ -416,6 +418,8 @@ petbar:SetScript("OnEvent", function(self, event, arg1)
 			button:Show()
 			self:SetAttribute("addchild", button)
 			
+			button:SetTemplate()
+			
 			G.ActionBars.Pet["Button"..i] = button
 		end
 		RegisterStateDriver(self, "visibility", "[pet,nopetbattle,novehicleui,nooverridebar] show; hide")
@@ -480,6 +484,8 @@ stance:SetScript("OnEvent", function(self, event, ...)
 			else
 				button:Hide()
 			end
+			
+			button:SetTemplate()
 			
 			G.ActionBars.Stance["Button"..i] = button
 		end

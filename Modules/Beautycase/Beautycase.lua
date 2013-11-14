@@ -10,7 +10,7 @@ function CreateBorderLight(self, borderSize, R, G, B, ...)
     if (not self.HasBorder) then
         self.Border = {}
         for i = 1, 8 do
-            self.Border[i] = self:CreateTexture(nil, 'OVERLAY')
+            self.Border[i] = self:CreateTexture(nil, 'BORDER')
             self.Border[i]:SetParent(self)
 			self.Border[i]:SetTexture(C.Media.OverlayBorder)
             self.Border[i]:SetSize(borderSize,borderSize)

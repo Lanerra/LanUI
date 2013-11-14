@@ -1,5 +1,11 @@
 local F, C, G = unpack(select(2, ...))
 
+local LanChat = CreateFrame("Frame", "LanChat")
+G.Chat.Chat = LanChat
+for i = 1, NUM_CHAT_WINDOWS do
+	G.Chat["ChatFrame"..i] = _G["ChatFrame"..i]
+end
+
 CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1.0
 CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 1.0     -- set to 0 if u want to hide the tabs when no mouse is over them or the chat
     
@@ -287,18 +293,21 @@ function FCF_FlashTab(self)
 	UIFrameFlash(tabFlash, 0.25, 0.25, 5, nil, 0.5, 0.5)
 end
 
-ChatFrame1Background:Kill()
-ChatFrame2Background:Kill()
-ChatFrame3Background:Kill()
+--[[LanChat:RegisterEvent("ADDON_LOADED")
+LanChat:SetScript("OnEvent", function(self, event, addon)
+	if addon == "Blizzard_CombatLog" then
+		self:UnregisterEvent("ADDON_LOADED")
+		SetupChat(self)
+	end
+end)]]
 
--- Frame up our Chatframes
-ChatFrame1:CreateBeautyBorder(12, 5, 5, 5, 5, 5, 5, 5, 5, 6, 5, 6)
+--[[ChatFrame1:CreateBeautyBorder(12, 5, 5, 5, 5, 5, 5, 5, 5, 6, 5, 6)
 ChatFrame2:CreateBeautyBorder(12, 5, 5, 5, 5, 27, 5, 27, 5, 6, 5, 6)
 ChatFrame3:CreateBeautyBorder(12, 5, 5, 5, 5, 5, 5, 5, 5, 6, 5, 6)
 
 ChatFrame1:SetBeautyBorderColor(RAID_CLASS_COLORS[UnitClass('player')])
 ChatFrame2:SetBeautyBorderColor(RAID_CLASS_COLORS[UnitClass('player')])
-ChatFrame3:SetBeautyBorderColor(RAID_CLASS_COLORS[UnitClass('player')])
+ChatFrame3:SetBeautyBorderColor(RAID_CLASS_COLORS[UnitClass('player')])]]
 
 -- Fix positioning of CombatLogQuickButtonFrame to align better to our Chatframe
 ChatFrame2:SetScript('OnShow', function(self)
@@ -309,7 +318,7 @@ end)
 
 -- Fix Chat windows
 for i = 1, NUM_CHAT_WINDOWS do
-    local dummy = function() end
+    local dummy = F.Dummy
     
     local eb = _G['ChatFrame'..i..'EditBox']
     eb:Hide()
@@ -320,20 +329,8 @@ for i = 1, NUM_CHAT_WINDOWS do
     chat:SetClampedToScreen(false)
     
     chat:SetClampRectInsets(0, 0, 0, 0)
-    chat:SetMaxResize(UIParent:GetWidth(), UIParent:GetHeight())
     chat:SetMinResize(150, 25)
 
-    chat:SetBackdrop({
-        bgFile = 'Interface\\Buttons\\WHITE8x8',
-        insets = { 
-            left = -2, 
-            right = -2, 
-            top = -1, 
-            bottom = -3 
-        },
-    })
-    chat:SetBackdropColor(0, 0, 0, 0.5)
-    
 	-- Enable mousewheel scrolling in all chatframes
     chat:EnableMouseWheel(true)
     chat:SetScript('OnMouseWheel', function(self, direction)
@@ -408,6 +405,50 @@ for i = 1, NUM_CHAT_WINDOWS do
     
     ChatFrameMenuButton:Hide()
     ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide
+    
+    local frames = {
+		"ChatFrame1Background",
+        "ChatFrame1TopLeftTexture",
+        "ChatFrame1BottomLeftTexture",
+        "ChatFrame1TopRightTexture",
+        "ChatFrame1BottomRightTexture",
+        "ChatFrame1LeftTexture",
+        "ChatFrame1RightTexture",
+        "ChatFrame1BottomTexture",
+        "ChatFrame1TopTexture",
+        "ChatFrame2Background",
+        "ChatFrame2TopLeftTexture",
+        "ChatFrame2BottomLeftTexture",
+        "ChatFrame2TopRightTexture",
+        "ChatFrame2BottomRightTexture",
+        "ChatFrame2LeftTexture",
+        "ChatFrame2RightTexture",
+        "ChatFrame2BottomTexture",
+        "ChatFrame2TopTexture",
+        "ChatFrame3Background",
+        "ChatFrame3TopLeftTexture",
+        "ChatFrame3BottomLeftTexture",
+        "ChatFrame3TopRightTexture",
+        "ChatFrame3BottomRightTexture",
+        "ChatFrame3LeftTexture",
+        "ChatFrame3RightTexture",
+        "ChatFrame3BottomTexture",
+        "ChatFrame3TopTexture",
+	}
+	
+	for _, frame in pairs(frames) do
+		_G[frame]:Kill()
+	end
+    
+    chat:SetFrameStrata("LOW")
+    _G['ChatFrame'..i..'Background']:Kill()
+    
+    local x = CreateFrame('Frame', _G['ChatHolder'..i], chat)
+    x:SetPoint('TOPLEFT', chat, -5, 5)
+    x:SetPoint('BOTTOMRIGHT', chat, 5, -7)
+    x:SetSize(425, 200)
+    x:SetFrameStrata('BACKGROUND')
+    x:SetTemplate()
 end
 
 -- tab text colors for the tabs
@@ -430,17 +471,16 @@ for i = 2, NUM_CHAT_WINDOWS do
     chatMinimize:SetPoint('TOPRIGHT', chat, 'TOPLEFT', -2, 0)
 end
 
---BNToastFrame:CreateBeautyBorder(12, 1, 1, 1)
+--[[BNToastFrame:CreateBeautyBorder(12, 1, 1, 1)
 BNToastFrame:SetTemplate()
 
 BNToastFrame:ClearAllPoints()
-BNToastFrame:SetPoint('BOTTOMLEFT', ChatFrame1, 'TOPLEFT', -5, 5)
 BNToastFrame.SetPoint = F.Dummy
 BNToastFrame.SetAllPoints = F.Dummy
 BNToastFrame.ClearAllPoints = F.Dummy
 BNToastFrameCloseButton:Hide()
 
---[[BNToastFrame:SetBackdrop({
+BNToastFrame:SetBackdrop({
     bgFile = C.Media.Backdrop,
     insets = { 
         left = 1, 
@@ -448,13 +488,24 @@ BNToastFrameCloseButton:Hide()
         top = 1, 
         bottom = 1 
     },
-})]]
+})
 
---BNToastFrame:SetBackdropColor(unpack(C.Media.BackdropColor))
+BNToastFrame:SetBackdropColor(unpack(C.Media.BackdropColor))
 BNToastFrame.SetBackdrop = F.Dummy
 BNToastFrame.SetBackdropColor = F.Dummy
 BNToastFrameTopLine:SetFont(C.Media.Font, 12, nil)
-BNToastFrameBottomLine:SetFont(C.Media.Font, 12, nil)
+BNToastFrameBottomLine:SetFont(C.Media.Font, 12, nil)]]
+
+for i=1, BNToastFrame:GetNumRegions() do
+	if i ~= 10 then
+		local region = select(i, BNToastFrame:GetRegions())
+		if region:GetObjectType() == "Texture" then
+			region:SetTexture(nil)
+		end
+	end
+end	
+BNToastFrame:SetTemplate()
+BNToastFrame:SetPoint('BOTTOMLEFT', ChatFrame1, 'TOPLEFT', -5, 5)
 
 FriendsMicroButton:Hide()
 FriendsMicroButton.Show = FriendsMicroButton.Hide

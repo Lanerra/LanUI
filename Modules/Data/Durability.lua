@@ -20,13 +20,13 @@ local slotInfo = {
 }
 
 local f = CreateFrame('Frame', 'DuraFrame')
+f:SetParent(CharacterFrame)
 f:SetSize(99, 32)
-f:SetFrameStrata(CharacterFrame:GetFrameStrata())
+f:SetFrameStrata('LOW')
 f:SetFrameLevel(CharacterFrame:GetFrameLevel() - 1)
 f:EnableMouse(false)
 f:SetScale(0.94)
-f:SetPoint('TOP', PaperDollFrame, 'BOTTOM', 170, 1)
-f:SetParent(CharacterFrame)
+f:SetPoint('TOP', PaperDollFrame, 'BOTTOM', 170, 5)
 f:RegisterEvent('PLAYER_ENTERING_WORLD')
 f:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
 f:RegisterEvent('MERCHANT_SHOW')

@@ -24,7 +24,7 @@ local mergeHealAbsorbs = false
 -- Config end
 
 local addon_name, ns = ...
-local boss = LibStub("LibBossIDs-1.0")
+local boss = LibStub("LibBossEncounters")
 local band = bit.band
 local bossname, mobname = nil, nil
 local units, bar, barguids, owners = {}, {}, {}, {}
@@ -77,7 +77,7 @@ local AbsorbSpellDuration = {
 }
 local shields = {}
 
-local menuFrame = CreateFrame("Frame", "LanDamageMeterMenu", UIParent, "UIDropDownMenuTemplate")
+local menuFrame = CreateFrame("Frame", "LanDamageMenu", UIParent, "UIDropDownMenuTemplate")
 
 local dummy = F.Dummy
 
