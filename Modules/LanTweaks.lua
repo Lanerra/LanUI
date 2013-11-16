@@ -10,6 +10,17 @@ local dummy = F.Dummy
 
 if IsAddOnLoaded('Carbonite') then
     select(5, NxQuestWatch:GetChildren()):SetTemplate()
+    
+    local x = CreateFrame('Frame', nil)
+    x:RegisterEvent('PLAYER_REGEN_DISABLED')
+    x:RegisterEvent('PLAYER_REGEN_ENABLED')
+    x:SetScript('OnEvent', function(self, event, ...)
+        if event == 'PLAYER_REGEN_DISABLED' then
+            NxQuestWatch:Hide()
+        elseif event == 'PLAYER_REGEN_ENABLED' then
+            NxQuestWatch:Show()
+        end
+    end)
 else
     local height = GetScreenHeight() / 1.6
 

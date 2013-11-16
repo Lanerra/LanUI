@@ -357,12 +357,13 @@ bar:SetScript("OnEvent", function(self, event, unit, ...)
 	elseif event == "UPDATE_VEHICLE_ACTIONBAR" or event == "UPDATE_OVERRIDE_ACTIONBAR" then
 		if HasVehicleActionBar() or HasOverrideActionBar() then
 			if not self.inVehicle then
-				LanBar2Button:Hide()
-				LanBar3Button:Hide()
-				LanBar4Button:Hide()
+				for i = 2, 4 do
+					_G['LanBar'..i..'Button']:Hide()
+				end
+					
 				LanBar5ButtonTop:Hide()
 				LanBar5ButtonBottom:Hide()
-				
+					
 				self.inVehicle = true
 			end
 		else
@@ -514,6 +515,41 @@ stance:SetScript("OnEvent", function(self, event, ...)
 		F.ShiftBarUpdate(self)
 	end
 end)
+
+ExtraActionBarFrame:SetParent(UIParent)
+ExtraActionBarFrame:ClearAllPoints()
+ExtraActionBarFrame:SetPoint('CENTER', UIParent, 0, -325)
+ExtraActionBarFrame.ignoreFramePositionManager = true
+
+G.ActionBars.BarExtra = ExtraActionBarFrame
+G.ActionBars.BarExtra.Button1 = ExtraActionButton1
+
+-- hook the texture, idea by roth via WoWInterface forums
+local button = ExtraActionButton1
+local icon = button.icon
+local texture = button.style
+local disableTexture = function(style, texture)
+	-- look like sometime the texture path is set to capital letter instead of lower-case
+	if string.sub(texture,1,9) == "Interface" or string.sub(texture,1,9) == "INTERFACE" then
+		style:SetTexture("")
+	end
+end
+button.style:SetTexture("")
+hooksecurefunc(texture, "SetTexture", disableTexture)
+
+local ExitVehicle = CreateFrame("Button", "LanUIExitVehicleButton", UIParent, "SecureHandlerClickTemplate")
+ExitVehicle:SetPoint('TOPRIGHT', LanBar1, 'TOPLEFT', -5, 0)
+ExitVehicle:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
+ExitVehicle:SetFrameStrata("LOW")
+ExitVehicle:SetFrameLevel(10)
+ExitVehicle:SetTemplate()
+ExitVehicle:RegisterForClicks("AnyUp")
+ExitVehicle:SetScript("OnClick", function() VehicleExit() end)
+ExitVehicle:FontString("text", C.Media.Font, 12)
+ExitVehicle.text:Point("CENTER", 0, 0)
+ExitVehicle.text:SetText("|cff4BAF4CX|r")
+RegisterStateDriver(ExitVehicle, "visibility", "[target=vehicle,exists] show;hide")
+G.ActionBars.ExitExitVehicle = ExitVehicle
 
 function ActionButton_OnUpdate(self, elapsed)
     if (IsAddOnLoaded('RedRange') or IsAddOnLoaded('GreenRange') or IsAddOnLoaded('tullaRange') or IsAddOnLoaded('RangeColors')) then

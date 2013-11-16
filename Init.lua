@@ -88,19 +88,6 @@ local PetBattleHider = CreateFrame('Frame', 'LanUIPetBattleHider', UIParent, 'Se
 PetBattleHider:SetAllPoints(UIParent)
 RegisterStateDriver(PetBattleHider, 'visibility', '[petbattle] hide; show')
 
-F.Credits = {
-    'Neav',
-    'Bellagarba',
-    'Phanx',
-    'Tekkub',
-    'Elv',
-    'p3lim',
-    'Tukz',
-    'Haste',
-    'Haleth',
-    'Roth',
-}
-
 -- Where it's due...
 SLASH_CREDITS1 = '/credits'
 SlashCmdList['CREDITS'] = function()

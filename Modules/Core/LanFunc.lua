@@ -10,7 +10,7 @@ local template
 local Inset = 0
 
 -- pixel perfect script of custom ui Scale.
-local Mult = 768/string.match(GetCVar('gxResolution'), '%d+x(%d+)')/GetCVar('uiScale')
+local Mult = 768/string.match(F.Resolution, '%d+x(%d+)')/C.Tweaks.UIScale
 local Scale = function(x)
 	return Mult*math.floor(x/Mult+.5)
 end
