@@ -9,7 +9,10 @@ local bordera = 1
 local template
 local Inset = 0
 
--- pixel perfect script of custom ui Scale.
+-- Workaround for 5.4.1 taint error
+setfenv(WorldMapFrame_OnShow, setmetatable({ UpdateMicroButtons = function() end }, { __index = _G }))
+
+-- Pixel perfect script of custom UI scale
 local Mult = 768/string.match(F.Resolution, '%d+x(%d+)')/C.Tweaks.UIScale
 local Scale = function(x)
 	return Mult*math.floor(x/Mult+.5)
@@ -192,13 +195,15 @@ local function SetTemplate(f, t)
     texture = C.Media.Backdrop
 	
 	UpdateColor(t)
+	
+	if f.SetBackdrop then
+		f:SetBackdrop({
+			bgFile = texture, 
+		})
 		
-	f:SetBackdrop({
-        bgFile = texture, 
-	})
-		
-	f:SetBackdropColor(backdropr, backdropg, backdropb, backdropa)
-	f:SetBackdropBorderColor(borderr, borderg, borderb)
+		f:SetBackdropColor(backdropr, backdropg, backdropb, backdropa)
+		f:SetBackdropBorderColor(borderr, borderg, borderb)
+	end
     
     if C.Media.ClassColor == true then
         CreateBorderLight(f, C.Media.BorderSize, C.Media.BorderColor.r, C.Media.BorderColor.g, C.Media.BorderColor.b)

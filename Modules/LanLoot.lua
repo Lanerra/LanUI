@@ -1,332 +1,450 @@
 local F, C, G = unpack(select(2, ...))
 
-_G["LootFrame"]:GetRegions():Hide()
+local TEST = true
 
-local LootBG = CreateFrame('Frame', nil, _G["LootFrame"])
-LootBG:SetPoint('TOPLEFT')
-LootBG:SetPoint('RIGHT')
-LootBG:SetFrameStrata("LOW")	
-LootBG:SetBackdrop({
-    bgFile = C.Media.Backdrop,
-	insets = {top = 1, left = 1, bottom = 1, right = 1},
-})
-LootBG:SetBackdropColor(C.Media.BackdropColor)
+local iconsize = 32
+local width = 200
+local sq, ss, sn, st
 
-LootBG:CreateBeautyBorder(12, R, G, B, 1)
+local addon = CreateFrame("Button", "LanLoot", UIParent)
+addon:SetFrameStrata("HIGH")
+addon:SetClampedToScreen(true)
+addon:SetWidth(width)
+addon:SetHeight(64)
 
-for i = 1, 4 do
-    local text = _G['LootButton'..i..'Text']
-	_G['LootButton'..i]:CreateBeautyBorder(12, R, G, B, 1)
-    for _, font in pairs({
-        text,
-    }) do
-       font:SetFont('Fonts\\ARIALN.ttf', 13, 'THINOUTLINE')
-       font:SetTextColor(1, 1, 1)
-	   font:SetWidth(170)
-	   font:SetNonSpaceWrap(true)
-    end
-end
+addon.slots = {}
 
-for i = 1, 4 do
-    local count = _G['LootButton'..i..'Count']
-    for _, font in pairs({
-        count,
-    }) do
-        font:SetFont('Fonts\\ARIALN.ttf', 13, 'THINOUTLINE')
-        font:SetTextColor(1, 1, 1)
-    end
-end
-
-local f = CreateFrame("Frame")
-f:RegisterEvent("CONFIRM_DISENCHANT_ROLL")
-f:RegisterEvent("CONFIRM_LOOT_ROLL")
-f:SetScript("OnEvent", function(self, event, id, rollType)
-	for i=1,STATICPOPUP_NUMDIALOGS do
-		local frame = _G["StaticPopup"..i]
-		if frame.which == "CONFIRM_LOOT_ROLL" and frame.data == id and frame.data2 == rollType and frame:IsVisible() then StaticPopup_OnClick(frame, 1) end
-	end
-end)
-
-StaticPopupDialogs["LOOT_BIND"].OnCancel = function(self, slot)
-	if GetNumGroupMembers() == 0 and GetNumRaidMembers() == 0 then ConfirmLootSlot(slot) end
-end
-
-local TEST = false
-UIParent:UnregisterEvent('START_LOOT_ROLL')
-UIParent:UnregisterEvent('CANCEL_LOOT_ROLL')
-
-local GFHCName, GFHCHeight = GameFontHighlightCenter:GetFont()
-local frames, rolls, rolltypes, rollstrings = {}, {}, { [0] = PASS, [1] = NEED, [2] = GREED, [3] = ROLL_DISENCHANT }, { [(LOOT_ROLL_PASSED_AUTO):gsub('%%1$s', '(.+)'):gsub('%%2$s', '(.+)')] = 0, [(LOOT_ROLL_PASSED_AUTO_FEMALE):gsub('%%1$s', '(.+)'):gsub('%%2$s', '(.+)')] = 0, [(LOOT_ROLL_PASSED):gsub('%%s', '(.+)')] = 0, [(LOOT_ROLL_GREED):gsub('%%s', '(.+)')] = 2, [(LOOT_ROLL_NEED):gsub('%%s', '(.+)')] = 1, [(LOOT_ROLL_DISENCHANT):gsub('%%s', '(.+)')] = 3 }
-
-local function OnUpdate(self, elapsed)
-	if (self.rollID and not self.paused) then
-		if (TEST) then
-			self:SetValue(self.rollID)
-			self.paused = 1
-		else
-			self:SetValue(GetLootRollTimeLeft(self.rollID))
-		end
-		
-		if (GameTooltip:IsOwned(self)) then
-			GameTooltip:SetLootRollItem(self.rollID)
-			CursorUpdate(self)
-		end
+local OnEnter = function(self)
+	local slot = self:GetID()
+	if GetLootSlotType(slot) == LOOT_SLOT_ITEM then
+		GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+		GameTooltip:SetLootItem(slot)
+		CursorUpdate(self)
 	end
 end
 
-local function OnClick(self)
-	HandleModifiedItemClick(self.rollLink)
-end
-
-local function OnEvent(self, event, ...)
-	local rollID = ...
-	if ( self.rollID and self.rollID == rollID ) then
-		self.paused = 1
-		StaticPopup_Hide('CONFIRM_LOOT_ROLL', rollID)
-		
-		self:SetStatusBarColor(0.5, 0.5, 0.5)
-		for i=0, #self.button, 1 do
-			GroupLootFrame_DisableLootButton(self.button[i])
-		end
-		
-		local fadeInfo = {}
-		fadeInfo.mode = 'OUT'
-		fadeInfo.timeToFade = 0.5
-		fadeInfo.startAlpha = self:GetAlpha()
-		fadeInfo.endAlpha = 0
-		fadeInfo.finishedFunc = function()
-			rolls[rollID] = nil
-			self.rollID = nil
-			self.paused = nil
-			self:Hide()
-		end
-		UIFrameFade(self, fadeInfo)
-	end
-end
-
-local function OnEnter(self)
-	GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMLEFT')
-	GameTooltip:SetLootRollItem(self.rollID)
-	CursorUpdate(self)
-end
-
-local function OnLeave(self)
+local OnLeave = function(self)
 	GameTooltip:Hide()
 	ResetCursor()
 end
 
-local function Button_OnClick(self)
-	RollOnLoot(self:GetParent().rollID, self:GetID())
+local OnClick = function(self)
+	if(IsModifiedClick()) then
+		HandleModifiedItemClick(GetLootSlotLink(self:GetID()))
+	else
+		StaticPopup_Hide"CONFIRM_LOOT_DISTRIBUTION"
+		ss = self:GetID()
+		sq = self.quality
+		sn = self.name:GetText()
+		st = self.icon:GetTexture()
+
+		LootFrame.selectedLootButton = self:GetName();
+		LootFrame.selectedSlot = ss;
+		LootFrame.selectedQuality = sq;
+		LootFrame.selectedItemName = sn;
+		LootFrame.selectedTexture = st;
+
+		LootSlot(ss)
+	end
 end
 
-local backdrop = {
-	bgFile = C.Media.Backdrop,
-	insets = {top = -1, left = -1, bottom = -1, right = -1},
-}
+local createSlot = function(id)
+	local frame = CreateFrame("Button", "LanSlot"..id, addon)
+	frame:SetPoint("TOP", addon, 0, -((id-1)*(iconsize+1)))
+	frame:SetPoint("RIGHT")
+	frame:SetPoint("LEFT")
+	frame:SetHeight(24)
+	frame:SetFrameStrata("HIGH")
+	frame:SetFrameLevel(20)
+	frame:SetID(id)
+	addon.slots[id] = frame
 
-local function CreateRollFrame()
-	local frame = CreateFrame('StatusBar', 'LanGroupLootBar'..(#frames+1), LanGroupLoot)
-	frame.hasItem = 1
-	frame:SetAlpha(0)
-	frame:EnableMouse(1)
-	frame:SetWidth(235)
-	frame:SetHeight(29)
-	
-    frame:CreateBeautyBorder(12, 1, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3)
-	
-	if (#frames == 0) then
-		frame:SetPoint('TOP')
-	else
-		frame:SetPoint('TOP', frames[#frames], 'BOTTOM', 0, -12)
-	end
-	
-	frame:SetStatusBarTexture(C.Media.StatusBar)
-	frame:SetScript('OnUpdate', OnUpdate)
-	frame:SetScript('OnMouseUp', OnClick)
-	frame:RegisterEvent('CANCEL_LOOT_ROLL')
-	frame:SetScript('OnEvent', OnEvent)
-	frame:SetScript('OnEnter', OnEnter)
-	frame:SetScript('OnLeave', OnLeave)
-	
-	frame.background = frame:CreateTexture('$parentBackground', 'BORDER')
-	frame.background:SetAllPoints()
-	frame.background:SetTexture(C.Media.Backdrop)
-	frame.background:SetVertexColor(unpack(C.Media.BackdropColor))
-	
-	frame.button = {}
+	local bg = CreateFrame("Frame", nil, frame)
+	bg:SetPoint("TOPLEFT", frame, -1, 1)
+	bg:SetPoint("BOTTOMRIGHT", frame, 1, -1)
+	bg:SetFrameLevel(frame:GetFrameLevel()-1)
+	bg:SetTemplate()
+	frame.bg = bg
 
-	frame.button[0] = CreateFrame('Button', '$perentPassButton', frame)
-	frame.button[0]:SetMotionScriptsWhileDisabled(true)
-	frame.button[0]:SetID(0)
-	frame.button[0]:SetWidth(21)
-	frame.button[0]:SetHeight(21)
-	frame.button[0]:SetNormalTexture('Interface\\Buttons\\UI-GroupLoot-Pass-Up')
-	frame.button[0]:SetHighlightTexture('Interface\\Buttons\\UI-GroupLoot-Pass-Down')
-	frame.button[0]:SetHighlightTexture('Interface\\Buttons\\UI-GroupLoot-Pass-Highlight')
-	frame.button[0]:SetPoint('RIGHT', -5, 1)
-	frame.button[0]:SetScript('OnClick', Button_OnClick)
-	frame.button[0]:SetScript('OnEnter', Button_OnEnter)
-	frame.button[0]:SetScript('OnLeave', OnLeave)
+	frame:SetScript("OnClick", OnClick)
+	frame:SetScript("OnEnter", OnEnter)
+	frame:SetScript("OnLeave", OnLeave)
 
-	frame.button[2] = CreateFrame('Button', '$perentGreedButton', frame)
-	frame.button[2]:SetMotionScriptsWhileDisabled(true)
-	frame.button[2]:SetID(2)
-	frame.button[2]:SetWidth(23)
-	frame.button[2]:SetHeight(23)
-	frame.button[2]:SetNormalTexture('Interface\\Buttons\\UI-GroupLoot-Coin-Up')
-	frame.button[2]:SetPushedTexture('Interface\\Buttons\\UI-GroupLoot-Coin-Down')
-	frame.button[2]:SetHighlightTexture('Interface\\Buttons\\UI-GroupLoot-Coin-Highlight')
-	frame.button[2]:SetPoint('RIGHT', frame.button[0], 'LEFT', -2, -4)
-	frame.button[2]:SetScript('OnClick', Button_OnClick)
-	frame.button[2]:SetScript('OnEnter', Button_OnEnter)
-	frame.button[2]:SetScript('OnLeave', OnLeave)
-	
-	frame.button[1] = CreateFrame('Button', '$perentNeedButton', frame)
-	frame.button[1]:SetMotionScriptsWhileDisabled(true)
-	frame.button[1]:SetID(1)
-	frame.button[1]:SetWidth(23)
-	frame.button[1]:SetHeight(23)
-	frame.button[1]:SetNormalTexture('Interface\\Buttons\\UI-GroupLoot-Dice-Up')
-	frame.button[1]:SetPushedTexture('Interface\\Buttons\\UI-GroupLoot-Dice-Down')
-	frame.button[1]:SetHighlightTexture('Interface\\Buttons\\UI-GroupLoot-Dice-Highlight')
-	frame.button[1]:SetPoint('RIGHT', frame.button[2], 'LEFT', -2, 2)
-	frame.button[1]:SetScript('OnClick', Button_OnClick)
-	frame.button[1]:SetScript('OnEnter', Button_OnEnter)
-	frame.button[1]:SetScript('OnLeave', OnLeave)
+	local iconFrame = CreateFrame("Frame", nil, frame)
+	iconFrame:SetHeight(iconsize)
+	iconFrame:SetWidth(iconsize)
+	iconFrame:SetFrameStrata("HIGH")
+	iconFrame:SetFrameLevel(20)
+	iconFrame:ClearAllPoints()
+	iconFrame:SetPoint("RIGHT", frame, "LEFT", -2, 0)
 
-	frame.button[3] = CreateFrame('Button', '$perentDisenchantButton', frame)
-	frame.button[3]:SetMotionScriptsWhileDisabled(true)
-	frame.button[3]:SetID(3)
-	frame.button[3]:SetWidth(23)
-	frame.button[3]:SetHeight(23)
-	frame.button[3]:SetNormalTexture('Interface\\Buttons\\UI-GroupLoot-DE-Up')
-	frame.button[3]:SetPushedTexture('Interface\\Buttons\\UI-GroupLoot-DE-Down')
-	frame.button[3]:SetHighlightTexture('Interface\\Buttons\\UI-GroupLoot-DE-Highlight')
-	frame.button[3]:SetPoint('RIGHT', frame.button[1], 'LEFT', -2, 0)
-	frame.button[3]:SetScript('OnClick', Button_OnClick)
-	frame.button[3]:SetScript('OnEnter', Button_OnEnter)
-	frame.button[3]:SetScript('OnLeave', OnLeave)
-	
-	frame.text = frame:CreateFontString('$perentText', 'ARTWORK', 'InvoiceTextFontNormal')
-	frame.text:SetPoint('LEFT', 5, 0)
-	frame.text:SetFont(GFHCName, GFHCHeight+1)
-	frame.text:SetPoint('RIGHT', frame.button[3], 'LEFT')
-    frame.text:SetShadowColor(0, 0, 0, 0.75)
-    frame.text:SetShadowOffset(1, -1)
-
-	local iconframe = CreateFrame('Frame', nil, frame)
-    iconframe:SetHeight(31)
-    iconframe:SetWidth(31)
-	iconframe:ClearAllPoints()
-	iconframe:SetBackdrop(backdrop)
-	iconframe:SetBackdropColor(unpack(C.Media.BackdropColor))
-	iconframe:SetPoint('RIGHT', frame, 'LEFT', -8, 0)
-	
-	iconframe:CreateBeautyBorder(12, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2)
-
-	local icon = iconframe:CreateTexture('Frame', nil)
-    icon:SetTexCoord(.08, .92, .08, .92)
-	icon:SetPoint('TOPLEFT', iconframe, 'TOPLEFT', 1 , -1)
-	icon:SetPoint('BOTTOMRIGHT', iconframe, 'BOTTOMRIGHT', -1, 1)
+	local icon = iconFrame:CreateTexture(nil, "ARTWORK")
+	icon:SetTexCoord(.08, .92, .08, .92)
+	icon:SetPoint("TOPLEFT", 1, -1)
+	icon:SetPoint("BOTTOMRIGHT", -1, 1)
 	frame.icon = icon
 	
-	table.insert(frames, frame)
+	local iconbg = CreateFrame('Frame', nil, iconFrame)
+	iconbg:SetAllPoints(icon)
+	CreateBorderLight(iconbg, C.Media.BorderSize, C.Media.BorderColor.r, C.Media.BorderColor.g, C.Media.BorderColor.b)
+	SetTexture(iconbg, 'white')
+
+	local count = iconFrame:CreateFontString(nil, 'OVERLAY')
+	count:SetFont(C.Media.Font, 12)
+	count:SetJustifyH('CENTER')
+	count:SetPoint("TOP", iconFrame, 1, -2)
+	count:SetText(1)
+	frame.count = count
+
+	local name = frame:CreateFontString(nil, 'OVERLAY')
+	name:SetFont(C.Media.Font, 12)
+	name:SetJustifyH('LEFT')
+	name:SetPoint("RIGHT", frame)
+	name:SetPoint("LEFT", icon, "RIGHT", 8, 0)
+	name:SetNonSpaceWrap(true)
+	frame.name = name
+
 	return frame
 end
 
-local function GetRollFrame()
-	for _, frame in ipairs(frames) do
-		if (not frame.rollID) then
-			return frame
+local anchorSlots = function(self)
+	local shownSlots = 0
+	for i=1, #self.slots do
+		local frame = self.slots[i]
+		if(frame:IsShown()) then
+			shownSlots = shownSlots + 1
+
+			-- We don't have to worry about the previous slots as they're already hidden.
+			frame:SetPoint("TOP", addon, 4, (-8 + iconsize) - (shownSlots * (iconsize+1)))
 		end
 	end
 
-	return CreateRollFrame()
+	self:SetHeight(math.max(shownSlots * iconsize + 16, 20))
 end
 
-local function OnEvent(self, event, ...)
-	if (event == 'CHAT_MSG_LOOT') then
-		local msg = ...
-        
-		for string, type in pairs(rollstrings) do
-			local _, _, player, item = string.find(msg, string)
-			if (player and item) then
-				local rollID
-				for _, frame in ipairs(frames) do
-					rollID = frame.rollID
-					if (rollID and frame.rollLink == item) then
-						rolls[rollID] = rolls[rollID] or {}
-						rolls[rollID][type] = rolls[rollID][type] or {}
-						rolls[rollID][type].count = (rolls[rollID][type].count or 0)+1
-						
-						return
-					end
+addon:SetScript("OnHide", function(self)
+	StaticPopup_Hide"CONFIRM_LOOT_DISTRIBUTION"
+	CloseLoot()
+end)
+
+addon.LOOT_CLOSED = function(self)
+	StaticPopup_Hide"LOOT_BIND"
+	self:Hide()
+
+	for _, v in next, self.slots do
+		v:Hide()
+	end
+end
+
+addon.LOOT_OPENED = function(self, event, autoloot)
+	self:Show()
+
+	if(not self:IsShown()) then
+		CloseLoot(not autoLoot)
+	end
+
+	local items = GetNumLootItems()
+
+	local x, y = GetCursorPosition()
+	x = x / self:GetEffectiveScale()
+	y = y / self:GetEffectiveScale()
+
+	self:ClearAllPoints()
+	self:SetPoint("TOPLEFT", nil, "BOTTOMLEFT", x-40, y+20)
+	self:Raise()
+
+	if(items > 0) then
+		for i = 1, items do
+			local slot = addon.slots[i] or createSlot(i)
+			local texture, item, quantity, quality, locked, isQuestItem, questId, isActive = GetLootSlotInfo(i)
+			if texture then
+
+				if GetLootSlotType(i) == LOOT_SLOT_MONEY then
+					item = item:gsub("\n", ", ")
 				end
+
+				if(quantity > 1) then
+					slot.count:SetText(quantity)
+					slot.count:Show()
+				else
+					slot.count:Hide()
+				end
+
+				slot.quality = quality
+
+				local color = ITEM_QUALITY_COLORS[quality]
+
+				if questId and not isActive then
+					slot.bg:SetBackdropColor(.5, 0, 0, .5)
+					slot.name:SetTextColor(1, 0, 0)
+				elseif questId or isQuestItem then
+					slot.bg:SetBackdropColor(.5, 0, 0, .5)
+					slot.name:SetTextColor(color.r, color.g, color.b)
+				else
+					slot.bg:SetBackdropColor(0, 0, 0, .5)
+					slot.name:SetTextColor(color.r, color.g, color.b)
+				end
+
+				slot.name:SetText(item)
+				slot.icon:SetTexture(texture)
+
+				slot:Enable()
+				slot:Show()
 			end
 		end
-        
-		return
+	else
+		self:Hide()
 	end
-	
-	local rollID, rollTime = ...
-	local texture, name, count, quality, bindOnPickUp, canNeed, canGreed, canDisenchant, reasonNeed, reasonGreed, reasonDisenchant, deSkillRequired = GetLootRollItemInfo(rollID)
-	local color = ITEM_QUALITY_COLORS[quality]
-	local frame = GetRollFrame()
-	frame.rollID = rollID
-	frame.rollTime = rollTime
-	frame.rollLink = GetLootRollItemLink(rollID)
-	frame:SetMinMaxValues(0, rollTime)
-	frame:SetStatusBarColor(color.r, color.g, color.b, 1)
-	frame.text:SetText(count > 1 and count..'x '..name or name)
-	frame.icon:SetTexture(texture)
 
-	if (canNeed) then
-		GroupLootFrame_EnableLootButton(frame.button[1])
-		frame.button[1].reason = nil
-	else
-		GroupLootFrame_DisableLootButton(frame.button[1])
-		frame.button[1].reason = _G['LOOT_ROLL_INELIGIBLE_REASON'..reasonNeed]
-	end
-	
-	if (canGreed) then
-		GroupLootFrame_EnableLootButton(frame.button[2])
-		frame.button[2].reason = nil
-	else
-		GroupLootFrame_DisableLootButton(frame.button[2])
-		frame.button[2].reason = _G['LOOT_ROLL_INELIGIBLE_REASON'..reasonGreed]
-	end
-	
-	if (canDisenchant) then
-		GroupLootFrame_EnableLootButton(frame.button[3])
-		frame.button[3].reason = nil
-	else
-		GroupLootFrame_DisableLootButton(frame.button[3])
-		frame.button[3].reason = format(_G['LOOT_ROLL_INELIGIBLE_REASON'..reasonDisenchant], deSkillRequired)
-	end
-	
-	local fadeInfo = {}
-	fadeInfo.mode = 'IN'
-	fadeInfo.timeToFade = 0.5
-	fadeInfo.startAlpha = frame:GetAlpha()
-	fadeInfo.endAlpha = 1
-	UIFrameFade(frame, fadeInfo)
+	anchorSlots(self)
 end
 
-local frame = CreateFrame('Frame', 'LanGroupLoot', UIParent)
-frame:SetWidth(280)
-frame:SetHeight(25)
-frame:SetPoint('TOP', 0, -300)
-frame:RegisterEvent('START_LOOT_ROLL')
-frame:RegisterEvent('CHAT_MSG_LOOT')
-frame:SetScript('OnEvent', OnEvent)
+addon.LOOT_SLOT_CLEARED = function(self, event, slot)
+	if(not self:IsShown()) then return end
+	addon.slots[slot]:Hide()
+	anchorSlots(self)
+end
 
-if (TEST) then
-	local color = 1
-	function GetLootRollItemInfo(rollID)
-		color = color+1
-		return 'Interface\\Icons\\Spell_Fire_Burnout', 'Test-Roll '..rollID, 1, color, nil, nil, 1, nil, 5, nil, 4, 450
+addon.OPEN_MASTER_LOOT_LIST = function(self)
+	ToggleDropDownMenu(1, nil, GroupLootDropDown, addon.slots[ss], 0, 0)
+end
+
+addon.UPDATE_MASTER_LOOT_LIST = function(self)
+	MasterLooterFrame_UpdatePlayers()
+end
+
+addon:SetScript("OnEvent", function(self, event, arg1) self[event](self, event, arg1) end)
+
+addon:RegisterEvent("LOOT_OPENED")
+addon:RegisterEvent("LOOT_SLOT_CLEARED")
+addon:RegisterEvent("LOOT_CLOSED")
+addon:RegisterEvent("OPEN_MASTER_LOOT_LIST")
+addon:RegisterEvent("UPDATE_MASTER_LOOT_LIST")
+addon:Hide()
+
+LootFrame:UnregisterAllEvents()
+table.insert(UISpecialFrames, "LanLoot")
+
+LootHistoryDropDown.initialize = function(self)
+	local info = UIDropDownMenu_CreateInfo();
+	info.isTitle = 1;
+	info.text = MASTER_LOOTER;
+	info.fontObject = GameFontNormalLeft;
+	info.notCheckable = 1;
+	UIDropDownMenu_AddButton(info);
+
+	info = UIDropDownMenu_CreateInfo();
+	info.notCheckable = 1;
+	local name, class = C_LootHistory.GetPlayerInfo(self.itemIdx, self.playerIdx);
+	local classColor = C.classcolours[class];
+	local colorCode = string.format("|cFF%02x%02x%02x",  classColor.r*255,  classColor.g*255,  classColor.b*255);
+	info.text = string.format(MASTER_LOOTER_GIVE_TO, colorCode..name.."|r");
+	info.func = LootHistoryDropDown_OnClick;
+	UIDropDownMenu_AddButton(info);
+end
+
+UIParent:UnregisterEvent("START_LOOT_ROLL")
+UIParent:UnregisterEvent("CANCEL_LOOT_ROLL")
+
+local gwidth = 200
+local giconsize = 32
+local grouplootlist, grouplootframes = {}, {}
+
+local MAX_LEVEL = MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()]
+
+local function shouldAutoRoll(quality, BoP)
+	return quality == 2 and not BoP and C.automation.autoRoll and (MAX_LEVEL == UnitLevel("player") or not C.automation.autoRoll_maxLevel)
+end
+
+local function OnEvent(self, event, rollId)
+	local _, _, _, quality, BoP, _, _, canDE = GetLootRollItemInfo(rollId)
+	if shouldAutoRoll(quality, BoP) then
+		RollOnLoot(rollId, canDE and 3 or 2)
+	else
+		tinsert(grouplootlist, {rollId = rollId})
+		self:UpdateGroupLoot()
 	end
-	for i=1, 4, 1 do
-		OnEvent(frame, 'START_LOOT_ROLL', i, 4)
+end
+
+local function FrameOnEvent(self, event, rollId)
+	if(self.rollId and rollId==self.rollId) then
+		for index, value in next, grouplootlist do
+			if(self.rollId==value.rollId) then
+				tremove(grouplootlist, index)
+				break
+			end
+		end
+		StaticPopup_Hide("CONFIRM_LOOT_ROLL", self.rollId)
+		self.rollId = nil
+		LanGroupLoot:UpdateGroupLoot()
+	end
+end
+
+local function FrameOnClick(self)
+	HandleModifiedItemClick(self.rollLink)
+end
+
+local function onUpdate(self)
+	if GameTooltip:IsOwned(self) then
+		if IsModifiedClick("COMPAREITEMS") or GetCVarBool("alwaysCompareItems") then
+			GameTooltip_ShowCompareItem()
+		else
+			ShoppingTooltip1:Hide()
+			ShoppingTooltip2:Hide()
+			ShoppingTooltip3:Hide()
+		end
+
+		if IsModifiedClick("DRESSUP") then
+			ShowInspectCursor()
+		else
+			ResetCursor()
+		end
+	end
+end
+
+local function FrameOnEnter(self)
+	if(not self.rollId) then return end
+	GameTooltip:SetOwner(self, "ANCHOR_BOTTOMLEFT")
+	GameTooltip:SetLootRollItem(self.rollId)
+	self:SetScript("OnUpdate", onUpdate)
+	CursorUpdate(self)
+end
+
+local function FrameOnLeave(self)
+	self:SetScript("OnUpdate", nil)
+	GameTooltip:Hide()
+	ResetCursor()
+end
+
+local function ButtonOnClick(self, button)
+	RollOnLoot(self:GetParent().rollId, self.type)
+end
+
+local function SortFunc(a, b)
+	return a.rollId < b.rollId
+end
+
+local GLoot = CreateFrame("Frame", "LanGroupLoot", UIParent)
+GLoot:RegisterEvent("START_LOOT_ROLL")
+GLoot:SetScript("OnEvent", OnEvent)
+GLoot:SetPoint("RIGHT", -50, 0)
+GLoot:SetWidth(gwidth)
+GLoot:SetHeight(24)
+
+function GLoot:UpdateGroupLoot()
+	sort(grouplootlist, SortFunc)
+	for index, value in next, grouplootframes do value:Hide() end
+
+	if MultiBarLeft:IsShown() then
+		GLoot:SetPoint("RIGHT", -150, 0)
+	elseif MultiBarRight:IsShown() then
+		GLoot:SetPoint("RIGHT", -100, 0)
+	else
+		GLoot:SetPoint("RIGHT", -50, 0)
+	end
+
+	local frame
+	for index, value in next, grouplootlist do
+		frame = grouplootframes[index]
+		if(not frame) then
+			frame = CreateFrame("Frame", "LanGroupLootFrame"..index, UIParent)
+			frame:EnableMouse(true)
+			frame:SetWidth(220)
+			frame:SetHeight(24)
+			frame:SetPoint("TOP", GLoot, 0, -((index-1)*(giconsize+3)))
+			frame:RegisterEvent("CANCEL_LOOT_ROLL")
+			frame:SetScript("OnEvent", FrameOnEvent)
+			frame:SetScript("OnMouseUp", FrameOnClick)
+			frame:SetScript("OnLeave", FrameOnLeave)
+			frame:SetScript("OnEnter", FrameOnEnter)
+			frame:SetTemplate()
+
+			frame.pass = CreateFrame("Button", nil, frame)
+			frame.pass.type = 0
+			frame.pass.roll = "pass"
+			frame.pass:SetWidth(28)
+			frame.pass:SetHeight(28)
+			frame.pass:SetNormalTexture("Interface\\Buttons\\UI-GroupLoot-Pass-Up")
+			frame.pass:SetHighlightTexture("Interface\\Buttons\\UI-GroupLoot-Pass-Down")
+			frame.pass:SetPoint("RIGHT", 0, 1)
+			frame.pass:SetScript("OnClick", ButtonOnClick)
+
+			frame.greed = CreateFrame("Button", nil, frame)
+			frame.greed.type = 2
+			frame.greed.roll = "greed"
+			frame.greed:SetWidth(28)
+			frame.greed:SetHeight(28)
+			frame.greed:SetNormalTexture("Interface\\Buttons\\UI-GroupLoot-Coin-Up")
+			frame.greed:SetPushedTexture("Interface\\Buttons\\UI-GroupLoot-Coin-Down")
+			frame.greed:SetHighlightTexture("Interface\\Buttons\\UI-GroupLoot-Coin-Highlight")
+			frame.greed:SetPoint("RIGHT", frame.pass, "LEFT", -1, -4)
+			frame.greed:SetScript("OnClick", ButtonOnClick)
+
+			frame.disenchant = CreateFrame("Button", nil, frame)
+			frame.disenchant.type = 3
+			frame.disenchant.roll = "disenchant"
+			frame.disenchant:SetWidth(28)
+			frame.disenchant:SetHeight(28)
+			frame.disenchant:SetNormalTexture("Interface\\Buttons\\UI-GroupLoot-DE-Up")
+			frame.disenchant:SetPushedTexture("Interface\\Buttons\\UI-GroupLoot-DE-Down")
+			frame.disenchant:SetHighlightTexture("Interface\\Buttons\\UI-GroupLoot-DE-Highlight")
+			frame.disenchant:SetPoint("RIGHT", frame.greed, "LEFT", -1, 2)
+			frame.disenchant:SetScript("OnClick", ButtonOnClick)
+
+			frame.need = CreateFrame("Button", nil, frame)
+			frame.need.type = 1
+			frame.need.roll = "need"
+			frame.need:SetWidth(28)
+			frame.need:SetHeight(28)
+			frame.need:SetNormalTexture("Interface\\Buttons\\UI-GroupLoot-Dice-Up")
+			frame.need:SetPushedTexture("Interface\\Buttons\\UI-GroupLoot-Dice-Down")
+			frame.need:SetHighlightTexture("Interface\\Buttons\\UI-GroupLoot-Dice-Highlight")
+			frame.need:SetPoint("RIGHT", frame.disenchant, "LEFT", -1, 0)
+			frame.need:SetScript("OnClick", ButtonOnClick)
+
+			frame.text = frame:CreateFontString(nil, 'OVERLAY')
+			frame.text:SetFont(C.Media.Font, 12)
+			frame.text:SetJustifyH('LEFT')
+			frame.text:SetPoint("LEFT")
+			frame.text:SetPoint("RIGHT", frame.need, "LEFT")
+
+			local iconFrame = CreateFrame("Frame", nil, frame)
+			iconFrame:SetHeight(giconsize)
+			iconFrame:SetWidth(giconsize)
+			iconFrame:ClearAllPoints()
+			iconFrame:SetPoint("RIGHT", frame, "LEFT", -2, 0)
+
+			local icon = iconFrame:CreateTexture(nil, "OVERLAY")
+			icon:SetPoint("TOPLEFT")
+			icon:SetPoint("BOTTOMRIGHT")
+			icon:SetTexCoord(.08, .92, .08, .92)
+			frame.icon = icon
+			
+			local iconbg = CreateFrame('Frame', nil, iconFrame)
+			iconbg:SetAllPoints(icon)
+			CreateBorderLight(iconbg, C.Media.BorderSize, C.Media.BorderColor.r, C.Media.BorderColor.g, C.Media.BorderColor.b)
+			SetTexture(iconbg, 'white')
+
+			tinsert(grouplootframes, frame)
+		end
+
+		local texture, name, count, quality, bindOnPickUp, Needable, Greedable, Disenchantable = GetLootRollItemInfo(value.rollId)
+
+		if Disenchantable then frame.disenchant:Enable() else frame.disenchant:Disable() end
+		if Needable then frame.need:Enable() else frame.need:Disable() end
+		if Greedable then frame.greed:Enable() else frame.greed:Disable() end
+
+		SetDesaturation(frame.disenchant:GetNormalTexture(), not Disenchantable)
+		SetDesaturation(frame.need:GetNormalTexture(), not Needable)
+		SetDesaturation(frame.greed:GetNormalTexture(), not Greedable)
+
+		frame.text:SetText(ITEM_QUALITY_COLORS[quality].hex..name)
+
+		frame.icon:SetTexture(texture)
+
+		frame.rollId = value.rollId
+		frame.rollLink = GetLootRollItemLink(value.rollId)
+
+		frame:Show()
 	end
 end

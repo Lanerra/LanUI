@@ -13,7 +13,7 @@ end
 
 LanBar1:SetWidth((C.ActionBars.ButtonSize * 12) + (C.ActionBars.ButtonSpacing * 13))
 LanBar1:SetHeight((C.ActionBars.ButtonSize * 1) + (C.ActionBars.ButtonSpacing * 2))
-LanBar1:SetPoint("BOTTOM", UIParent, 0, 64)
+LanBar1:SetPoint("BOTTOM", UIParent, 0, 83)
 LanBar1:SetFrameStrata("BACKGROUND")
 LanBar1:SetFrameLevel(1)
 G.ActionBars.Bar1 = LanBar1
@@ -357,10 +357,9 @@ bar:SetScript("OnEvent", function(self, event, unit, ...)
 	elseif event == "UPDATE_VEHICLE_ACTIONBAR" or event == "UPDATE_OVERRIDE_ACTIONBAR" then
 		if HasVehicleActionBar() or HasOverrideActionBar() then
 			if not self.inVehicle then
-				for i = 2, 4 do
-					_G['LanBar'..i..'Button']:Hide()
-				end
-					
+				LanBar2Button:Hide()
+				LanBar3Button:Hide()
+				LanBar4Button:Hide()
 				LanBar5ButtonTop:Hide()
 				LanBar5ButtonBottom:Hide()
 					

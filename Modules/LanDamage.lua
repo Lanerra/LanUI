@@ -1,30 +1,34 @@
 local F, C, G = unpack(select(2, ...))
 
 -- Config start
-local anchor = "TOPLEFT"
+local anchor = 'TOPLEFT'
 local x, y = 15, -15
-local barheight = 12.35
-local spacing = 1
-local maxbars = 10
-local width, height = 161, 140
-local maxfights = 5
-local reportstrings = 5
-local texture = C.Media.StatusBar
-local backdrop_color = C.Media.BackdropColor
-local border_color = {0, 0, 0, 0}
-local border_size = 2
 local font = C.Media.Font
-local font_style = "" 
-local font_size = 11
-local hidetitle = false
-local classcolorbar = true
-local classcolorname = false
-local mergeHealAbsorbs = false
+local texture = C.Media.StatusBar
 
--- Config end
+local defaults = {
+	barheight = 12,
+	spacing = 1,
+	maxbars = 8,
+	width = 161,
+	maxfights = 5,
+	reportstrings = 5,
+	backdrop_color = C.Media.BackdropColor,
+	border_color = {0, 0, 0, 0},
+	border_size = 2,
+	font_style = '',
+	font_size = 12,
+	hidetitle = true,
+	barcolor = {0.4, 0.4, 0.4, 1},
+	classcolorbar = true,
+	onlyboss = false,
+	classcolorname = false,
+	mergeHealAbsorbs = false,
+}
+dmconf = defaults
 
-local addon_name, ns = ...
-local boss = LibStub("LibBossEncounters")
+local addon_name = 'LanDamage'
+local boss = LibStub('LibBossEncounters')
 local band = bit.band
 local bossname, mobname = nil, nil
 local units, bar, barguids, owners = {}, {}, {}, {}
@@ -36,9 +40,9 @@ local raidFlags = COMBATLOG_OBJECT_AFFILIATION_RAID + COMBATLOG_OBJECT_AFFILIATI
 local petFlags = COMBATLOG_OBJECT_TYPE_PET + COMBATLOG_OBJECT_TYPE_GUARDIAN
 local npcFlags = COMBATLOG_OBJECT_TYPE_NPC+COMBATLOG_OBJECT_CONTROL_NPC
 local backdrop = {
-    bgFile = C.Media.Backdrop,
-	edgeFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeSize = border_size,
-    insets = {top = 2, left = 2, bottom = 2, right = 2},
+	bgFile = C.Media.Backdrop,
+	edgeFile = C.Media.Backdrop, edgeSize = dmconf.border_size,
+	insets = {top = 0, left = 0, bottom = 0, right = 0},
 }
 local displayMode = {
 	DAMAGE,
@@ -77,22 +81,27 @@ local AbsorbSpellDuration = {
 }
 local shields = {}
 
-local menuFrame = CreateFrame("Frame", "LanDamageMenu", UIParent, "UIDropDownMenuTemplate")
-
-local dummy = F.Dummy
+local menuFrame = CreateFrame('Frame', 'LanDamageMenu', UIParent, 'UIDropDownMenuTemplate')
 
 local truncate = function(value)
-    if value >= 1e6 then
-        return string.format('%.2fm', value / 1e6)
-    elseif value >= 1e4 then
-        return string.format('%.1fk', value / 1e3)
-    else
-        return string.format('%.0f', value)
-    end
+	if value >= 1e6 then
+		return string.format('%.2fm', value / 1e6)
+	elseif value >= 1e4 then
+		return string.format('%.1fk', value / 1e3)
+	else
+		return string.format('%.0f', value)
+	end
+end
+
+local hex = function(r, g, b)
+	if type(r) == 'table' then
+		if r.r then r, g, b = r.r, r.g, r.b else r, g, b = unpack(r) end
+	end
+	return ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
 end
 
 local IsFriendlyUnit = function(uGUID)
-	if units[uGUID] or (owners[uGUID] and units[owners[uGUID]]) or uGUID==UnitGUID("player") then
+	if units[uGUID] or (owners[uGUID] and units[owners[uGUID]]) or uGUID==UnitGUID('player') then
 		return true
 	else
 		return false
@@ -109,9 +118,7 @@ end
 
 local CreateFS = CreateFS or function(frame)
 	local fstring = frame:CreateFontString(nil, 'OVERLAY')
-	fstring:SetFont(font, font_size, font_style)
-	fstring:SetShadowColor(0, 0, 0, 1)
-	fstring:SetShadowOffset(1, -1)
+	fstring:SetFont(font, dmconf.font_size, dmconf.font_style)
 	return fstring
 end
 
@@ -128,20 +135,20 @@ local perSecond = function(cdata)
 end
 
 local report = function(channel, cn)
-	local message = sMode..":"
-	if channel == "Chat" then
+	local message = addon_name..' : '..sMode
+	if channel == 'Chat' then
 		DEFAULT_CHAT_FRAME:AddMessage(message)
 	else
 		SendChatMessage(message, channel, nil, cn)
 	end
 	for i, v in pairs(barguids) do
-		if i > reportstrings or display[v][sMode].amount == 0 then return end
+		if i > dmconf.reportstrings or display[v][sMode].amount == 0 then return end
 		if sMode == DAMAGE or sMode == SHOW_COMBAT_HEALING then
-			message = string.format("%2d. %s    %s (%.0f)", i, display[v].name, truncate(display[v][sMode].amount), perSecond(display[v]))
+			message = string.format('%2d. %s    %s (%s)', i, display[v].name, truncate(display[v][sMode].amount), truncate(perSecond(display[v])))
 		else
-			message = string.format("%2d. %s    %s", i, display[v].name, truncate(display[v][sMode].amount))
+			message = string.format('%2d. %s    %s', i, display[v].name, truncate(display[v][sMode].amount))
 		end
-		if channel == "Chat" then
+		if channel == 'Chat' then
 			DEFAULT_CHAT_FRAME:AddMessage(message)
 		else
 			SendChatMessage(message, channel, nil, cn)
@@ -149,70 +156,70 @@ local report = function(channel, cn)
 	end
 end
 
-StaticPopupDialogs[addon_name.."ReportDialog"] = {
-	text = "", 
-	button1 = ACCEPT, 
+StaticPopupDialogs[addon_name..'ReportDialog'] = {
+	text = '',
+	button1 = ACCEPT,
 	button2 = CANCEL,
 	hasEditBox = 1,
-	timeout = 30, 
-	hideOnEscape = 1, 
+	timeout = 30,
+	hideOnEscape = 1,
 }
 
 local reportList = {
 	{
-		text = CHAT_LABEL, 
-		func = function() report("Chat") end,
+		text = CHAT_LABEL,
+		func = function() report('Chat') end,
 	},
 	{
-		text = SAY, 
-		func = function() report("SAY") end,
+		text = SAY,
+		func = function() report('SAY') end,
 	},
 	{
-		text = PARTY, 
-		func = function() report("PARTY") end,
+		text = PARTY,
+		func = function() report('PARTY') end,
 	},
 	{
-		text = RAID, 
-		func = function() report("RAID") end,
+		text = RAID,
+		func = function() report('RAID') end,
 	},
 	{
-		text = OFFICER, 
-		func = function() report("OFFICER") end,
+		text = OFFICER,
+		func = function() report('OFFICER') end,
 	},
 	{
-		text = GUILD, 
-		func = function() report("GUILD") end,
+		text = GUILD,
+		func = function() report('GUILD') end,
 	},
 	{
-		text = TARGET, 
-		func = function() 
-			if UnitExists("target") and UnitIsPlayer("target") then
-				report("WHISPER", UnitName("target"))
+		text = TARGET,
+		func = function()
+			if UnitExists('target') and UnitIsPlayer('target') then
+				report('WHISPER', UnitName('target'))
 			end
 		end,
 	},
 	{
-		text = PLAYER.."..", 
-		func = function() 
-			StaticPopupDialogs[addon_name.."ReportDialog"].OnAccept = function(self)
-				report("WHISPER", _G[self:GetName().."EditBox"]:GetText())
+		text = PLAYER..'..',
+		func = function()
+			StaticPopupDialogs[addon_name..'ReportDialog'].OnAccept = function(self)
+				report('WHISPER', _G[self:GetName()..'EditBox']:GetText())
 			end
-			StaticPopup_Show(addon_name.."ReportDialog")
+			StaticPopup_Show(addon_name..'ReportDialog')
 		end,
 	},
 	{
-		text = CHANNEL.."..", 
-		func = function() 
-			StaticPopupDialogs[addon_name.."ReportDialog"].OnAccept = function(self)
-				report("CHANNEL", _G[self:GetName().."EditBox"]:GetText())
+		text = CHANNEL..'..',
+		func = function()
+			StaticPopupDialogs[addon_name..'ReportDialog'].OnAccept = function(self)
+				report('CHANNEL', _G[self:GetName()..'EditBox']:GetText())
 			end
-			StaticPopup_Show(addon_name.."ReportDialog")
+			StaticPopup_Show(addon_name..'ReportDialog')
 		end,
 	},
 }
 
 local OnBarEnter = function(self)
-	GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
+	GameTooltip:SetOwner(self, 'ANCHOR_BOTTOMRIGHT')
 	GameTooltip:AddLine(self.left:GetText())
 	GameTooltip:AddLine(SPELL_DETAIL)
 	local a = {}
@@ -222,7 +229,7 @@ local OnBarEnter = function(self)
 	end
 	table.sort(a, function(a, b) return a[2] > b[2] end)
 	for _, v in pairs(a) do
-		GameTooltip:AddDoubleLine(v[1], string.format("%d (%.1f%%)", v[2], v[2]/amount*100), 1, 1, 1, 1, 1, 1)
+		GameTooltip:AddDoubleLine(v[1], string.format('%d (%.1f%%)', v[2], v[2]/amount*100), 1, 1, 1, 1, 1, 1)
 	end
 	wipe(a)
 	GameTooltip:AddLine(TARGET)
@@ -231,7 +238,7 @@ local OnBarEnter = function(self)
 	end
 	table.sort(a, function(a, b) return a[2] > b[2] end)
 	for _, v in pairs(a) do
-		GameTooltip:AddDoubleLine(v[1], string.format("%d (%.1f%%)", v[2], v[2]/amount*100), 1, 1, 1, 1, 1, 1)
+		GameTooltip:AddDoubleLine(v[1], string.format('%d (%.1f%%)', v[2], v[2]/amount*100), 1, 1, 1, 1, 1, 1)
 	end
 	GameTooltip:Show()
 end
@@ -241,21 +248,21 @@ local OnBarLeave = function(self)
 end
 
 local CreateBar = function()
-	local newbar = CreateFrame("Statusbar", nil, MainFrame)
+	local newbar = CreateFrame('Statusbar', nil, MainFrame)
 	newbar:SetStatusBarTexture(texture)
 	newbar:SetMinMaxValues(0, 100)
-	newbar:SetWidth(width - 9)
-	newbar:SetHeight(barheight)
+	newbar:SetWidth(MainFrame:GetWidth() - 10)
+	newbar:SetHeight(dmconf.barheight)
 	newbar.left = CreateFS(newbar)
-	newbar.left:SetPoint("LEFT", 2, 1)
-	newbar.left:SetJustifyH("LEFT")
+	newbar.left:SetPoint('LEFT', 2, 0)
+	newbar.left:SetJustifyH('LEFT')
 	newbar.right = CreateFS(newbar)
-	newbar.right:SetPoint("RIGHT", -2, 1)
-	newbar.right:SetJustifyH("RIGHT")
-	newbar:SetScript("OnEnter", OnBarEnter)
-	newbar:SetScript("OnLeave", OnBarLeave)
-	newbar:SetScript("OnMouseUp", function(self, button)
-		if button == "RightButton" then
+	newbar.right:SetPoint('RIGHT', -2, 0)
+	newbar.right:SetJustifyH('RIGHT')
+	newbar:SetScript('OnEnter', OnBarEnter)
+	newbar:SetScript('OnLeave', OnBarLeave)
+	newbar:SetScript('OnMouseUp', function(self, button)
+		if button == 'RightButton' then
 			ToggleDropDownMenu(1, nil, menuFrame, 'cursor', 0, 0)
 		end
 	end)
@@ -289,10 +296,12 @@ local Add = function(uGUID, amount, mode, spell, target)
 	end
 	current[uGUID][mode].amount = current[uGUID][mode].amount + amount
 	total[uGUID][mode].amount = total[uGUID][mode].amount + amount
-	if spell then 
+	if spell then
 		current[uGUID][mode].spells[spell] = (current[uGUID][mode].spells[spell] or 0) + amount
-		current[uGUID][mode].targets[target] = (current[uGUID][mode].targets[target] or 0) + amount
 		total[uGUID][mode].spells[spell] = (total[uGUID][mode].spells[spell] or 0) + amount
+	end
+	if target then
+		current[uGUID][mode].targets[target] = (current[uGUID][mode].targets[target] or 0) + amount
 		total[uGUID][mode].targets[target] = (total[uGUID][mode].targets[target] or 0) + amount
 	end
 end
@@ -307,25 +316,54 @@ local UpdateBars = function()
 	for i = 1, #barguids do
 		cur = display[barguids[i+offset]]
 		max = display[barguids[1]]
-		if i > maxbars or not cur then break end
+		if i > dmconf.maxbars or not cur then break end
 		if cur[sMode].amount == 0 then break end
-		if not bar[i] then 
+		if not bar[i] then
 			bar[i] = CreateBar()
-			bar[i]:SetPoint("TOP", 0, -13 * (i-1))
+			bar[i]:SetPoint('TOP', 0, -(dmconf.barheight + dmconf.spacing) * (i-1))
 		end
-
+		
 		bar[i].id = i + offset
 		bar[i]:SetValue(100 * cur[sMode].amount / max[sMode].amount)
 		color = RAID_CLASS_COLORS[cur.class]
-		bar[i]:SetStatusBarColor(color.r, color.g, color.b)
-		if sMode == DAMAGE or sMode == SHOW_COMBAT_HEALING then
-			bar[i].right:SetFormattedText("%s (%.0f)", truncate(cur[sMode].amount), perSecond(cur))
+		if dmconf.classcolorbar and color then
+			bar[i]:SetStatusBarColor(color.r, color.g, color.b)
 		else
-			bar[i].right:SetFormattedText("%s", truncate(cur[sMode].amount))
+			bar[i]:SetStatusBarColor(unpack(dmconf.barcolor))
 		end
-		bar[i].left:SetText(cur.name)
+		if sMode == DAMAGE or sMode == SHOW_COMBAT_HEALING then
+			bar[i].right:SetFormattedText('%s (%s)', truncate(cur[sMode].amount), truncate(perSecond(cur)))
+		else
+			bar[i].right:SetFormattedText('%s', truncate(cur[sMode].amount))
+		end
+		if dmconf.classcolorname and color then
+			bar[i].left:SetFormattedText('%s%s|r', hex(color), cur.name)
+			bar[i].right:SetFormattedText('%s%s|r', hex(color), bar[i].right:GetText())
+		else
+			bar[i].left:SetText(cur.name)
+		end
 		bar[i]:Show()
 	end
+end
+
+local UpdateWindow = function()
+	MainFrame:SetSize(dmconf.width, dmconf.maxbars*(dmconf.barheight+dmconf.spacing)-dmconf.spacing)
+
+	if dmconf.hidetitle then
+		MainFrame.title:Hide()
+	else
+		MainFrame.title:Show()
+	end
+	
+	for i, v in pairs(bar) do
+		v:SetWidth(MainFrame:GetWidth())
+		v:SetHeight(dmconf.barheight)
+		v:SetPoint('TOP', 0, -(dmconf.barheight + dmconf.spacing) * (i-1))
+		v.left:SetFont(font, dmconf.font_size, dmconf.font_style)
+		v.right:SetFont(font, dmconf.font_size, dmconf.font_style)
+	end
+	
+	UpdateBars()
 end
 
 local ResetDisplay = function(fight)
@@ -369,19 +407,25 @@ local CreateMenu = function(self, level)
 		wipe(info)
 		info.text = MODE
 		info.hasArrow = 1
-		info.value = "Mode"
+		info.value = 'Mode'
 		info.notCheckable = 1
 		UIDropDownMenu_AddButton(info, level)
 		wipe(info)
 		info.text = CHAT_ANNOUNCE
 		info.hasArrow = 1
-		info.value = "Report"
+		info.value = 'Report'
 		info.notCheckable = 1
 		UIDropDownMenu_AddButton(info, level)
 		wipe(info)
 		info.text = COMBAT
 		info.hasArrow = 1
-		info.value = "Fight"
+		info.value = 'Fight'
+		info.notCheckable = 1
+		UIDropDownMenu_AddButton(info, level)
+		wipe(info)
+		info.text = SETTINGS
+		info.hasArrow = 1
+		info.value = 'Options'
 		info.notCheckable = 1
 		UIDropDownMenu_AddButton(info, level)
 		wipe(info)
@@ -389,8 +433,16 @@ local CreateMenu = function(self, level)
 		info.func = Clean
 		info.notCheckable = 1
 		UIDropDownMenu_AddButton(info, level)
+		wipe(info)
+		info.text = HIDE
+		info.func = function()
+			MainFrame:SetAlpha(0)
+			MainFrame:EnableMouse(false)
+		end
+		info.notCheckable = 1
+		UIDropDownMenu_AddButton(info, level)
 	elseif level == 2 then
-		if UIDROPDOWNMENU_MENU_VALUE == "Mode" then
+		if UIDROPDOWNMENU_MENU_VALUE == 'Mode' then
 			for i, v in pairs(displayMode) do
 				wipe(info)
 				info.text = v
@@ -399,7 +451,7 @@ local CreateMenu = function(self, level)
 				UIDropDownMenu_AddButton(info, level)
 			end
 		end
-		if UIDROPDOWNMENU_MENU_VALUE == "Report" then
+		if UIDROPDOWNMENU_MENU_VALUE == 'Report' then
 			for i, v in pairs(reportList) do
 				wipe(info)
 				info.text = v.text
@@ -408,14 +460,14 @@ local CreateMenu = function(self, level)
 				UIDropDownMenu_AddButton(info, level)
 			end
 		end
-		if UIDROPDOWNMENU_MENU_VALUE == "Fight" then
+		if UIDROPDOWNMENU_MENU_VALUE == 'Fight' then
 			wipe(info)
-			info.text = "Current"
+			info.text = 'Current'
 			info.func = function() ResetDisplay(current) end
 			info.notCheckable = 1
 			UIDropDownMenu_AddButton(info, level)
 			wipe(info)
-			info.text = "Total"
+			info.text = 'Total'
 			info.func = function() ResetDisplay(total) end
 			info.notCheckable = 1
 			UIDropDownMenu_AddButton(info, level)
@@ -427,6 +479,181 @@ local CreateMenu = function(self, level)
 				UIDropDownMenu_AddButton(info, level)
 			end
 		end
+		if UIDROPDOWNMENU_MENU_VALUE == 'Options' then
+			wipe(info)
+			info.text = 'Visible bars'
+			info.func = function()
+				StaticPopupDialogs[addon_name..'ReportDialog'].OnAccept = function(self)
+					dmconf.maxbars = tonumber(_G[self:GetName()..'EditBox']:GetText())
+					UpdateWindow()
+				end
+				StaticPopupDialogs[addon_name..'ReportDialog'].OnShow = function(self)
+					_G[self:GetName()..'EditBox']:SetText(dmconf.maxbars)
+				end
+				StaticPopup_Show(addon_name..'ReportDialog')
+			end
+			info.notCheckable = 1
+			UIDropDownMenu_AddButton(info, level)
+			wipe(info)
+			info.text = 'Bar width'
+			info.func = function()
+				StaticPopupDialogs[addon_name..'ReportDialog'].OnAccept = function(self)
+					dmconf.width = tonumber(_G[self:GetName()..'EditBox']:GetText())
+					UpdateWindow()
+				end
+				StaticPopupDialogs[addon_name..'ReportDialog'].OnShow = function(self)
+					_G[self:GetName()..'EditBox']:SetText(dmconf.width)
+				end
+				StaticPopup_Show(addon_name..'ReportDialog')
+			end
+			info.notCheckable = 1
+			UIDropDownMenu_AddButton(info, level)
+			wipe(info)
+			info.text = 'Bar height'
+			info.func = function()
+				StaticPopupDialogs[addon_name..'ReportDialog'].OnAccept = function(self)
+					dmconf.barheight = tonumber(_G[self:GetName()..'EditBox']:GetText())
+					UpdateWindow()
+				end
+				StaticPopupDialogs[addon_name..'ReportDialog'].OnShow = function(self)
+					_G[self:GetName()..'EditBox']:SetText(dmconf.barheight)
+				end
+				StaticPopup_Show(addon_name..'ReportDialog')
+			end
+			info.notCheckable = 1
+			UIDropDownMenu_AddButton(info, level)
+			wipe(info)
+			info.text = 'Spacing'
+			info.func = function()
+				StaticPopupDialogs[addon_name..'ReportDialog'].OnAccept = function(self)
+					dmconf.spacing = tonumber(_G[self:GetName()..'EditBox']:GetText())
+					UpdateWindow()
+				end
+				StaticPopupDialogs[addon_name..'ReportDialog'].OnShow = function(self)
+					_G[self:GetName()..'EditBox']:SetText(dmconf.spacing)
+				end
+				StaticPopup_Show(addon_name..'ReportDialog')
+			end
+			info.notCheckable = 1
+			UIDropDownMenu_AddButton(info, level)
+			wipe(info)
+			info.text = 'Font size'
+			info.func = function()
+				StaticPopupDialogs[addon_name..'ReportDialog'].OnAccept = function(self)
+					dmconf.font_size = tonumber(_G[self:GetName()..'EditBox']:GetText())
+					UpdateWindow()
+				end
+				StaticPopupDialogs[addon_name..'ReportDialog'].OnShow = function(self)
+					_G[self:GetName()..'EditBox']:SetText(dmconf.font_size)
+				end
+				StaticPopup_Show(addon_name..'ReportDialog')
+			end
+			info.notCheckable = 1
+			UIDropDownMenu_AddButton(info, level)
+			wipe(info)
+			info.text = 'Hide title'
+			info.func = function()
+				dmconf.hidetitle = not dmconf.hidetitle
+				UpdateWindow()
+			end
+			info.checked = dmconf.hidetitle
+			UIDropDownMenu_AddButton(info, level)
+			wipe(info)
+			info.text = 'Class color bar'
+			info.func = function()
+				dmconf.classcolorbar = not dmconf.classcolorbar
+				UpdateWindow()
+			end
+			info.checked = dmconf.classcolorbar
+			UIDropDownMenu_AddButton(info, level)
+			wipe(info)
+			info.text = 'Class color name'
+			info.func = function()
+				dmconf.classcolorname = not dmconf.classcolorname
+				UpdateWindow()
+			end
+			info.checked = dmconf.classcolorname
+			UIDropDownMenu_AddButton(info, level)
+			wipe(info)
+			info.text = 'Save only boss fights'
+			info.func = function()
+				dmconf.onlyboss = not dmconf.onlyboss
+				UpdateWindow()
+			end
+			info.checked = dmconf.onlyboss
+			UIDropDownMenu_AddButton(info, level)
+			wipe(info)
+			info.text = 'Merge heal and absorbs'
+			info.func = function()
+				dmconf.mergeHealAbsorbs = not dmconf.mergeHealAbsorbs
+				UpdateWindow()
+			end
+			info.checked = dmconf.mergeHealAbsorbs
+			UIDropDownMenu_AddButton(info, level)
+			wipe(info)
+			info.text = 'Bar color'
+			info.hasColorSwatch = 1
+			info.func = UIDropDownMenuButton_OpenColorPicker
+			info.r = dmconf.barcolor[1]
+			info.g = dmconf.barcolor[2]
+			info.b = dmconf.barcolor[3]
+			info.swatchFunc = function()
+				dmconf.barcolor = {ColorPickerFrame:GetColorRGB()}
+				UpdateBars()
+			end
+			info.cancelFunc = function(restore)
+				local pv = ColorPickerFrame.previousValues
+				dmconf.barcolor = {pv.r, pv.g, pv.b}
+				UpdateBars()
+			end
+			info.notCheckable = 1
+			info.keepShownOnClick = false
+			UIDropDownMenu_AddButton(info, level)
+			info.text = 'Backdrop color'
+			info.hasColorSwatch = 1
+			info.hasOpacity = (dmconf.backdrop_color[4] ~= nil)
+			info.func = UIDropDownMenuButton_OpenColorPicker
+			info.r = dmconf.backdrop_color[1]
+			info.g = dmconf.backdrop_color[2]
+			info.b = dmconf.backdrop_color[3]
+			info.opacity = dmconf.backdrop_color[4]
+			info.swatchFunc, info.opacityFunc, info.cancelFunc = function ()
+				dmconf.backdrop_color = {ColorPickerFrame:GetColorRGB()}
+				dmconf.backdrop_color[4] = OpacitySliderFrame:GetValue()
+				UpdateWindow()
+			end
+			info.opacityFunc = info.swatchFunc
+			info.cancelFunc = function ()
+				local pv = ColorPickerFrame.previousValues
+				dmconf.backdrop_color = {pv.r, pv.g, pv.b, pv.opacity}
+				UpdateWindow()
+			end
+			info.notCheckable = 1
+			info.keepShownOnClick = false
+			UIDropDownMenu_AddButton(info, level)
+			info.text = 'Border color'
+			info.hasColorSwatch = 1
+			info.hasOpacity = 1
+			info.func = UIDropDownMenuButton_OpenColorPicker
+			info.r = dmconf.border_color[1]
+			info.g = dmconf.border_color[2]
+			info.b = dmconf.border_color[3]
+			info.opacity = (dmconf.border_color[4] ~= nil)
+			info.swatchFunc = function()
+				dmconf.border_color = {ColorPickerFrame:GetColorRGB()}
+				dmconf.border_color[4] = OpacitySliderFrame:GetValue()
+				UpdateWindow()
+			end
+			info.opacityFunc = info.swatchFunc
+			info.cancelFunc = function(restore)
+				local pv = ColorPickerFrame.previousValues
+				dmconf.border_color = {pv.r, pv.g, pv.b, pv.opacity}
+				UpdateWindow()
+			end
+			info.notCheckable = 1
+			info.keepShownOnClick = false
+			UIDropDownMenu_AddButton(info, level)
+		end
 	end
 end
 
@@ -435,7 +662,7 @@ local EndCombat = function()
 	combatstarted = false
 	local fname = bossname or mobname
 	if fname then
-		if #fights >= maxfights then
+		if #fights >= dmconf.maxfights then
 			tremove(fights, 1)
 		end
 		tinsert(fights, {name = fname, data = tcopy(current)})
@@ -456,7 +683,7 @@ local CheckUnit = function(unit)
 			class = select(2, UnitClass(unit)),
 			unit = unit,
 		}
-		pet = unit .. "pet"
+		pet = unit .. 'pet'
 		CheckPet(unit, pet)
 	end
 end
@@ -464,27 +691,19 @@ end
 local CheckRoster = function()
 	wipe(units)
 	if GetNumGroupMembers() > 0 then
+		local unit = IsInRaid() and 'raid' or 'party'
 		for i = 1, GetNumGroupMembers(), 1 do
-			CheckUnit("raid"..i)
-		end
-	elseif GetNumGroupMembers() > 0 then
-		for i = 1, GetNumGroupMembers(), 1 do
-			CheckUnit("party"..i)
+			CheckUnit(unit..i)
 		end
 	end
-	CheckUnit("player")
+	CheckUnit('player')
 end
 
 local IsRaidInCombat = function()
 	if GetNumGroupMembers() > 0 then
+		local unit = IsInRaid() and 'raid' or 'party'
 		for i = 1, GetNumGroupMembers(), 1 do
-			if UnitExists("raid"..i) and UnitAffectingCombat("raid"..i) then
-				return true
-			end
-		end
-	elseif GetNumGroupMembers() > 0 then
-		for i = 1, GetNumGroupMembers(), 1 do
-			if UnitExists("party"..i) and UnitAffectingCombat("party"..i) then
+			if UnitExists(unit..i) and UnitAffectingCombat(unit..i) then
 				return true
 			end
 		end
@@ -493,13 +712,13 @@ local IsRaidInCombat = function()
 end
 
 local OnUpdate = function(self, elapsed)
-    timer = timer + elapsed
-    if timer > 0.5 then
-        for i, v in pairs(current) do
-            if IsUnitInCombat(i) then
-                v.combatTime = v.combatTime + timer
-            end
-        end
+	timer = timer + elapsed
+	if timer > 0.5 then
+		for i, v in pairs(current) do
+			if IsUnitInCombat(i) then
+				v.combatTime = v.combatTime + timer
+			end
+		end
 		for i, v in pairs(total) do
 			if IsUnitInCombat(i) then
 				v.combatTime = v.combatTime + timer
@@ -525,7 +744,7 @@ local OnMouseWheel = function(self, direction)
 			offset = offset - 1
 		end
 	else
-		if num > maxbars + offset then
+		if num > dmconf.maxbars + offset then
 			offset = offset + 1
 		end
 	end
@@ -535,22 +754,14 @@ end
 local StartCombat = function()
 	wipe(current)
 	combatstarted = true
-	ResetDisplay(current)
-	MainFrame:SetScript('OnUpdate', OnUpdate)
-end
 
-local FindShielder = function(destGUID, timestamp)
-	if not shields[destGUID] then return end
-	local found_shielder, found_shield = nil, nil
-	for shield, spells in pairs(shields[destGUID]) do
-		for shielder, ts in pairs(spells) do
-			if ts - timestamp > 0 then
-				found_shielder = shielder
-				found_shield = shield
-			end
-		end
-	end
-	return found_shielder, found_shield
+	local displayTotal = (display == total)
+
+	ResetDisplay(current)
+
+	if displayTotal then display = total end
+
+	MainFrame:SetScript('OnUpdate', OnUpdate)
 end
 
 local IsUnitOrPet = function(flags)
@@ -561,9 +772,9 @@ local IsUnitOrPet = function(flags)
 end
 
 local OnEvent = function(self, event, ...)
-	if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+	if event == 'COMBAT_LOG_EVENT_UNFILTERED' then
 		local timestamp, eventType, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags = select(1, ...)
-		if eventType=="SPELL_SUMMON" and (band(sourceFlags, raidFlags) ~= 0 or band(sourceFlags, npcFlags) ~= 0 or band(sourceFlags, petFlags) ~= 0 or band(destFlags, petFlags) ~= 0) then
+		if eventType=='SPELL_SUMMON' and (band(sourceFlags, raidFlags) ~= 0 or band(sourceFlags, npcFlags) ~= 0 or band(sourceFlags, petFlags) ~= 0 or band(destFlags, petFlags) ~= 0) then
 			if owners[sourceGUID] then
 				owners[destGUID] = owners[sourceGUID]
 			else
@@ -577,38 +788,24 @@ local OnEvent = function(self, event, ...)
 			end
 		end
 		if band(sourceFlags, raidFlags) == 0 and band(destFlags, raidFlags) == 0 and band(sourceFlags, petFlags) == 0 and band(destFlags, petFlags) == 0 then return end
-		if eventType=="SWING_DAMAGE" or eventType=="RANGE_DAMAGE" or eventType=="SPELL_DAMAGE" or eventType=="SPELL_PERIODIC_DAMAGE" or eventType=="DAMAGE_SHIELD" then
-			local amount, _, _, _, _, absorbed = select(eventType=="SWING_DAMAGE" and 12 or 15, ...)
-			local spellName = eventType=="SWING_DAMAGE" and MELEE_ATTACK or select(13, ...)
+		if eventType=='SWING_DAMAGE' or eventType=='RANGE_DAMAGE' or eventType=='SPELL_DAMAGE' or eventType=='SPELL_PERIODIC_DAMAGE' or eventType=='DAMAGE_SHIELD' then
+			local amount, _, _, _, _, absorbed = select(eventType=='SWING_DAMAGE' and 12 or 15, ...)
+			local spellName = eventType=='SWING_DAMAGE' and MELEE_ATTACK or select(13, ...)
 			if IsFriendlyUnit(sourceGUID) and not IsFriendlyUnit(destGUID) and combatstarted then
 				if amount and amount > 0 then
 					if owners[sourceGUID] then
 						sourceGUID = owners[sourceGUID]
-						spellName = "Pet: "..spellName
+						spellName = 'Pet: '..spellName
 					end
 					Add(sourceGUID, amount, DAMAGE, spellName, destName)
 					if not bossname and boss.BossIDs[tonumber(destGUID:sub(9, 12), 16)] then
 						bossname = destName
-					elseif not mobname and not onlyboss then
+					elseif not mobname and not dmconf.onlyboss then
 						mobname = destName
 					end
 				end
 			end
-			if IsFriendlyUnit(destGUID) then
-				local shielder, shield = FindShielder(destGUID, timestamp)
-				if shielder and absorbed and absorbed > 0 then
-					Add(shielder, absorbed, mergeHealAbsorbs and SHOW_COMBAT_HEALING or ABSORB, shield, destName)
-				end
-			end
-		elseif eventType=="SWING_MISSED" or eventType=="RANGE_MISSED" or eventType=="SPELL_MISSED" or eventType=="SPELL_PERIODIC_MISSED" then
-			local misstype, amount = select(eventType=="SWING_MISSED" and 12 or 15, ...)
-			if misstype == "ABSORB" and IsFriendlyUnit(destGUID) then
-				local shielder, shield = FindShielder(destGUID, timestamp)
-				if shielder and amount and amount > 0 then
-					Add(shielder, amount, mergeHealAbsorbs and SHOW_COMBAT_HEALING or ABSORB, shield, destName)
-				end
-			end
-		elseif eventType=="SPELL_HEAL" or eventType=="SPELL_PERIODIC_HEAL" then
+		elseif eventType=='SPELL_HEAL' or eventType=='SPELL_PERIODIC_HEAL' then
 			spellId, spellName, spellSchool, amount, over, school, resist = select(12, ...)
 			if IsFriendlyUnit(sourceGUID) and IsFriendlyUnit(destGUID) and combatstarted then
 				over = over or 0
@@ -617,106 +814,111 @@ local OnEvent = function(self, event, ...)
 					Add(sourceGUID, amount - over, SHOW_COMBAT_HEALING, spellName, destName)
 				end
 			end
-		elseif eventType=="SPELL_DISPEL" then
+		elseif eventType=='SPELL_DISPEL' then
 			if IsFriendlyUnit(sourceGUID) and combatstarted then
 				sourceGUID = owners[sourceGUID] or sourceGUID
-				Add(sourceGUID, 1, DISPELS, "Dispel", destName)
+				Add(sourceGUID, 1, DISPELS, 'Dispel', destName)
 			end
-		elseif eventType=="SPELL_INTERRUPT" then
+		elseif eventType=='SPELL_INTERRUPT' then
 			if IsFriendlyUnit(sourceGUID) and not IsFriendlyUnit(destGUID) and combatstarted then
 				sourceGUID = owners[sourceGUID] or sourceGUID
-				Add(sourceGUID, 1, INTERRUPTS, "Interrupt", destName)
+				Add(sourceGUID, 1, INTERRUPTS, 'Interrupt', destName)
 			end
-		elseif eventType=="SPELL_AURA_APPLIED" or eventType=="SPELL_AURA_REFRESH" then
-			local spellId, spellName = select(12, ...)
+		elseif eventType=='SPELL_AURA_APPLIED' then
+			local spellId, spellName, spellSchool, auraType, amount = select(12, ...)
 			sourceGUID = owners[sourceGUID] or sourceGUID
-			if AbsorbSpellDuration[spellId] and IsFriendlyUnit(sourceGUID) and IsFriendlyUnit(destGUID) then
+			if amount and AbsorbSpellDuration[spellId] and IsFriendlyUnit(sourceGUID) and IsFriendlyUnit(destGUID) then
 				shields[destGUID] = shields[destGUID] or {}
 				shields[destGUID][spellName] = shields[destGUID][spellName] or {}
-				shields[destGUID][spellName][sourceGUID] = timestamp + AbsorbSpellDuration[spellId]
+				shields[destGUID][spellName][sourceGUID] = amount
 			end
-		elseif eventType=="SPELL_AURA_REMOVED" then
-			local spellId, spellName = select(12, ...)
+		elseif eventType=='SPELL_AURA_REFRESH' then
+			local spellId, spellName, spellSchool, auraType, amount = select(12, ...)
 			sourceGUID = owners[sourceGUID] or sourceGUID
-			if AbsorbSpellDuration[spellId] and IsFriendlyUnit(destGUID) then
-				if shields[destGUID] and shields[destGUID][spellName] and shields[destGUID][spellName][destGUID] then
-					shields[destGUID][spellName][destGUID] = timestamp + 0.1
+			if amount and AbsorbSpellDuration[spellId] and IsFriendlyUnit(destGUID) then
+				if shields[destGUID] and shields[destGUID][spellName] and shields[destGUID][spellName][sourceGUID] then
+					local old = shields[destGUID][spellName][sourceGUID]
+					shields[destGUID][spellName][sourceGUID] = amount
+					if old > amount then
+						Add(sourceGUID, old - amount, dmconf.mergeHealAbsorbs and SHOW_COMBAT_HEALING or ABSORB, spellName, destName)
+					end
+				end
+			end
+		elseif eventType=='SPELL_AURA_REMOVED' then
+			local spellId, spellName, spellSchool, auraType, amount = select(12, ...)
+			sourceGUID = owners[sourceGUID] or sourceGUID
+			if amount and AbsorbSpellDuration[spellId] and IsFriendlyUnit(destGUID) then
+				if shields[destGUID] and shields[destGUID][spellName] and shields[destGUID][spellName][sourceGUID] then
+					local old = shields[destGUID][spellName][sourceGUID]
+					shields[destGUID][spellName][sourceGUID] = nil
+					if old > amount then
+						Add(sourceGUID, old, dmconf.mergeHealAbsorbs and SHOW_COMBAT_HEALING or ABSORB, spellName, destName)
+					end
 				end
 			end
 		else
 			return
 		end
-	elseif event == "ADDON_LOADED" then
+	elseif event == 'ADDON_LOADED' then
 		local name = ...
-		if name == addon_name then
+		if name == 'LanUI' then
 			self:UnregisterEvent(event)
-			MainFrame = CreateFrame("Frame", 'LanDmgFrame', UIParent)
-			MainFrame:SetSize(width, height)
+			MainFrame = CreateFrame('Frame', 'LanDamageFrame', UIParent)
+			MainFrame:SetSize(dmconf.width, dmconf.maxbars*(dmconf.barheight+dmconf.spacing)-dmconf.spacing)
 			MainFrame:SetPoint(anchor, x, y)
-			MainFrame:SetMovable(true)
 			MainFrame:EnableMouse(true)
 			MainFrame:EnableMouseWheel(true)
-			MainFrame:SetScript("OnMouseDown", function(self, button)
-				if button == "LeftButton" and IsModifiedClick("SHIFT") then
-					self:StartMoving()
-				end
-			end)
-			MainFrame:SetScript("OnMouseUp", function(self, button)
-				if button == "RightButton" then
+			MainFrame:SetScript('OnMouseUp', function(self, button)
+				if button == 'RightButton' then
 					ToggleDropDownMenu(1, nil, menuFrame, 'cursor', 0, 0)
 				end
-				if button == "LeftButton" then
-					self:StopMovingOrSizing()
-				end
 			end)
-			MainFrame:SetScript("OnMouseWheel", OnMouseWheel)
+			MainFrame:SetScript('OnMouseWheel', OnMouseWheel)
 			MainFrame:Show()
-			UIDropDownMenu_Initialize(menuFrame, CreateMenu, "MENU")
+			UIDropDownMenu_Initialize(menuFrame, CreateMenu, 'MENU')
 			CheckRoster()
-
-			MainFrame:SetTemplate()
-            MainFrame:SetScale(1.2)
+			MainFrame.title = CreateFS(MainFrame)
+			MainFrame.title:SetPoint('BOTTOM', MainFrame, 'TOP', 0, 1)
+			MainFrame.title:SetText(sMode)
+			UpdateWindow()
 			
-			MainFrame:Hide()
+			local Backdrop = CreateFrame('Frame', nil, LanDamageFrame)
+			Backdrop:SetPoint('TOPLEFT', LanDamageFrame, 0, 4)
+			Backdrop:SetPoint('BOTTOMRIGHT', LanDamageFrame, 0, -4)
+			Backdrop:SetTemplate()
 		end
-	elseif event == "VARIABLES_LOADED" then
-		MainFrame:SetSize(width, height)
-		MainFrame.title = CreateFS(MainFrame)
-		MainFrame.title:SetPoint("BOTTOM", MainFrame, "TOP", 0, 1)
-		MainFrame.title:SetText(sMode)
-		if hidetitle then
-			MainFrame.title:Hide()
-		end
-	elseif event == "RAID_ROSTER_UPDATE" or event == "PARTY_MEMBERS_CHANGED" or event == "PLAYER_ENTERING_WORLD" then
+	elseif event == 'GROUP_ROSTER_UPDATE' or event == 'PLAYER_ENTERING_WORLD' then
 		CheckRoster()
-	elseif event == "PLAYER_REGEN_DISABLED" then
-		MainFrame:Show()
-		
+	elseif event == 'PLAYER_REGEN_DISABLED' then
 		if not combatstarted then
 			StartCombat()
 		end
-	elseif event == 'PLAYER_REGEN_ENABLED' then
-		MainFrame:Hide()
-	elseif event == "UNIT_PET" then
+	elseif event == 'UNIT_PET' then
 		local unit = ...
-		local pet = unit .. "pet"
+		local pet = unit .. 'pet'
 		CheckPet(unit, pet)
 	end
 end
 
-local addon = CreateFrame("frame", nil, UIParent)
+local addon = CreateFrame('frame', nil, UIParent)
 addon:SetScript('OnEvent', OnEvent)
-addon:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
-addon:RegisterEvent("ADDON_LOADED")
-addon:RegisterEvent("VARIABLES_LOADED")
-addon:RegisterEvent("RAID_ROSTER_UPDATE")
-addon:RegisterEvent("PARTY_MEMBERS_CHANGED")
-addon:RegisterEvent("PLAYER_ENTERING_WORLD")
-addon:RegisterEvent("PLAYER_REGEN_DISABLED")
-addon:RegisterEvent("UNIT_PET")
+addon:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
+addon:RegisterEvent('ADDON_LOADED')
+addon:RegisterEvent('GROUP_ROSTER_UPDATE')
+addon:RegisterEvent('PLAYER_ENTERING_WORLD')
+addon:RegisterEvent('PLAYER_REGEN_DISABLED')
+addon:RegisterEvent('UNIT_PET')
 
-SlashCmdList["LanDamage"] = function(msg)
-    for i = 1, 20 do
+SlashCmdList['LanDamage'] = function(msg)
+	--[[if MainFrame:GetAlpha() > 0 then
+		MainFrame:SetAlpha(0)
+		MainFrame:EnableMouse(false)
+	else
+		MainFrame:SetAlpha(1)
+		MainFrame:EnableMouse(true)
+	end]]
+	
+	for i = 1, 20 do
         units[i] = {name = UnitName("player"), class = select(2, UnitClass("player")), unit = "1"}
         Add(i, i*10000, DAMAGE)
         units[i] = nil
@@ -724,5 +926,4 @@ SlashCmdList["LanDamage"] = function(msg)
     display = current
     UpdateBars()
 end
-SLASH_LanDamage1 = "/landmg"
-
+SLASH_LanDamage1 = '/landmg'
