@@ -39,11 +39,11 @@ end
 F.PetBarUpdate = function(self, event)
 	local petActionButton, petActionIcon, petAutoCastableTexture, petAutoCastShine
 	for i=1, NUM_PET_ACTION_SLOTS, 1 do
-		local buttonName = "PetActionButton" .. i
+		local buttonName = 'PetActionButton' .. i
 		petActionButton = _G[buttonName]
-		petActionIcon = _G[buttonName.."Icon"]
-		petAutoCastableTexture = _G[buttonName.."AutoCastable"]
-		petAutoCastShine = _G[buttonName.."Shine"]
+		petActionIcon = _G[buttonName..'Icon']
+		petAutoCastableTexture = _G[buttonName..'AutoCastable']
+		petAutoCastShine = _G[buttonName..'Shine']
 		local name, subtext, texture, isToken, isActive, autoCastAllowed, autoCastEnabled = GetPetActionInfo(i)
 		
 		if not isToken then
@@ -57,7 +57,7 @@ F.PetBarUpdate = function(self, event)
 		petActionButton.isToken = isToken
 		petActionButton.tooltipSubtext = subtext
 
-		if isActive and name ~= "PET_ACTION_FOLLOW" then
+		if isActive and name ~= 'PET_ACTION_FOLLOW' then
 			petActionButton:SetChecked(1)
 			if IsPetAttackAction(i) then
 				PetActionButton_StartFlash(petActionButton)
@@ -94,8 +94,8 @@ F.PetBarUpdate = function(self, event)
 		
 		-- between level 1 and 10 on cata, we don't have any control on Pet. (I lol'ed so hard)
 		-- Setting desaturation on button to true until you learn the control on class trainer.
-		-- you can at least control "follow" button.
-		if not PetHasActionBar() and texture and name ~= "PET_ACTION_FOLLOW" then
+		-- you can at least control 'follow' button.
+		if not PetHasActionBar() and texture and name ~= 'PET_ACTION_FOLLOW' then
 			PetActionButton_StopFlash(petActionButton)
 			SetDesaturation(petActionIcon, 1)
 			petActionButton:SetChecked(0)
@@ -109,9 +109,9 @@ F.ShiftBarUpdate = function(self)
 	local button, icon, cooldown
 	local start, duration, enable
 	for i = 1, NUM_STANCE_SLOTS do
-		buttonName = "StanceButton"..i
+		buttonName = 'StanceButton'..i
 		button = _G[buttonName]
-		icon = _G[buttonName.."Icon"]
+		icon = _G[buttonName..'Icon']
 		if i <= numForms then
 			texture, name, isActive, isCastable = GetShapeshiftFormInfo(i)
 			
@@ -119,7 +119,7 @@ F.ShiftBarUpdate = function(self)
 			
 			icon:SetTexture(texture)
 			
-			cooldown = _G[buttonName.."Cooldown"]
+			cooldown = _G[buttonName..'Cooldown']
 			if texture then
 				cooldown:SetAlpha(1)
 			else
@@ -774,7 +774,7 @@ end
 
 F.Round = function(number, decimals)
 	if not decimals then decimals = 0 end
-    return (("%%.%df"):format(decimals)):format(number)
+    return (('%%.%df'):format(decimals)):format(number)
 end
 
 function F.RevTable(curTab)

@@ -1,9 +1,9 @@
 local F, C, G = unpack(select(2, ...))
 
-local LanChat = CreateFrame("Frame", "LanChat")
+local LanChat = CreateFrame('Frame', 'LanChat')
 G.Chat.Chat = LanChat
 for i = 1, NUM_CHAT_WINDOWS do
-	G.Chat["ChatFrame"..i] = _G["ChatFrame"..i]
+	G.Chat['ChatFrame'..i] = _G['ChatFrame'..i]
 end
 
 CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1.0
@@ -31,106 +31,49 @@ end
 
 ChatFrame_AddMessageEventFilter('CHAT_MSG_SYSTEM', Spam)
 
-for i = 1, NUM_CHAT_WINDOWS do
-    local cf = _G['ChatFrame' .. i]
-    cf:SetFading(nil)
+local BubbleHook = CreateFrame('Frame')
+
+local function StyleBubble(frame)
+	local Scale = UIParent:GetScale()
+
+	for i = 1, frame:GetNumRegions() do
+		local region = select(i, frame:GetRegions())
+		if region:GetObjectType() == 'Texture' then
+			region:SetTexture(nil)
+		elseif region:GetObjectType() == 'FontString' then
+			region:SetFont(C.Media.Font, 13)
+			region:SetShadowOffset(Scale, -Scale)
+		end
+	end
+
+	frame:SetTemplate()
 end
 
-local events = {
-    CHAT_MSG_SAY = 'chatBubbles', 
-    CHAT_MSG_YELL = 'chatBubbles',
-    CHAT_MSG_PARTY = 'chatBubblesParty', 
-    CHAT_MSG_PARTY_LEADER = 'chatBubblesParty',
-    CHAT_MSG_MONSTER_SAY = 'chatBubbles', 
-    CHAT_MSG_MONSTER_YELL = 'chatBubbles', 
-    CHAT_MSG_MONSTER_PARTY = 'chatBubblesParty',
-}
-
-local function SkinFrame(frame)
-    for i = 1, select('#', frame:GetRegions()) do
-        local region = select(i, frame:GetRegions())
-        if (region:GetObjectType() == 'FontString') then
-            frame.text = region
-        else
-            region:Hide()
-        end
-    end
-
-    frame.text:SetFontObject('GameFontHighlight')
-    frame.text:SetJustifyH('LEFT')
-
-	frame:ClearAllPoints()
-	frame:SetPoint('TOPLEFT', frame.text, -10, 25)
-	frame:SetPoint('BOTTOMRIGHT', frame.text, 10, -10)
-	frame:SetBackdrop({
-        bgFile = C.Media.Backdrop,
-		insets = {top = 1, left = 1, bottom = 1, right = 1},
-	})
-	frame:SetBackdropColor(unpack(C.Media.BackdropColor))
-    
-	frame:CreateBeautyBorder(12, 1, 1, 1)
-    frame.sender = frame:CreateFontString(nil, 'OVERLAY', 'GameFontNormal')
-    frame.sender:SetPoint('BOTTOMLEFT', frame.text, 'TOPLEFT', 0, 4)
-    frame.sender:SetJustifyH('LEFT')
-
-    frame:HookScript('OnHide', function()
-		frame.inUse = false
-	end)
+local function isChatBubble(frame)
+	if frame:GetName() then return end
+	if not frame:GetRegions() then return end
+	return frame:GetRegions():GetTexture() == [[Interface\Tooltips\ChatBubble-Background]]
 end
 
-local function UpdateFrame(frame, guid, name)
-    if (not frame.text) then 
-        SkinFrame(frame) 
-    end
-    frame.inUse = true
+local last = 0
+local numKids = 0
 
-    local class
-    if (guid ~= nil and guid ~= '') then
-        _, class, _, _, _, _ = GetPlayerInfoByGUID(guid)
-    end
+BubbleHook:SetScript('OnUpdate', function(self, elapsed)
+	last = last + elapsed
+	if last > .1 then
+		last = 0
+		local newNumKids = WorldFrame:GetNumChildren()
+		if newNumKids ~= numKids then
+			for i = numKids + 1, newNumKids do
+				local frame = select(i, WorldFrame:GetChildren())
 
-    if (name) then
-        local color = RAID_CLASS_COLORS[class] or { r = 0.5, g = 0.5, b = 0.5 }
-        frame.sender:SetText(('|cFF%2x%2x%2x%s|r'):format(color.r * 255, color.g * 255, color.b * 255, name))
-        if frame.text:GetWidth() < frame.sender:GetWidth() then
-            frame.text:SetWidth(frame.sender:GetWidth())
-        end
-    end
-end
-
-local function FindFrame(msg)
-    for i = 1, WorldFrame:GetNumChildren() do
-        local frame = select(i, WorldFrame:GetChildren())
-        if (not frame:GetName() and not frame.inUse) then
-            for i = 1, select('#', frame:GetRegions()) do
-                local region = select(i, frame:GetRegions())
-                if region:GetObjectType() == 'FontString' and region:GetText() == msg then
-                    return frame
-                end
-            end
-        end
-    end
-end
-
-local f = CreateFrame('Frame')
-for event, cvar in pairs(events) do 
-    f:RegisterEvent(event) 
-end
-
-f:SetScript('OnEvent', function(self, event, msg, sender, _, _, _, _, _, _, _, _, _, guid)
-    if (GetCVarBool(events[event])) then
-        f.elapsed = 0
-        f:SetScript('OnUpdate', function(self, elapsed)
-            self.elapsed = self.elapsed + elapsed
-            local frame = FindFrame(msg)
-            if (frame or self.elapsed > 0.3) then
-                f:SetScript('OnUpdate', nil)
-                if (frame) then 
-                    UpdateFrame(frame, guid, sender) 
-                end
-            end
-        end)
-    end
+				if isChatBubble(frame) then
+					StyleBubble(frame)
+				end
+			end
+			numKids = newNumKids
+		end
+	end
 end)
 
 CHAT_FONT_HEIGHTS = {
@@ -149,8 +92,8 @@ CHAT_FONT_HEIGHTS = {
     [13] = 20,
 }
 
-CURRENCY_GAINED = "+ |cffffffff%s|r"
-CURRENCY_GAINED_MULTIPLE = "+ |cffffffff%s|r x|cffffffff%d|r"
+CURRENCY_GAINED = '+ |cffffffff%s|r'
+CURRENCY_GAINED_MULTIPLE = '+ |cffffffff%s|r x|cffffffff%d|r'
 
 LOOT_MONEY = '|cffffff00+|r |cffffffff%s'
 YOU_LOOT_MONEY = '|cffffff00+|r |cffffffff%s'
@@ -169,10 +112,10 @@ LOOT_ROLL_PASSED_AUTO = '%s passed %s (auto)'
 LOOT_ROLL_PASSED_SELF_AUTO = 'pass %s (auto)'
 
 ACHIEVEMENT_BROADCAST = '%s achieved %s!'
-ERR_AUCTION_SOLD_S = "|cff1eff00%s|r |cffFF0000Sold.|r"
+ERR_AUCTION_SOLD_S = '|cff1eff00%s|r |cffFF0000Sold.|r'
 ERR_SKILL_UP_SI = '%s |cff1eff00%d|r'
-NORMAL_QUEST_DISPLAY = "|cffffffff%s|r"
-TRIVIAL_QUEST_DISPLAY = "|cffffffff%s (low level)|r"
+NORMAL_QUEST_DISPLAY = '|cffffffff%s|r'
+TRIVIAL_QUEST_DISPLAY = '|cffffffff%s (low level)|r'
 FACTION_STANDING_DECREASED = '|3-7(%s) -%d'
 FACTION_STANDING_INCREASED = '|3-7(%s) +%d'
 CHAT_FLAG_AFK = '[AFK] '
@@ -293,22 +236,6 @@ function FCF_FlashTab(self)
 	UIFrameFlash(tabFlash, 0.25, 0.25, 5, nil, 0.5, 0.5)
 end
 
---[[LanChat:RegisterEvent("ADDON_LOADED")
-LanChat:SetScript("OnEvent", function(self, event, addon)
-	if addon == "Blizzard_CombatLog" then
-		self:UnregisterEvent("ADDON_LOADED")
-		SetupChat(self)
-	end
-end)]]
-
---[[ChatFrame1:CreateBeautyBorder(12, 5, 5, 5, 5, 5, 5, 5, 5, 6, 5, 6)
-ChatFrame2:CreateBeautyBorder(12, 5, 5, 5, 5, 27, 5, 27, 5, 6, 5, 6)
-ChatFrame3:CreateBeautyBorder(12, 5, 5, 5, 5, 5, 5, 5, 5, 6, 5, 6)
-
-ChatFrame1:SetBeautyBorderColor(RAID_CLASS_COLORS[UnitClass('player')])
-ChatFrame2:SetBeautyBorderColor(RAID_CLASS_COLORS[UnitClass('player')])
-ChatFrame3:SetBeautyBorderColor(RAID_CLASS_COLORS[UnitClass('player')])]]
-
 -- Fix positioning of CombatLogQuickButtonFrame to align better to our Chatframe
 ChatFrame2:SetScript('OnShow', function(self)
     CombatLogQuickButtonFrame_Custom:ClearAllPoints()
@@ -407,40 +334,40 @@ for i = 1, NUM_CHAT_WINDOWS do
     ChatFrameMenuButton.Show = ChatFrameMenuButton.Hide
     
     local frames = {
-		"ChatFrame1Background",
-        "ChatFrame1TopLeftTexture",
-        "ChatFrame1BottomLeftTexture",
-        "ChatFrame1TopRightTexture",
-        "ChatFrame1BottomRightTexture",
-        "ChatFrame1LeftTexture",
-        "ChatFrame1RightTexture",
-        "ChatFrame1BottomTexture",
-        "ChatFrame1TopTexture",
-        "ChatFrame2Background",
-        "ChatFrame2TopLeftTexture",
-        "ChatFrame2BottomLeftTexture",
-        "ChatFrame2TopRightTexture",
-        "ChatFrame2BottomRightTexture",
-        "ChatFrame2LeftTexture",
-        "ChatFrame2RightTexture",
-        "ChatFrame2BottomTexture",
-        "ChatFrame2TopTexture",
-        "ChatFrame3Background",
-        "ChatFrame3TopLeftTexture",
-        "ChatFrame3BottomLeftTexture",
-        "ChatFrame3TopRightTexture",
-        "ChatFrame3BottomRightTexture",
-        "ChatFrame3LeftTexture",
-        "ChatFrame3RightTexture",
-        "ChatFrame3BottomTexture",
-        "ChatFrame3TopTexture",
+		'ChatFrame1Background',
+        'ChatFrame1TopLeftTexture',
+        'ChatFrame1BottomLeftTexture',
+        'ChatFrame1TopRightTexture',
+        'ChatFrame1BottomRightTexture',
+        'ChatFrame1LeftTexture',
+        'ChatFrame1RightTexture',
+        'ChatFrame1BottomTexture',
+        'ChatFrame1TopTexture',
+        'ChatFrame2Background',
+        'ChatFrame2TopLeftTexture',
+        'ChatFrame2BottomLeftTexture',
+        'ChatFrame2TopRightTexture',
+        'ChatFrame2BottomRightTexture',
+        'ChatFrame2LeftTexture',
+        'ChatFrame2RightTexture',
+        'ChatFrame2BottomTexture',
+        'ChatFrame2TopTexture',
+        'ChatFrame3Background',
+        'ChatFrame3TopLeftTexture',
+        'ChatFrame3BottomLeftTexture',
+        'ChatFrame3TopRightTexture',
+        'ChatFrame3BottomRightTexture',
+        'ChatFrame3LeftTexture',
+        'ChatFrame3RightTexture',
+        'ChatFrame3BottomTexture',
+        'ChatFrame3TopTexture',
 	}
 	
 	for _, frame in pairs(frames) do
 		_G[frame]:Kill()
 	end
     
-    chat:SetFrameStrata("LOW")
+    chat:SetFrameStrata('LOW')
     _G['ChatFrame'..i..'Background']:Kill()
     
     local x = CreateFrame('Frame', _G['ChatHolder'..i], chat)
@@ -471,41 +398,21 @@ for i = 2, NUM_CHAT_WINDOWS do
     chatMinimize:SetPoint('TOPRIGHT', chat, 'TOPLEFT', -2, 0)
 end
 
---[[BNToastFrame:CreateBeautyBorder(12, 1, 1, 1)
-BNToastFrame:SetTemplate()
-
-BNToastFrame:ClearAllPoints()
-BNToastFrame.SetPoint = F.Dummy
-BNToastFrame.SetAllPoints = F.Dummy
-BNToastFrame.ClearAllPoints = F.Dummy
-BNToastFrameCloseButton:Hide()
-
-BNToastFrame:SetBackdrop({
-    bgFile = C.Media.Backdrop,
-    insets = { 
-        left = 1, 
-        right = 1, 
-        top = 1, 
-        bottom = 1 
-    },
-})
-
-BNToastFrame:SetBackdropColor(unpack(C.Media.BackdropColor))
-BNToastFrame.SetBackdrop = F.Dummy
-BNToastFrame.SetBackdropColor = F.Dummy
-BNToastFrameTopLine:SetFont(C.Media.Font, 12, nil)
-BNToastFrameBottomLine:SetFont(C.Media.Font, 12, nil)]]
-
 for i=1, BNToastFrame:GetNumRegions() do
 	if i ~= 10 then
 		local region = select(i, BNToastFrame:GetRegions())
-		if region:GetObjectType() == "Texture" then
+		if region:GetObjectType() == 'Texture' then
 			region:SetTexture(nil)
 		end
 	end
-end	
+end
+
 BNToastFrame:SetTemplate()
+BNToastFrame:ClearAllPoints()
 BNToastFrame:SetPoint('BOTTOMLEFT', ChatFrame1, 'TOPLEFT', -5, 5)
+BNToastFrame.SetPoint = F.Dummy
+BNToastFrame.SetAllPoints = F.Dummy
+BNToastFrame.ClearAllPoints = F.Dummy
 
 FriendsMicroButton:Hide()
 FriendsMicroButton.Show = FriendsMicroButton.Hide

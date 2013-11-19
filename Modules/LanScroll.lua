@@ -9,63 +9,63 @@ LanScroll.scroll_area_frames = {}
 
 -- Scroll Area Creation Function
 function LanScroll:CreateScrollArea(id, height, x_pos, y_pos, textalign, direction, font_face, font_size, font_flags, font_face_sticky, font_size_sticky, font_flags_sticky, animation_duration, animation_duration_sticky)
-    LanScroll.scroll_area_frames[id] = CreateFrame("Frame", nil, UIParent)
-    LanScroll.scroll_area_frames[id.."sticky"] = CreateFrame("Frame", nil, UIParent)
+    LanScroll.scroll_area_frames[id] = CreateFrame('Frame', nil, UIParent)
+    LanScroll.scroll_area_frames[id..'sticky'] = CreateFrame('Frame', nil, UIParent)
     -- Enable these two lines to see the scroll area on the screen for more accurate placement, etc
     -- LanScroll.scroll_area_frames[id]:SetBackdrop({ bgFile = [=[Interface\ChatFrame\ChatFrameBackground]=], edgeFile = nil, edgeSize = 0, insets = {left = 0, right = 0, top = 0, bottom = 0} })
     -- LanScroll.scroll_area_frames[id]:SetBackdropColor(0, 0, 0, 1)
 
     -- Set frame width
     LanScroll.scroll_area_frames[id]:SetWidth(1)
-    LanScroll.scroll_area_frames[id.."sticky"]:SetWidth(1)
+    LanScroll.scroll_area_frames[id..'sticky']:SetWidth(1)
 
     -- Set frame height
     LanScroll.scroll_area_frames[id]:SetHeight(height)
-    LanScroll.scroll_area_frames[id.."sticky"]:SetHeight(height)
+    LanScroll.scroll_area_frames[id..'sticky']:SetHeight(height)
 
     -- Position frame
-    LanScroll.scroll_area_frames[id]:SetPoint("BOTTOM", UIParent, "BOTTOM", x_pos, y_pos)
-    LanScroll.scroll_area_frames[id.."sticky"]:SetPoint("BOTTOM", UIParent, "BOTTOM", x_pos, y_pos)
+    LanScroll.scroll_area_frames[id]:SetPoint('BOTTOM', UIParent, 'BOTTOM', x_pos, y_pos)
+    LanScroll.scroll_area_frames[id..'sticky']:SetPoint('BOTTOM', UIParent, 'BOTTOM', x_pos, y_pos)
 
     -- Text alignment
     LanScroll.scroll_area_frames[id].textalign = textalign
-    LanScroll.scroll_area_frames[id.."sticky"].textalign = textalign
+    LanScroll.scroll_area_frames[id..'sticky'].textalign = textalign
 
     -- Scroll direction
-    LanScroll.scroll_area_frames[id].direction = direction or "up"
-    LanScroll.scroll_area_frames[id.."sticky"].direction = direction or "up"
+    LanScroll.scroll_area_frames[id].direction = direction or 'up'
+    LanScroll.scroll_area_frames[id..'sticky'].direction = direction or 'up'
 
     -- Font face
     LanScroll.scroll_area_frames[id].font_face = font_face or LanScroll.font_face
-    LanScroll.scroll_area_frames[id.."sticky"].font_face = font_face_sticky or LanScroll.font_face_sticky
+    LanScroll.scroll_area_frames[id..'sticky'].font_face = font_face_sticky or LanScroll.font_face_sticky
 
     -- Font size
     LanScroll.scroll_area_frames[id].font_size = font_size or LanScroll.font_size
-    LanScroll.scroll_area_frames[id.."sticky"].font_size = font_size_sticky or LanScroll.font_size_sticky
+    LanScroll.scroll_area_frames[id..'sticky'].font_size = font_size_sticky or LanScroll.font_size_sticky
 
     -- Font flags
     LanScroll.scroll_area_frames[id].font_flags = font_flags or LanScroll.font_flags
-    LanScroll.scroll_area_frames[id.."sticky"].font_flags = font_flags_sticky or LanScroll.font_flags_sticky
+    LanScroll.scroll_area_frames[id..'sticky'].font_flags = font_flags_sticky or LanScroll.font_flags_sticky
 
     -- Create anim_string table
     LanScroll.anim_strings[id] = {}
-    LanScroll.anim_strings[id.."sticky"] = {}
+    LanScroll.anim_strings[id..'sticky'] = {}
 
     -- Set movement speed
     LanScroll.scroll_area_frames[id].movement_speed = (animation_duration or LanScroll.animation_duration) / height
-    LanScroll.scroll_area_frames[id.."sticky"].movement_speed = (animation_duration_sticky or LanScroll.animation_duration_sticky) / height
+    LanScroll.scroll_area_frames[id..'sticky'].movement_speed = (animation_duration_sticky or LanScroll.animation_duration_sticky) / height
 
     -- Set animation duration
     LanScroll.scroll_area_frames[id].animation_duration = animation_duration or LanScroll.animation_duration
-    LanScroll.scroll_area_frames[id.."sticky"].animation_duration = animation_duration_sticky or LanScroll.animation_duration_sticky
+    LanScroll.scroll_area_frames[id..'sticky'].animation_duration = animation_duration_sticky or LanScroll.animation_duration_sticky
 end
 
 
 -- Font Settings
 LanScroll.font_face                       = C.Media.Font
 LanScroll.font_face_sticky                = C.Media.Font
-LanScroll.font_flags                      = "OUTLINE"    -- Some text can be hard to read without it.
-LanScroll.font_flags_sticky               = "OUTLINE"
+LanScroll.font_flags                      = 'OUTLINE'    -- Some text can be hard to read without it.
+LanScroll.font_flags_sticky               = 'OUTLINE'
 LanScroll.font_size                       = 11
 LanScroll.font_size_sticky                = 15
 
@@ -87,11 +87,11 @@ LanScroll.animation_delay                 = 0.015       -- Frequency of animatio
 -- Then you can pipe input into each scroll area using:
 -- LanScroll:AddText(text_to_show, sticky_style, scroll_area_identifer)
 
-LanScroll:CreateScrollArea("Error", 75, 0, 750, "CENTER", "up", nil, nil, nil, nil, nil, nil, 2.5, 2.5)
-LanScroll:CreateScrollArea("Notification", 110, 0, 585, "CENTER", "down", nil, nil, nil, nil, nil, nil, 3.5, 3.5)
-LanScroll:CreateScrollArea("Information", 100, 0, 160, "CENTER", "down", nil, nil, nil, nil, nil, nil, 2.5, 1.25)
-LanScroll:CreateScrollArea("Outgoing", 150, 162.5, 385, "LEFT", "up")
-LanScroll:CreateScrollArea("Incoming", 150, -162.5, 385, "RIGHT", "down")
+LanScroll:CreateScrollArea('Error', 75, 0, 750, 'CENTER', 'up', nil, nil, nil, nil, nil, nil, 2.5, 2.5)
+LanScroll:CreateScrollArea('Notification', 110, 0, 585, 'CENTER', 'down', nil, nil, nil, nil, nil, nil, 3.5, 3.5)
+LanScroll:CreateScrollArea('Information', 100, 0, 160, 'CENTER', 'down', nil, nil, nil, nil, nil, nil, 2.5, 1.25)
+LanScroll:CreateScrollArea('Outgoing', 150, 162.5, 385, 'LEFT', 'up')
+LanScroll:CreateScrollArea('Incoming', 150, -162.5, 385, 'RIGHT', 'down')
 
 local last_use = 0
 
@@ -134,12 +134,12 @@ end
 local blink_id = 0
 local make_blink_group = function(self) 
     blink_id = blink_id + 1
-    self.anim = self:CreateAnimationGroup("Blink"..blink_id) 
-    self.anim.fadein = self.anim:CreateAnimation("ALPHA", "FadeIn") 
+    self.anim = self:CreateAnimationGroup('Blink'..blink_id) 
+    self.anim.fadein = self.anim:CreateAnimation('ALPHA', 'FadeIn') 
     self.anim.fadein:SetChange(1) 
     self.anim.fadein:SetOrder(2) 
 
-    self.anim.fadeout = self.anim:CreateAnimation("ALPHA", "FadeOut") 
+    self.anim.fadeout = self.anim:CreateAnimation('ALPHA', 'FadeOut') 
     self.anim.fadeout:SetChange(-1) 
     self.anim.fadeout:SetOrder(1) 
 end 
@@ -187,12 +187,12 @@ local function Move(self, elapsed)
                         local area_height = LanScroll.scroll_area_frames[t.scrollarea]:GetHeight()
                         if not t.sticky then
                             -- Scroll the text
-                            if LanScroll.scroll_area_frames[t.scrollarea].direction == "up" then
+                            if LanScroll.scroll_area_frames[t.scrollarea].direction == 'up' then
                                 t.curpos = area_height * percentDone -- move up
                             else
                                 t.curpos = area_height - (area_height * percentDone)
                             end
-                            t.text:SetPoint(LanScroll.scroll_area_frames[t.scrollarea].textalign, LanScroll.scroll_area_frames[t.scrollarea], "BOTTOMLEFT", 0, t.curpos)
+                            t.text:SetPoint(LanScroll.scroll_area_frames[t.scrollarea].textalign, LanScroll.scroll_area_frames[t.scrollarea], 'BOTTOMLEFT', 0, t.curpos)
                         else
                             -- Static text
                             if t.curpos > area_height/2 then t.totaltime = 99 end
@@ -218,7 +218,7 @@ local function Move(self, elapsed)
                             t.text:SetAlpha(1)
                         end
                     else
-                        -- /script LanScroll:AddText("Kill Shot", true, "Notification", true)
+                        -- /script LanScroll:AddText('Kill Shot', true, 'Notification', true)
                         if t.blink then
                             stop_blinking(t.text)
                             t.blink  = false
@@ -254,7 +254,7 @@ function LanScroll:AddText(text, sticky, scrollarea, blink)
     if not sticky then
         destination_area = LanScroll.anim_strings[scrollarea]
     else
-        destination_area = LanScroll.anim_strings[scrollarea.."sticky"]
+        destination_area = LanScroll.anim_strings[scrollarea..'sticky']
     end
     if not destination_area then return end
     local t
@@ -271,12 +271,12 @@ function LanScroll:AddText(text, sticky, scrollarea, blink)
         t = {}
     end
     if not t.text then
-        t.text = table.remove(LanScroll.empty_strings, 1) or LanScroll.event_frame:CreateFontString(nil, "BORDER")
+        t.text = table.remove(LanScroll.empty_strings, 1) or LanScroll.event_frame:CreateFontString(nil, 'BORDER')
     end
 
     -- Settings which need to be set/reset on each fontstring after it is created/obtained
     if sticky then
-        t.fontSize = LanScroll.scroll_area_frames[scrollarea.."sticky"].font_size
+        t.fontSize = LanScroll.scroll_area_frames[scrollarea..'sticky'].font_size
     else
         t.fontSize = LanScroll.scroll_area_frames[scrollarea].font_size
     end
@@ -288,7 +288,7 @@ function LanScroll:AddText(text, sticky, scrollarea, blink)
         t.blink = false
         t.blinking = false
     end
-    t.text:SetFont(sticky and LanScroll.scroll_area_frames[scrollarea.."sticky"].font_face or LanScroll.scroll_area_frames[scrollarea].font_face, t.fontSize, sticky and LanScroll.scroll_area_frames[scrollarea.."sticky"].font_flags or LanScroll.scroll_area_frames[scrollarea].font_flags)
+    t.text:SetFont(sticky and LanScroll.scroll_area_frames[scrollarea..'sticky'].font_face or LanScroll.scroll_area_frames[scrollarea].font_face, t.fontSize, sticky and LanScroll.scroll_area_frames[scrollarea..'sticky'].font_flags or LanScroll.scroll_area_frames[scrollarea].font_flags)
     t.text:SetText(text)
     t.direction = destination_area.direction
     t.inuse = true
@@ -297,16 +297,16 @@ function LanScroll:AddText(text, sticky, scrollarea, blink)
     t.curpos = 0
     t.text:ClearAllPoints()
     if t.sticky then
-        t.text:SetPoint(LanScroll.scroll_area_frames[scrollarea.."sticky"].textalign, LanScroll.scroll_area_frames[scrollarea.."sticky"], LanScroll.scroll_area_frames[scrollarea.."sticky"].textalign, 0, 0)
-        t.text:SetDrawLayer("OVERLAY") -- on top of normal texts.
+        t.text:SetPoint(LanScroll.scroll_area_frames[scrollarea..'sticky'].textalign, LanScroll.scroll_area_frames[scrollarea..'sticky'], LanScroll.scroll_area_frames[scrollarea..'sticky'].textalign, 0, 0)
+        t.text:SetDrawLayer('OVERLAY') -- on top of normal texts.
     else
-        t.text:SetPoint(LanScroll.scroll_area_frames[scrollarea].textalign, LanScroll.scroll_area_frames[scrollarea], "BOTTOMLEFT", 0, 0)
-        t.text:SetDrawLayer("ARTWORK")
+        t.text:SetPoint(LanScroll.scroll_area_frames[scrollarea].textalign, LanScroll.scroll_area_frames[scrollarea], 'BOTTOMLEFT', 0, 0)
+        t.text:SetDrawLayer('ARTWORK')
     end
     t.text:SetAlpha(0)
     t.text:Show()
     t.animationSpeed = LanScroll.animation_speed
-    t.scrollarea = t.sticky and scrollarea.."sticky" or scrollarea
+    t.scrollarea = t.sticky and scrollarea..'sticky' or scrollarea
 
     -- Make sure that adding this fontstring will not collide with anything!
     CollisionCheck(t)
@@ -330,5 +330,5 @@ local function OnUpdate(s,e)
         last_use = 0
     end
 end
-LanScroll.event_frame = CreateFrame("Frame")
-LanScroll.event_frame:SetScript("OnUpdate", OnUpdate)
+LanScroll.event_frame = CreateFrame('Frame')
+LanScroll.event_frame:SetScript('OnUpdate', OnUpdate)

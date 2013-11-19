@@ -919,7 +919,7 @@ SlashCmdList['LanDamage'] = function(msg)
 	end]]
 	
 	for i = 1, 20 do
-        units[i] = {name = UnitName("player"), class = select(2, UnitClass("player")), unit = "1"}
+        units[i] = {name = UnitName('player'), class = select(2, UnitClass('player')), unit = '1'}
         Add(i, i*10000, DAMAGE)
         units[i] = nil
     end

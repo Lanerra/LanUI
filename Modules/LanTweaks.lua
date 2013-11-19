@@ -59,9 +59,9 @@ else
         end
     end)
 
-    hooksecurefunc("SetItemButtonTexture", function(button, texture)
-        if button:GetName():match("WatchFrameItem%d+") and not button.skinned then
-            local icon, border = _G[button:GetName() .. "IconTexture"], _G[button:GetName() .. "NormalTexture"]	
+    hooksecurefunc('SetItemButtonTexture', function(button, texture)
+        if button:GetName():match('WatchFrameItem%d+') and not button.skinned then
+            local icon, border = _G[button:GetName() .. 'IconTexture'], _G[button:GetName() .. 'NormalTexture']	
             button:SetSize(32, 32)      
             CreateBorderLight(button, 12)
             border:SetAlpha(0)

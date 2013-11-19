@@ -3,7 +3,7 @@ local F, C, G = unpack(select(2, ...))
 local round_off = true -- Should we leave 2 decimal places, or round the threat off?  This is for display only, internally the values will retain their precision.
 
 raid_threat = {}
-local display_frame = CreateFrame("Frame", "LanThreat", UIParent)
+local display_frame = CreateFrame('Frame', 'LanThreat', UIParent)
 local table_sort, string_format = table.sort, string.format
 local math_floor, tonumber = math.floor, tonumber
 local UnitName = UnitName
@@ -12,14 +12,14 @@ local UnitDetailedThreatSituation = UnitDetailedThreatSituation
 local need_reset = true
 local in_raid, in_party, warning_played, i_am_tank, target_okay
 local top_threat, overtake_threat, my_threat = 0, -1, -1
-local HIDDEN, TANKING, BLANK = "* %s", ">>> %s <<<", " "
+local HIDDEN, TANKING, BLANK = '* %s', '>>> %s <<<', ' '
 
 local recycle_bin = {}
 local function Recycler(trash_table)
     if trash_table then
         -- Recycle trash_table
         for k,v in pairs(trash_table) do
-            if type(v) == "table" then
+            if type(v) == 'table' then
                 Recycler(v)
             end
             trash_table[k] = nil
@@ -44,7 +44,7 @@ local function SortThreat()
 end
 
 local smooth_bars = Recycler()
-local smooth_update = CreateFrame("Frame")
+local smooth_update = CreateFrame('Frame')
 local function SmoothUpdate()
     local rate = GetFramerate()
     local limit = 30/rate
@@ -56,12 +56,12 @@ local function SmoothUpdate()
             new = data.value
         end
         display_frame.bars[index]:SetValue(new)
-        display_frame.bars[index].lefttext:SetText(data.left or " ")
-        display_frame.bars[index].righttext:SetText(data.right or " ")
+        display_frame.bars[index].lefttext:SetText(data.left or ' ')
+        display_frame.bars[index].righttext:SetText(data.right or ' ')
         if cur == data.value or abs(new - data.value) < 2 then
             display_frame.bars[index]:SetValue(data.value)
-            display_frame.bars[index].lefttext:SetText(data.left or " ")
-            display_frame.bars[index].righttext:SetText(data.right or " ")
+            display_frame.bars[index].lefttext:SetText(data.left or ' ')
+            display_frame.bars[index].righttext:SetText(data.right or ' ')
             local temp = smooth_bars[index]
             smooth_bars[index] = nil
             Recycler(temp)
@@ -76,8 +76,8 @@ local function SetBarValues(index, value, left, right)
     if value ~= display_frame.bars[index]:GetValue() or value == 0 then
         smooth_bars[index] = smooth_bars[index] or Recycler()
         smooth_bars[index].value = value or 0
-        smooth_bars[index].left = left or " "
-        smooth_bars[index].right = right or " "
+        smooth_bars[index].left = left or ' '
+        smooth_bars[index].right = right or ' '
         smooth_update:SetScript('OnUpdate', SmoothUpdate)
     else
         local temp = smooth_bars[index]
@@ -87,8 +87,8 @@ local function SetBarValues(index, value, left, right)
 
     -- Simply leave out value, left and/or right to reset the value(s) to a zeroed state.
     --display_frame.bars[index]:SetValue(value or 0)
-    --display_frame.bars[index].lefttext:SetText(left or " ")
-    --display_frame.bars[index].righttext:SetText(right or " ")
+    --display_frame.bars[index].lefttext:SetText(left or ' ')
+    --display_frame.bars[index].righttext:SetText(right or ' ')
 end
 
 -- Determines unit's position in our threat table, or adds them if they are not present
@@ -101,13 +101,13 @@ local function UpdateUnitThreat(unit_id)
             if data.name == unit_name then
 
                 -- Sometimes names get set as 'Unknown'.  This should resolve that issue.
-                if raid_threat[i].name == "Unknown" then raid_threat[i].name = unit_name end
+                if raid_threat[i].name == 'Unknown' then raid_threat[i].name = unit_name end
 
                 -- We use this as a flag to determine that we had this unit in our threat table.
                 updated = true
 
                 -- Obtain threat info about this unit.
-                local tanking, state, scaled_percent, raw_percent, threat = UnitDetailedThreatSituation(unit_id, "target")
+                local tanking, state, scaled_percent, raw_percent, threat = UnitDetailedThreatSituation(unit_id, 'target')
 
                 if threat then
 
@@ -147,7 +147,7 @@ local function UpdateUnitThreat(unit_id)
                     raid_threat[i].threat = threat
 
                     -- If this is the player, then we save some special flags
-                    if data.name == UnitName("player") then
+                    if data.name == UnitName('player') then
                         my_threat = threat
                         i_am_tank = raid_threat[i].tanking
                     end
@@ -170,7 +170,7 @@ end
 
 local function UpdateDisplay()
     -- If we have no data, then, zero out everything.
-    if not(#raid_threat) or #raid_threat < 1 or not(UnitName("target")) then
+    if not(#raid_threat) or #raid_threat < 1 or not(UnitName('target')) then
         for i = 1, 10 do
             display_frame.bars[i]:SetMinMaxValues(0, 1)
             SetBarValues(i)
@@ -193,7 +193,7 @@ local function UpdateDisplay()
         display_frame.bars[i]:SetMinMaxValues(0, raid_threat[1] and raid_threat[1].threat > -1 and (tonumber(raid_threat[1].threat)/100) or 1)
         if i == 1 then
             display_frame.bars[i]:SetValue(tonumber(raid_threat[i].threat)/100 or 0,
-            string_format(raid_threat[i].threat_hidden and HIDDEN or raid_threat[i].tanking and TANKING or "%s", raid_threat[i].name),
+            string_format(raid_threat[i].threat_hidden and HIDDEN or raid_threat[i].tanking and TANKING or '%s', raid_threat[i].name),
             round_off and math_floor(tonumber(raid_threat[i].threat)/100) or (tonumber(raid_threat[i].threat)/100) or 0
             )
         end
@@ -201,7 +201,7 @@ local function UpdateDisplay()
         if raid_threat[i] and raid_threat[i].threat > -1 then
             SetBarValues(i,
             tonumber(raid_threat[i].threat)/100 or 0,
-            string_format(raid_threat[i].threat_hidden and HIDDEN or raid_threat[i].tanking and TANKING or "%s", raid_threat[i].name),
+            string_format(raid_threat[i].threat_hidden and HIDDEN or raid_threat[i].tanking and TANKING or '%s', raid_threat[i].name),
             round_off and math_floor(tonumber(raid_threat[i].threat)/100) or (tonumber(raid_threat[i].threat)/100) or 0
             )
 
@@ -211,7 +211,7 @@ local function UpdateDisplay()
             if class then
                 -- By class
                 display_frame.bars[i]:SetStatusBarColor(RAID_CLASS_COLORS[class].r, RAID_CLASS_COLORS[class].g, RAID_CLASS_COLORS[class].b, 0.8)
-            elseif raid_threat[i].name == "Aggro" then
+            elseif raid_threat[i].name == 'Aggro' then
                 display_frame.bars[i]:SetStatusBarColor(1, 0, 0, 0.8)
             else
                 display_frame.bars[i]:SetStatusBarColor(1, 1, 1, 0.8)
@@ -232,34 +232,34 @@ local function UpdateThreat()
     if in_raid or in_party then
         if in_raid then
             for i = 1, GetNumGroupMembers() do
-                UpdateUnitThreat(string_format("raid%d", i))
-                UpdateUnitThreat(string_format("raidpet%d", i))
+                UpdateUnitThreat(string_format('raid%d', i))
+                UpdateUnitThreat(string_format('raidpet%d', i))
             end
         else
             for i = 1, GetNumGroupMembers() do
-                UpdateUnitThreat(string_format("party%d", i))
-                UpdateUnitThreat(string_format("partypet%d", i))
+                UpdateUnitThreat(string_format('party%d', i))
+                UpdateUnitThreat(string_format('partypet%d', i))
             end
         end
     end
 
     if not in_raid then
-        UpdateUnitThreat("player")
-        UpdateUnitThreat("pet")
+        UpdateUnitThreat('player')
+        UpdateUnitThreat('pet')
     end
 
-    UpdateUnitThreat("targettarget")
+    UpdateUnitThreat('targettarget')
 
     -- Add in our overtake threat line
     local overtake_set
     for k,v in pairs(raid_threat) do
-        if v.name == "Aggro" then
+        if v.name == 'Aggro' then
             v.threat = overtake_threat or -1
             overtake_set = true
         end
     end
     if not overtake_set then
-        raid_threat[(#raid_threat or 0)+1] = { name = "Aggro", threat = overtake_threat or -1, threat_hidden = false, tanking = false }
+        raid_threat[(#raid_threat or 0)+1] = { name = 'Aggro', threat = overtake_threat or -1, threat_hidden = false, tanking = false }
     end
 
     SortThreat()
@@ -270,45 +270,45 @@ local function MakeDisplay()
     local f = display_frame
     f:SetWidth(159)
     f:SetHeight(134)
-    f:SetPoint("TOPLEFT", LanDamage, "BOTTOMLEFT", 0, -15)
+    f:SetPoint('TOPLEFT', LanDamage, 'BOTTOMLEFT', 0, -15)
     
     f.texture = f:CreateTexture()
     f.texture:SetAllPoints()
     f.texture:SetTexture(0,0,0,0.5)
-    f.texture:SetDrawLayer("BACKGROUND")
+    f.texture:SetDrawLayer('BACKGROUND')
 
-    f.titletext = f:CreateFontString(nil, "ARTWORK")
+    f.titletext = f:CreateFontString(nil, 'ARTWORK')
     f.titletext:SetFont(C.Media.Font, 11)
-    f.titletext:SetText("Threat")
-    f.titletext:SetPoint("TOP", f, "TOP", 0, -5)
+    f.titletext:SetText('Threat')
+    f.titletext:SetPoint('TOP', f, 'TOP', 0, -5)
 
     -- Add some bars!
     f.bars = Recycler()
     for i = 1, 10 do
-        f.bars[i] = CreateFrame("StatusBar", nil, f)
+        f.bars[i] = CreateFrame('StatusBar', nil, f)
         f.bars[i]:SetWidth(159)
         f.bars[i]:SetHeight(12.35)
         f.bars[i]:SetMinMaxValues(0, 1)
-        f.bars[i]:SetOrientation("HORIZONTAL")
+        f.bars[i]:SetOrientation('HORIZONTAL')
         f.bars[i]:SetStatusBarColor(1, 1, 1, 0.8)
         f.bars[i]:SetStatusBarTexture(C.Media.StatusBar)
         if i == 1 then
-            f.bars[i]:SetPoint("TOP", f.titletext, "BOTTOM", 0, -2)
+            f.bars[i]:SetPoint('TOP', f.titletext, 'BOTTOM', 0, -2)
         else
-            f.bars[i]:SetPoint("TOPLEFT", f.bars[i-1], "BOTTOMLEFT", 0, -1)
-            f.bars[i]:SetPoint("TOPRIGHT", f.bars[i-1], "BOTTOMRIGHT", 0, -1)
+            f.bars[i]:SetPoint('TOPLEFT', f.bars[i-1], 'BOTTOMLEFT', 0, -1)
+            f.bars[i]:SetPoint('TOPRIGHT', f.bars[i-1], 'BOTTOMRIGHT', 0, -1)
         end
-        f.bars[i].lefttext = f.bars[i]:CreateFontString(nil, "ARTWORK")
+        f.bars[i].lefttext = f.bars[i]:CreateFontString(nil, 'ARTWORK')
         f.bars[i].lefttext:SetFont(C.Media.Font, 11)
-        f.bars[i].lefttext:SetPoint("LEFT", f.bars[i], "LEFT", 2, 0)
+        f.bars[i].lefttext:SetPoint('LEFT', f.bars[i], 'LEFT', 2, 0)
         f.bars[i].lefttext:Show()
-        f.bars[i].righttext = f.bars[i]:CreateFontString(nil, "ARTWORK")
+        f.bars[i].righttext = f.bars[i]:CreateFontString(nil, 'ARTWORK')
         f.bars[i].righttext:SetFont(C.Media.Font, 11)
-        f.bars[i].righttext:SetPoint("RIGHT", f.bars[i], "RIGHT", -2, 0)
+        f.bars[i].righttext:SetPoint('RIGHT', f.bars[i], 'RIGHT', -2, 0)
         SetBarValues(i)
     end
 
-    display_frame:HookScript("OnSizeChanged", function(frame, ...)
+    display_frame:HookScript('OnSizeChanged', function(frame, ...)
         -- Truncate bars
         local bar_room
         bar_room = floor((LanThreat:GetHeight()-40)/10)
@@ -336,14 +336,14 @@ local function OnUpdate(self, elapsed)
 end
 
 local function OnEvent(self, event,...)
-    if event == "PLAYER_TARGET_CHANGED" then
-        display_frame.titletext:SetText(UnitName("target") or "Threat")
+    if event == 'PLAYER_TARGET_CHANGED' then
+        display_frame.titletext:SetText(UnitName('target') or 'Threat')
         overtake_threat = -1
         for i = 1, 10 do
             display_frame.bars[i]:SetMinMaxValues(0, 1)
             SetBarValues(i)
         end
-        if not UnitIsPlayer("target") and UnitCanAttack("player", "target") and UnitHealth("target") > 0 then
+        if not UnitIsPlayer('target') and UnitCanAttack('player', 'target') and UnitHealth('target') > 0 then
             target_okay = true
         else
             target_okay = false
@@ -352,11 +352,11 @@ local function OnEvent(self, event,...)
         return
     end
 
-    if event == "PLAYER_REGEN_ENABLED" then
-        display_frame:SetScript("OnUpdate", nil)
+    if event == 'PLAYER_REGEN_ENABLED' then
+        display_frame:SetScript('OnUpdate', nil)
         Recycler(raid_threat)
         raid_threat = Recycler()
-        collectgarbage("collect")
+        collectgarbage('collect')
         overtake_threat = -1
         top_threat = -1
         warning_played = false
@@ -369,15 +369,15 @@ local function OnEvent(self, event,...)
         return
     end
 
-    if event == "PLAYER_REGEN_DISABLED" then
-        display_frame:SetScript("OnUpdate", OnUpdate)
+    if event == 'PLAYER_REGEN_DISABLED' then
+        display_frame:SetScript('OnUpdate', OnUpdate)
         return
     end
 end
 
 MakeDisplay()
 
-display_frame:RegisterEvent("PLAYER_REGEN_ENABLED")
-display_frame:RegisterEvent("PLAYER_REGEN_DISABLED")
-display_frame:RegisterEvent("PLAYER_TARGET_CHANGED")
-display_frame:SetScript("OnEvent", OnEvent)
+display_frame:RegisterEvent('PLAYER_REGEN_ENABLED')
+display_frame:RegisterEvent('PLAYER_REGEN_DISABLED')
+display_frame:RegisterEvent('PLAYER_TARGET_CHANGED')
+display_frame:SetScript('OnEvent', OnEvent)

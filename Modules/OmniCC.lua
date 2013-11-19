@@ -118,7 +118,7 @@ local function Timer_Create(self)
 
     local text = timer:CreateFontString(nil, 'BACKGROUND ')
     text:SetPoint('CENTER')
-    text:SetJustifyH("CENTER")
+    text:SetJustifyH('CENTER')
     timer.text = text
 
     Timer_OnSizeChanged(timer, scaler:GetSize())

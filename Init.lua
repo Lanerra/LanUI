@@ -148,26 +148,26 @@ SLASH_CHILDFRAMES1 = '/child'
 SlashCmdList['RAIDFAKER'] = function()
     local RAIDMEMBER = 25;
 
-    local allClasses = { "WARRIOR", "ROGUE", "PRIEST", "SHAMAN", "DEATHKNIGHT", "HUNTER", "PALADIN", "MAGE", "WARLOCK", "DRUID" };
+    local allClasses = { 'WARRIOR', 'ROGUE', 'PRIEST', 'SHAMAN', 'DEATHKNIGHT', 'HUNTER', 'PALADIN', 'MAGE', 'WARLOCK', 'DRUID' };
     local simParty = {};
     for i=1, 4, 1 do
         simParty[i] = {};
         simParty[i].class = allClasses[math.floor(math.random()*10)+1]
-        simParty[i].name = "Party #"..i;
-        simParty["party"..i] = simParty[i];
+        simParty[i].name = 'Party #'..i;
+        simParty['party'..i] = simParty[i];
     end
     for i=1, (RAIDMEMBER-1), 1 do
         simParty[i] = {};
         simParty[i].class = allClasses[math.floor(math.random()*10)+1];
-        simParty[i].name = "Raid #"..i;
+        simParty[i].name = 'Raid #'..i;
         simParty[i].subGroup = math.floor((i-1)/5)+1;
-        simParty["raid"..i] = simParty[i];
+        simParty['raid'..i] = simParty[i];
     end
 
     local OriginalUnitClass = UnitClass
     function UnitClass(unit)
-        if ( unit == "raid"..RAIDMEMBER ) then
-            return OriginalUnitClass("player");
+        if ( unit == 'raid'..RAIDMEMBER ) then
+            return OriginalUnitClass('player');
         elseif ( simParty[unit] ) then
             return simParty[unit].class, simParty[unit].class;
         end
@@ -176,8 +176,8 @@ SlashCmdList['RAIDFAKER'] = function()
 
     local OriginalUnitName = UnitName
     function UnitName(unit)
-        if ( unit == "raid"..RAIDMEMBER ) then
-            return OriginalUnitName("player");
+        if ( unit == 'raid'..RAIDMEMBER ) then
+            return OriginalUnitName('player');
         elseif ( simParty[unit] ) then
             return simParty[unit].name;
         end
@@ -186,7 +186,7 @@ SlashCmdList['RAIDFAKER'] = function()
 
     local OriginalUnitIsUnit = UnitIsUnit
     function UnitIsUnit(u1,u2)
-        if ( ( u1 == "raid"..RAIDMEMBER and u2 == "player" ) or ( u1 == "player" and u2 == "raid"..RAIDMEMBER ) ) then
+        if ( ( u1 == 'raid'..RAIDMEMBER and u2 == 'player' ) or ( u1 == 'player' and u2 == 'raid'..RAIDMEMBER ) ) then
             return true;
         end
         return OriginalUnitIsUnit(u1, u2);
@@ -194,8 +194,8 @@ SlashCmdList['RAIDFAKER'] = function()
 
     local OriginalUnitHealth = UnitHealth
     function UnitHealth(unit)
-        if ( unit == "raid"..RAIDMEMBER ) then
-            return OriginalUnitHealth("player");
+        if ( unit == 'raid'..RAIDMEMBER ) then
+            return OriginalUnitHealth('player');
         elseif ( simParty[unit] ) then
             return simParty[unit].health;
         end
@@ -204,8 +204,8 @@ SlashCmdList['RAIDFAKER'] = function()
 
     local OriginalUnitHealthMax = UnitHealthMax
     function UnitHealthMax(unit)
-        if ( unit == "raid"..RAIDMEMBER ) then
-            return OriginalUnitHealthMax("player");
+        if ( unit == 'raid'..RAIDMEMBER ) then
+            return OriginalUnitHealthMax('player');
         elseif ( simParty[unit] ) then
             return simParty[unit].maxhealth;
         end
@@ -214,8 +214,8 @@ SlashCmdList['RAIDFAKER'] = function()
 
     local OriginalUnitPower = UnitPower
     function UnitPower(unit, type)
-        if ( unit == "raid"..RAIDMEMBER ) then
-            return OriginalUnitPower("player", type);
+        if ( unit == 'raid'..RAIDMEMBER ) then
+            return OriginalUnitPower('player', type);
         elseif ( simParty[unit] ) then
             return simParty[unit].power, 0;
         end
@@ -224,8 +224,8 @@ SlashCmdList['RAIDFAKER'] = function()
 
     local OriginalUnitPowerMax = UnitPowerMax
     function UnitPowerMax(unit, type)
-        if ( unit == "raid"..RAIDMEMBER ) then
-            return OriginalUnitPowerMax("player", type);
+        if ( unit == 'raid'..RAIDMEMBER ) then
+            return OriginalUnitPowerMax('player', type);
         elseif ( simParty[unit] ) then
             return simParty[unit].maxpower, 0;
         end
@@ -244,12 +244,12 @@ SlashCmdList['RAIDFAKER'] = function()
 
     function GetRaidRosterInfo(unit)
         if ( unit == RAIDMEMBER ) then
-            local _,cls=UnitClass("player")
-            return UnitName("player"), 2, (math.floor((RAIDMEMBER-1)/5)+1), 80, cls, cls, "", true, false, nil, nil;
+            local _,cls=UnitClass('player')
+            return UnitName('player'), 2, (math.floor((RAIDMEMBER-1)/5)+1), 80, cls, cls, '', true, false, nil, nil;
         elseif ( simParty[unit] ) then
-            return simParty[unit].name, 0, simParty[unit].subGroup, 80, simParty[unit].class, simParty[unit].class, "", true, false, nil, nil;
+            return simParty[unit].name, 0, simParty[unit].subGroup, 80, simParty[unit].class, simParty[unit].class, '', true, false, nil, nil;
         end
         return nil;
     end
 end
-SLASH_RAIDFAKER1 = "/faker"
+SLASH_RAIDFAKER1 = '/faker'
