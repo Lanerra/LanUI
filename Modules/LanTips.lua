@@ -370,7 +370,7 @@ if GetLocale() == 'enUS' or GetLocale() == 'enGB' then
 	ITEM_SPELL_TRIGGER_ONPROC = 'Proc:'
 	ITEM_STARTS_QUEST = 'Starts quest'
 	ITEM_WRONG_CLASS = 'Wrong class!'
-	ITEM_UNSELLABLE = 'Can't be sold'
+	ITEM_UNSELLABLE = "Can't be sold"
 	SELL_PRICE = 'Price'
 end
 

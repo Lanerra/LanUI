@@ -236,7 +236,7 @@ LootHistoryDropDown.initialize = function(self)
 	info = UIDropDownMenu_CreateInfo();
 	info.notCheckable = 1;
 	local name, class = C_LootHistory.GetPlayerInfo(self.itemIdx, self.playerIdx);
-	local classColor = C.classcolours[class];
+	local classColor = RAID_CLASS_COLORS[class];
 	local colorCode = string.format('|cFF%02x%02x%02x',  classColor.r*255,  classColor.g*255,  classColor.b*255);
 	info.text = string.format(MASTER_LOOTER_GIVE_TO, colorCode..name..'|r');
 	info.func = LootHistoryDropDown_OnClick;
@@ -253,7 +253,7 @@ local grouplootlist, grouplootframes = {}, {}
 local MAX_LEVEL = MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()]
 
 local function shouldAutoRoll(quality, BoP)
-	return quality == 2 and not BoP and C.automation.autoRoll and (MAX_LEVEL == UnitLevel('player') or not C.automation.autoRoll_maxLevel)
+	return quality == 2 and not BoP and C.Tweaks.AutoDEGreed and (MAX_LEVEL == UnitLevel('player'))
 end
 
 local function OnEvent(self, event, rollId)

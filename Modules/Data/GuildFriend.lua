@@ -2,7 +2,7 @@ local F, C, G = unpack(select(2, ...))
 
 local cfg = C.Minimap
 
-if (not cfg.tab.show) then
+if (not cfg.Tab.Show) then
     return
 end
 
@@ -87,10 +87,10 @@ local f = CreateFrame('Frame', nil, Minimap)
 f:SetFrameStrata('BACKGROUND')
 f:SetFrameLevel(Minimap:GetFrameLevel() - 1)
 f:SetHeight(30)
-f:SetAlpha(cfg.tab.alphaNoMouseover)
-f:CreateBeautyBorder(11)
-f:SetBackdrop({bgFile = 'Interface\\Buttons\\WHITE8x8'})
-f:SetBackdropColor(0, 0, 0, 0.6)
+f:SetAlpha(cfg.Tab.AlphaNoMouseover)
+f:SetTemplate()
+f:SetBackdrop({bgFile = C.Media.Backdrop})
+f:SetBackdropColor(unpack(C.Media.BackdropColor))
 f.parent = Minimap
 
     -- The left button
@@ -159,28 +159,28 @@ f.Center.Text:SetPoint('TOPRIGHT', f.Right, 'TOPLEFT', -12, 0)
 local function HideTab()
     GameTooltip:Hide()
 
-    if (cfg.tab.showAlways) then
+    if (cfg.Tab.ShowAlways) then
         return
     end
 
     securecall('UIFrameFadeOut', f.Left, 0.15, f.Left:GetAlpha(), 0)
     securecall('UIFrameFadeOut', f.Right, 0.15, f.Right:GetAlpha(), 0)
     securecall('UIFrameFadeOut', f.Center, 0.15, f.Center:GetAlpha(), 0)
-    securecall('UIFrameFadeOut', f, 0.15, f:GetAlpha(), cfg.tab.alphaNoMouseover)
+    securecall('UIFrameFadeOut', f, 0.15, f:GetAlpha(), cfg.Tab.AlphaNoMouseover)
 end
 
 local function ShowTab()
     securecall('UIFrameFadeIn', f.Left, 0.15, f.Left:GetAlpha(), 1)
     securecall('UIFrameFadeIn', f.Right, 0.15, f.Right:GetAlpha(), 1)
     securecall('UIFrameFadeIn', f.Center, 0.15, f.Center:GetAlpha(), 1)
-    securecall('UIFrameFadeIn', f, 0.15, f:GetAlpha(), cfg.tab.alphaMouseover)
+    securecall('UIFrameFadeIn', f, 0.15, f:GetAlpha(), cfg.Tab.AlphaMouseover)
 end
 
-if (cfg.tab.showBelowMinimap) then
+if (cfg.Tab.ShowBelowMinimap) then
     f.Left.Text:SetPoint('BOTTOMLEFT', f, 6, 5)
     f.Right.Text:SetPoint('BOTTOMRIGHT', f, -6, 5)
 
-    if (cfg.tab.showAlways) then
+    if (cfg.Tab.ShowAlways) then
         ShowTab()
 
         f:SetPoint('LEFT', Minimap, 'BOTTOMLEFT', 10, -6)
@@ -193,7 +193,7 @@ else
     f.Left.Text:SetPoint('TOPLEFT', f, 6, -5)
     f.Right.Text:SetPoint('TOPRIGHT', f, -6, -5)
 
-    if (cfg.tab.showAlways) then
+    if (cfg.Tab.ShowAlways) then
         ShowTab()
 
         f:SetPoint('LEFT', Minimap, 'TOPLEFT', 10, 6)
@@ -223,7 +223,7 @@ local function SlideFrame(self, t)
     end
 end
 
-if (cfg.tab.showBelowMinimap) then
+if (cfg.Tab.ShowBelowMinimap) then
     f.point = 'BOTTOM'
     f.pos = -6
 else
@@ -233,14 +233,14 @@ end
 
 local function SlideUp()
     f.mod = 1
-    f.limit = cfg.tab.showBelowMinimap and -6 or 21
+    f.limit = cfg.Tab.ShowBelowMinimap and -6 or 21
     f.speed = 200
     f:SetScript('OnUpdate', SlideFrame)
 end
 
 local function SlideDown()
     f.mod = -1
-    f.limit = cfg.tab.showBelowMinimap and -21 or 6
+    f.limit = cfg.Tab.ShowBelowMinimap and -21 or 6
     f.speed = -200
     f:SetScript('OnUpdate', SlideFrame)
 end
@@ -617,7 +617,7 @@ local function BuildBNTable(total)
         BNTable[i] = {
             presenceID,
             presenceName,
-            battleTag,
+            battleTag or '',
             toonName,
             toonID,
             client,
@@ -671,7 +671,7 @@ local function UpdateBNTable(total)
         BNTable[index][7] = isOnline
         if (isOnline) then
             BNTable[index][2] = presenceName
-            BNTable[index][3] = battleTag
+            BNTable[index][3] = battleTag or ''
             BNTable[index][4] = toonName
             BNTable[index][5] = toonID
             BNTable[index][6] = client
@@ -876,7 +876,7 @@ local function FriendsOnEnter(self)
 
                         GameTooltip:AddDoubleLine(format('%s (|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r%s) |cff%02x%02x%02x%s|r', BNTable[i][6], levelc.r*255, levelc.g*255, levelc.b*255, BNTable[i][16], classc.r*255, classc.g*255, classc.b*255, BNTable[i][4], groupedTable[grouped], 255, 0, 0, statusTable[status]), BNTable[i][2], 238, 238, 238, 238, 238, 238)
                     else
-                        GameTooltip:AddDoubleLine('|cffeeeeee'..BNTable[i][6]..' ('..BNTable[i][4]..')|r', '|cffeeeeee'..BNTable[i][2]..' '..BNTable[i][3]..'|r')
+                        GameTooltip:AddDoubleLine('|cffeeeeee'..BNTable[i][6]..' ('..BNTable[i][4]..')|r', '|cffeeeeee'..BNTable[i][2]..'|r')
                     end
                 end
             end
@@ -891,9 +891,9 @@ end
     -- the 'OnEnter' functions
 
 f:SetScript('OnEnter', function()
-    if (not cfg.tab.showAlways) then
+    if (not cfg.Tab.ShowAlways) then
         ShowTab()
-        if (cfg.tab.showBelowMinimap) then
+        if (cfg.Tab.ShowBelowMinimap) then
             SlideDown()
         else
             SlideUp()
@@ -904,9 +904,9 @@ end)
 f.Center:SetScript('OnEnter', function(self)
     FriendsOnEnter(self)
 
-    if (not cfg.tab.showAlways) then
+    if (not cfg.Tab.ShowAlways) then
         ShowTab()
-        if (cfg.tab.showBelowMinimap) then
+        if (cfg.Tab.ShowBelowMinimap) then
             SlideDown()
         else
             SlideUp()
@@ -917,9 +917,9 @@ end)
 f.Right:SetScript('OnEnter', function(self)
     ShowMemoryTip(self)
 
-    if (not cfg.tab.showAlways) then
+    if (not cfg.Tab.ShowAlways) then
         ShowTab()
-        if (cfg.tab.showBelowMinimap) then
+        if (cfg.Tab.ShowBelowMinimap) then
             SlideDown()
         else
             SlideUp()
@@ -931,9 +931,9 @@ f.Left:SetScript('OnEnter', function(self)
     GuildTip(self)
     UpdateGuildText()
 
-    if (not cfg.tab.showAlways) then
+    if (not cfg.Tab.ShowAlways) then
         ShowTab()
-        if (cfg.tab.showBelowMinimap) then
+        if (cfg.Tab.ShowBelowMinimap) then
             SlideDown()
         else
             SlideUp()
@@ -952,8 +952,8 @@ for _, leaveFrame in pairs({
     leaveFrame:SetScript('OnLeave', function()
         HideTab()
 
-        if (not cfg.tab.showAlways) then
-            if (cfg.tab.showBelowMinimap) then
+        if (not cfg.Tab.ShowAlways) then
+            if (cfg.Tab.ShowBelowMinimap) then
                 SlideUp()
             else
                 SlideDown()
@@ -964,11 +964,11 @@ end
 
     -- the Minimap scripts
 
-if (not cfg.tab.showAlways) then
+if (not cfg.Tab.ShowAlways) then
     Minimap:HookScript('OnEnter',function()
         ShowTab()
 
-        if (cfg.tab.showBelowMinimap) then
+        if (cfg.Tab.ShowBelowMinimap) then
             SlideDown()
         else
             SlideUp()
@@ -978,7 +978,7 @@ if (not cfg.tab.showAlways) then
     Minimap:HookScript('OnLeave', function()
         HideTab()
 
-        if (cfg.tab.showBelowMinimap) then
+        if (cfg.Tab.ShowBelowMinimap) then
             SlideUp()
         else
             SlideDown()

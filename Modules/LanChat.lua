@@ -398,7 +398,7 @@ for i = 2, NUM_CHAT_WINDOWS do
     chatMinimize:SetPoint('TOPRIGHT', chat, 'TOPLEFT', -2, 0)
 end
 
-for i=1, BNToastFrame:GetNumRegions() do
+for i = 1, BNToastFrame:GetNumRegions() do
 	if i ~= 10 then
 		local region = select(i, BNToastFrame:GetRegions())
 		if region:GetObjectType() == 'Texture' then
@@ -408,11 +408,11 @@ for i=1, BNToastFrame:GetNumRegions() do
 end
 
 BNToastFrame:SetTemplate()
-BNToastFrame:ClearAllPoints()
-BNToastFrame:SetPoint('BOTTOMLEFT', ChatFrame1, 'TOPLEFT', -5, 5)
-BNToastFrame.SetPoint = F.Dummy
-BNToastFrame.SetAllPoints = F.Dummy
-BNToastFrame.ClearAllPoints = F.Dummy
+
+BNToastFrame:HookScript('OnShow', function(self)
+    BNToastFrame:ClearAllPoints()
+    BNToastFrame:SetPoint('BOTTOMLEFT', ChatFrame1EditBox, 'TOPLEFT', 0, 15)
+end)
 
 FriendsMicroButton:Hide()
 FriendsMicroButton.Show = FriendsMicroButton.Hide

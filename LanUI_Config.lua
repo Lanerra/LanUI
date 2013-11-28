@@ -17,21 +17,19 @@ C['ActionBars'] = {
     ['Bar3'] = false, -- How about a third?
     ['Bar4'] = false, -- A fourth?
     ['Bar5'] = false, -- I think you get the picture by now
-    ['Bar6'] = false,
-    ['Bar7'] = false,
 }    
 
 C['Minimap'] = {
-    ['tab'] = {
-        ['show'] = true,
-        ['showAlways'] = false,
-        ['alphaMouseover'] = 1,
-        ['alphaNoMouseover'] = 0.5,
-        ['showBelowMinimap'] = true,
+    ['Tab'] = {
+        ['Show'] = true,
+        ['ShowAlways'] = false,
+        ['AlphaMouseover'] = 1,
+        ['AlphaNoMouseover'] = 0.5,
+        ['ShowBelowMinimap'] = true,
     },
-    ['mouseover'] = {
-        ['zoneText'] = true,
-        ['instanceDifficulty'] = false,
+    ['Mouseover'] = {
+        ['ZoneText'] = true,
+        ['InstanceDifficulty'] = false,
     },
 }
 

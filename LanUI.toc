@@ -16,19 +16,24 @@ lib\CallBackHandler-1.0\CallbackHandler-1.0.lua
 lib\LibBossEncounters\LibBossEncounters.lua
 lib\LibDataBroker\LibDataBroker-1.1.lua
 lib\LibStub\LibStub.lua
+lib\LibActionButton-1.0\LibActionButton-1.0.lua
 
 Modules\Data\Durability.lua
 Modules\Data\GuildFriend.lua
 Modules\Data\Gold.lua
 
-Modules\nMinimap\nMinimap.lua
-Modules\nMinimap\nMinimap_Clock.lua
-Modules\nMinimap\nMinimap_GameTime.lua
-Modules\nMinimap\nMinimap_InstanceDifficulty.lua
+Modules\Minimap\Minimap.lua
+Modules\Minimap\Clock.lua
+Modules\Minimap\InstanceDifficulty.lua
 
 Modules\ActionBars\LanBars.lua
-Modules\ActionBars\BarStyle.lua
-Modules\ActionBars\Cooldown.lua
+Modules\ActionBars\Modules\Blizzard.lua
+Modules\ActionBars\Modules\Cooldowns.lua
+Modules\ActionBars\Modules\Bindings.lua
+Modules\ActionBars\Bars\ActionBar.lua
+Modules\ActionBars\Bars\Override.lua
+Modules\ActionBars\Bars\Pet.lua
+Modules\ActionBars\Bars\Extra.lua
 Modules\LanChat.lua
 Modules\LanCombat.lua
 Modules\LanDamage.lua
@@ -45,4 +50,3 @@ Modules\LanTweaks.lua
 Modules\LanWarning.lua
 Modules\nBuff.lua
 Modules\nRunes.lua
-#Modules\tempSkin.lua

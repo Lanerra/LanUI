@@ -322,7 +322,7 @@ cCL:HookScript('OnEvent', function(self, event, timestamp, subEvent, sourceGUID,
             text, rsaText, crit, color = amount - overkill, amount, critical, schoolColors[school <= 1 and 0 or school]
 
             modString = CombatLog_String_DamageResultString(resisted, blocked, absorbed, critical, glancing, crushing, overheal, textMode, spellId, overkill) or ''
-            tooltipMsg = format(tooltipStrings[1], timeStamp, (meSource and 'Your' or sourceName..''s'), 'melee swing', 'hit', (meTarget and 'you' or destName), amount, modString)
+            tooltipMsg = format(tooltipStrings[1], timeStamp, (meSource and 'Your' or sourceName.."'s"), 'melee swing', 'hit', (meTarget and 'you' or destName), amount, modString)
 
         elseif subEvent == 'RANGE_DAMAGE'  or subEvent == 'SPELL_DAMAGE' or subEvent == 'SPELL_PERIODIC_DAMAGE' or subEvent == 'DAMAGE_SHIELD' or subEvent == 'DAMAGE_SPLIT' then
 
@@ -332,7 +332,7 @@ cCL:HookScript('OnEvent', function(self, event, timestamp, subEvent, sourceGUID,
             text, rsaText, crit, color = amount - overkill, format('%s %s', ShortName(spellName), amount), critical, subEvent == 'RANGE_DAMAGE' and schoolColors[school <= 1 and 0 or school] or schoolColors[spellSchool]
 
             modString = CombatLog_String_DamageResultString(resisted, blocked, absorbed, critical, glancing, crushing, overheal, textMode, spellId, overkill) or ''
-            tooltipMsg = format(tooltipStrings[1], timeStamp, (meSource and 'Your' or sourceName and sourceName..''s' or ''), (spellName), (subEvent == 'RANGE_DAMAGE'  or subEvent == 'SPELL_DAMAGE') and 'hit' or 'damaged', (meTarget and 'you' or destName), amount, modString)
+            tooltipMsg = format(tooltipStrings[1], timeStamp, (meSource and 'Your' or sourceName and sourceName.."'s" or ''), (spellName), (subEvent == 'RANGE_DAMAGE'  or subEvent == 'SPELL_DAMAGE') and 'hit' or 'damaged', (meTarget and 'you' or destName), amount, modString)
 
         elseif subEvent == 'ENVIRONMENTAL_DAMAGE' then
 
@@ -352,7 +352,7 @@ cCL:HookScript('OnEvent', function(self, event, timestamp, subEvent, sourceGUID,
             scrollFrame = 2
 
             modString = CombatLog_String_DamageResultString(resisted, blocked, absorbed, critical, glancing, crushing, overheal, textMode, spellId, overkill) or ''
-            tooltipMsg = format(tooltipStrings[1], timeStamp, (meSource and 'Your' or sourceName..''s'), (spellName), 'heal', (meTarget and 'you' or destName), amount, modString)
+            tooltipMsg = format(tooltipStrings[1], timeStamp, (meSource and 'Your' or sourceName.."'s"), (spellName), 'heal', (meTarget and 'you' or destName), amount, modString)
 
         elseif subEvent:find('ENERGIZE') or subEvent:find('DRAIN') or subEvent:find('LEECH') then
 
@@ -379,7 +379,7 @@ cCL:HookScript('OnEvent', function(self, event, timestamp, subEvent, sourceGUID,
 
             tooltipMsg = format(subEvent:find('ENERGIZE') and tooltipStrings[1] or tooltipStrings[3],
             timeStamp,
-            meSource and 'Your' or sourceName and sourceName..''s' or '',
+            meSource and 'Your' or sourceName and sourceName.."'s" or '',
             spellName,
             subEvent:find('ENERGIZE') and 'energize' or subEvent:find('DRAIN') and 'drain' or 'leech',
             meTarget and 'you' or destName,
@@ -393,14 +393,14 @@ cCL:HookScript('OnEvent', function(self, event, timestamp, subEvent, sourceGUID,
             missType, missAmount = ...
             text = missTypes[missType] or missType
 
-            tooltipMsg = format(tooltipStrings[4], timeStamp, (meSource and 'You' or sourceName..''s'), 'melee swing', (meTarget and 'you' or destName), FormatMissType(subEvent, missType, missAmount))
+            tooltipMsg = format(tooltipStrings[4], timeStamp, (meSource and 'You' or sourceName.."'s"), 'melee swing', (meTarget and 'you' or destName), FormatMissType(subEvent, missType, missAmount))
 
         elseif subEvent == 'RANGE_MISSED' or subEvent == 'SPELL_MISSED' or subEvent == 'SPELL_PERIODIC_MISSED' or subEvent == 'DAMAGE_SHIELD_MISSED' then
 
             spellId, spellName, spellSchool, missType, missAmount = ...
             text, rsaText = missTypes[missType] or missType, format('%s %s', ShortName(spellName), missTypes[missType] or missType), schoolColors[spellSchool]
 
-            tooltipMsg = format(tooltipStrings[4], timeStamp, (meSource and 'Your' or sourceName and sourceName..''s' or ''), (spellName), (meTarget and 'you' or destName), FormatMissType(subEvent, missType, missAmount) or '')
+            tooltipMsg = format(tooltipStrings[4], timeStamp, (meSource and 'Your' or sourceName and sourceName.."'s" or ''), (spellName), (meTarget and 'you' or destName), FormatMissType(subEvent, missType, missAmount) or '')
 
         elseif subEvent:find('AURA_APPLIED') or subEvent:find('AURA_REMOVED') then
 

@@ -4,11 +4,16 @@ if C.ActionBars.Bar2 == true then
     if C.Panels.ABPanel == true then
         local ABPanel = CreateFrame('Frame', 'ABPanel', UIParent)
     
-        ABPanel:SetPoint('TOPLEFT', ActionButton1, -6, 5)
-        ABPanel:SetPoint('BOTTOMRIGHT', MultiBarBottomLeftButton12, 6, -5)
+        ABPanel:SetPoint('TOPLEFT', MultiBarBottomLeftButton1, -6, 5)
+        ABPanel:SetPoint('BOTTOMRIGHT', ActionButton12, 6, -5)
         ABPanel:SetFrameStrata('BACKGROUND')
         
         ABPanel:SetTemplate()
+        
+        for i = 1, 12 do
+            _G['ActionButton'..i]:SetFrameStrata('HIGH')
+            _G['MultiBarBottomLeftButton'..i]:SetFrameStrata('HIGH')
+        end
     end
 else
     return

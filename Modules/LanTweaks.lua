@@ -1,80 +1,110 @@
 local F, C, G = unpack(select(2, ...))
 
-local _, LanQuest = ...
-
 local dummy = F.Dummy
 
 -------------------
 -- Setup WatchFrame
 -------------------
-
-if IsAddOnLoaded('Carbonite') then
-    select(5, NxQuestWatch:GetChildren()):SetTemplate()
-    
-    local x = CreateFrame('Frame', nil)
-    x:RegisterEvent('PLAYER_REGEN_DISABLED')
-    x:RegisterEvent('PLAYER_REGEN_ENABLED')
-    x:SetScript('OnEvent', function(self, event, ...)
-        if event == 'PLAYER_REGEN_DISABLED' then
-            NxQuestWatch:Hide()
-        elseif event == 'PLAYER_REGEN_ENABLED' then
-            NxQuestWatch:Show()
+local f = CreateFrame('Frame')
+f:RegisterEvent('VARIABLES_LOADED')
+f:RegisterEvent('ADDON_LOADED')
+f:RegisterEvent('PLAYER_ENTERING_WORLD')
+f:SetScript('OnEvent', function(self, ...)
+    if IsAddOnLoaded('Carbonite') then
+        local Carb = _G['NxQuestWatch']
+        
+        if Carb then
+            if skinned == true then
+                f:UnregisterEvent('VARIABLES_LOADED')
+                f:UnregisterEvent('ADDON_LOADED')
+                f:UnregisterEvent('PLAYER_ENTERING_WORLD')
+                
+                return
+            end
+            
+            local QWBG = CreateFrame('Frame', 'CarbBG', select(5, Carb:GetChildren()))
+            QWBG:SetPoint('TOPLEFT', -25, 2)
+            QWBG:SetPoint('BOTTOMRIGHT', 5, -5)
+            QWBG:SetFrameStrata('LOW')
+            QWBG:SetFrameLevel(1)
+            QWBG:SetTemplate()
+            
+            local y = select(1, select(5, Carb:GetChildren()):GetRegions())
+            y:Kill()
+            
+            for i = 2, 10 do
+                select(i, Carb:GetRegions()):Hide()
+            end
+            
+            skinned = true
         end
-    end)
-else
-    local height = GetScreenHeight() / 1.6
+            
+        local x = CreateFrame('Frame', nil)
+        x:RegisterEvent('PLAYER_REGEN_DISABLED')
+        x:RegisterEvent('PLAYER_REGEN_ENABLED')
+        x:SetScript('OnEvent', function(self, event, ...)
+            if event == 'PLAYER_REGEN_DISABLED' then
+                NxQuestWatch:Hide()
+            elseif event == 'PLAYER_REGEN_ENABLED' then
+                NxQuestWatch:Show()
+            end
+        end)
+    else
+        local height = GetScreenHeight() / 1.6
 
-    local watchFrame = _G['WatchFrame']
-    watchFrame:SetHeight(height)
-    watchFrame:ClearAllPoints()	
-    watchFrame.ClearAllPoints = F.Dummy
-    watchFrame:SetPoint('TOP', Minimap, 'BOTTOM', 0, -30)
-    watchFrame.SetPoint = F.Dummy
-    watchFrame:SetScale(1.01)
-    watchFrame:SetTemplate()
+        local watchFrame = _G['WatchFrame']
+        watchFrame:SetHeight(height)
+        watchFrame:ClearAllPoints()	
+        watchFrame.ClearAllPoints = F.Dummy
+        watchFrame:SetPoint('TOP', Minimap, 'BOTTOM', 0, -30)
+        watchFrame.SetPoint = F.Dummy
+        watchFrame:SetScale(1.01)
+        watchFrame:SetTemplate()
 
-    local watchHead = _G['WatchFrameHeader']
-    local p1, frame, p2, x, y = watchHead:GetPoint()
-    watchHead:SetPoint(p1, frame, p2, x + 6, y)
+        local watchHead = _G['WatchFrameHeader']
+        local p1, frame, p2, x, y = watchHead:GetPoint()
+        watchHead:SetPoint(p1, frame, p2, x + 6, y)
 
-    local p1, frame, p2, x, y = nil
+        local p1, frame, p2, x, y = nil
 
-    local watchLines = _G['WatchFrameLines']
-    local p1, frame, p2, x, y = watchLines:GetPoint()
-    watchLines:SetPoint(p1, frame, p2, x + 6, y)
+        local watchLines = _G['WatchFrameLines']
+        local p1, frame, p2, x, y = watchLines:GetPoint()
+        watchLines:SetPoint(p1, frame, p2, x + 6, y)
 
-    local watchHeadTitle = _G['WatchFrameTitle']
-    watchHeadTitle:SetFont('Fonts\\ARIALN.ttf', 15)
-    watchHeadTitle:SetTextColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
+        local watchHeadTitle = _G['WatchFrameTitle']
+        watchHeadTitle:SetFont('Fonts\\ARIALN.ttf', 15)
+        watchHeadTitle:SetTextColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
 
-    local collapseButton = _G['WatchFrameCollapseExpandButton']
-    collapseButton:ClearAllPoints()
-    collapseButton:SetPoint('TOPRIGHT', watchFrame, -6, -6)
+        local collapseButton = _G['WatchFrameCollapseExpandButton']
+        collapseButton:ClearAllPoints()
+        collapseButton:SetPoint('TOPRIGHT', watchFrame, -6, -6)
 
-    collapseButton:HookScript('OnClick', function()
-        if watchFrame.collapsed then
-            watchFrame:SetHeight(25)
-        else
-            watchFrame:SetHeight(height)
-        end
-    end)
+        collapseButton:HookScript('OnClick', function()
+            if watchFrame.collapsed then
+                watchFrame:SetHeight(25)
+            else
+                watchFrame:SetHeight(height)
+            end
+        end)
 
-    hooksecurefunc('SetItemButtonTexture', function(button, texture)
-        if button:GetName():match('WatchFrameItem%d+') and not button.skinned then
-            local icon, border = _G[button:GetName() .. 'IconTexture'], _G[button:GetName() .. 'NormalTexture']	
-            button:SetSize(32, 32)      
-            CreateBorderLight(button, 12)
-            border:SetAlpha(0)
-            button.skinned = true
-        end
-    end)
-end
+        hooksecurefunc('SetItemButtonTexture', function(button, texture)
+            if button:GetName():match('WatchFrameItem%d+') and not button.skinned then
+                local icon, border = _G[button:GetName() .. 'IconTexture'], _G[button:GetName() .. 'NormalTexture']	
+                button:SetSize(32, 32)      
+                CreateBorderLight(button, 12)
+                border:SetAlpha(0)
+                button.skinned = true
+            end
+        end)
+    end
+end)
+
 
 ---------------------
 -- Quest modification
 ---------------------
 
-LanQuest.eventFrame = CreateFrame('Frame')
+local eventFrame = CreateFrame('Frame')
 
 local questIndex
 
@@ -115,12 +145,12 @@ function MostValuable ()
     end
 end
 
-LanQuest.eventFrame:RegisterEvent('QUEST_DETAIL')
-LanQuest.eventFrame:RegisterEvent('QUEST_COMPLETE')
-LanQuest.eventFrame:RegisterEvent('QUEST_WATCH_UPDATE')
-LanQuest.eventFrame:RegisterEvent('QUEST_ACCEPT_CONFIRM')
-LanQuest.eventFrame:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
-LanQuest.eventFrame:SetScript('OnEvent', function(self, event, ...)
+eventFrame:RegisterEvent('QUEST_DETAIL')
+eventFrame:RegisterEvent('QUEST_COMPLETE')
+eventFrame:RegisterEvent('QUEST_WATCH_UPDATE')
+eventFrame:RegisterEvent('QUEST_ACCEPT_CONFIRM')
+eventFrame:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
+eventFrame:SetScript('OnEvent', function(self, event, ...)
     if event == 'QUEST_WATCH_UPDATE' then
         questIndex = ...
     end
@@ -161,8 +191,8 @@ LanQuest.eventFrame:SetScript('OnEvent', function(self, event, ...)
             CompleteQuest()
         elseif event == 'QUEST_COMPLETE' then
 --~         if event == 'QUEST_COMPLETE' then
-            if GetNumQuestChoices() and GetNumQuestChoices() < 1 then
-                GetQuestReward()
+            if GetNumQuestChoices() and GetNumQuestChoices() <= 1 then
+                GetQuestReward(1)
             else
                 MostValuable()
             end
