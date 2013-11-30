@@ -1,4 +1,5 @@
 local Addon, Engine = ...
+
 Engine[1] = {} -- F, functions, constants, variables
 Engine[2] = {} -- C, config
 Engine[3] = {} -- G, globals (Optionnal)
@@ -7,7 +8,8 @@ LanUI = Engine -- Allow other addons to use Engine
 
 --[[ Add this to the top to import settings. Also lets other addons
      use our stuff.
-        local F, C, G = unpack(select(2, ...))
+        For files inside this addon: local F, C, G = unpack(select(2, ...))
+        For other addons: local F, C, G = unpack(LanUI)
 ]]
 
 local F, C, G = unpack(select(2, ...))
@@ -30,7 +32,6 @@ F.Patch, F.BuildText, F.ReleaseDate, F.TOC = GetBuildInfo()
 F.Build = tonumber(F.BuildText)
 F.Level = UnitLevel('player')
 F.MyRealm = GetRealmName()
-
 F.Scales = {
     ['720'] = { ['576'] = 0.65},
     ['800'] = { ['600'] = 0.7},

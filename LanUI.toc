@@ -4,6 +4,11 @@
 ## Author: Lanerra
 ## Notes: Lightweight UI Modification
 
+lib\LibStub\LibStub.lua
+lib\CallBackHandler-1.0\CallbackHandler-1.0.lua
+lib\LibBossEncounters\LibBossEncounters.lua
+lib\LibDataBroker\LibDataBroker-1.1.lua
+
 Init.lua
 LanUI_Config.lua
 Modules\Core\LanFunc.lua
@@ -11,12 +16,6 @@ Modules\Core\LanCore.lua
 Modules\Beautycase\Beautycase.lua
 
 LanUI_Launch.lua
-
-lib\CallBackHandler-1.0\CallbackHandler-1.0.lua
-lib\LibBossEncounters\LibBossEncounters.lua
-lib\LibDataBroker\LibDataBroker-1.1.lua
-lib\LibStub\LibStub.lua
-lib\LibActionButton-1.0\LibActionButton-1.0.lua
 
 Modules\Data\Durability.lua
 Modules\Data\GuildFriend.lua

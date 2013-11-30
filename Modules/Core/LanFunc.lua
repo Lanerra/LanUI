@@ -192,6 +192,7 @@ local function SetInside(obj, anchor, xOffset, yOffset)
 end
 
 local function SetTemplate(f, t)
+	if f.skinned then return end
     texture = C.Media.Backdrop
 	
 	UpdateColor(t)
@@ -212,6 +213,8 @@ local function SetTemplate(f, t)
         CreateBorderLight(f, C.Media.BorderSize, unpack(C.Media.BorderColor))
         SetTexture(f, 'default')
     end
+	
+	f.skinned = true
 end
 
 local borders = {
@@ -254,8 +257,11 @@ end
 local function Kill(object)
 	if object.UnregisterAllEvents then
 		object:UnregisterAllEvents()
+		object:SetParent(LanUIHider)
+	else
+		object.Show = object.Hide
 	end
-	object.Show = F.Dummy
+
 	object:Hide()
 end
 
