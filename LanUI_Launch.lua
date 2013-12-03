@@ -190,7 +190,7 @@ f:SetScript('OnEvent', function(_, event, ...)
 		    ToggleChatColorNamesByClassGroup(true, 'CHANNEL4')
 		    ToggleChatColorNamesByClassGroup(true, 'CHANNEL5')
 			
-			INTERFACE_ACTION_BLOCKED = ''
+--			INTERFACE_ACTION_BLOCKED = ''
 	    end
     end
 end)

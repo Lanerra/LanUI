@@ -141,116 +141,48 @@ end
 SlashCmdList['CHILDFRAMES'] = function() 
 	for k,v in pairs({GetMouseFocus():GetChildren()}) do
 		print(v:GetName(),'-',v:GetObjectType())
-	end 
+	end
 end
 SLASH_CHILDFRAMES1 = '/child'
 
--- Raid Faker
-SlashCmdList['RAIDFAKER'] = function()
-    local RAIDMEMBER = 25;
-
-    local allClasses = { 'WARRIOR', 'ROGUE', 'PRIEST', 'SHAMAN', 'DEATHKNIGHT', 'HUNTER', 'PALADIN', 'MAGE', 'WARLOCK', 'DRUID' };
-    local simParty = {};
-    for i=1, 4, 1 do
-        simParty[i] = {};
-        simParty[i].class = allClasses[math.floor(math.random()*10)+1]
-        simParty[i].name = 'Party #'..i;
-        simParty['party'..i] = simParty[i];
-    end
-    for i=1, (RAIDMEMBER-1), 1 do
-        simParty[i] = {};
-        simParty[i].class = allClasses[math.floor(math.random()*10)+1];
-        simParty[i].name = 'Raid #'..i;
-        simParty[i].subGroup = math.floor((i-1)/5)+1;
-        simParty['raid'..i] = simParty[i];
-    end
-
-    local OriginalUnitClass = UnitClass
-    function UnitClass(unit)
-        if ( unit == 'raid'..RAIDMEMBER ) then
-            return OriginalUnitClass('player');
-        elseif ( simParty[unit] ) then
-            return simParty[unit].class, simParty[unit].class;
-        end
-        return OriginalUnitClass(unit);
-    end
-
-    local OriginalUnitName = UnitName
-    function UnitName(unit)
-        if ( unit == 'raid'..RAIDMEMBER ) then
-            return OriginalUnitName('player');
-        elseif ( simParty[unit] ) then
-            return simParty[unit].name;
-        end
-        return OriginalUnitName(unit);
-    end
-
-    local OriginalUnitIsUnit = UnitIsUnit
-    function UnitIsUnit(u1,u2)
-        if ( ( u1 == 'raid'..RAIDMEMBER and u2 == 'player' ) or ( u1 == 'player' and u2 == 'raid'..RAIDMEMBER ) ) then
-            return true;
-        end
-        return OriginalUnitIsUnit(u1, u2);
-    end
-
-    local OriginalUnitHealth = UnitHealth
-    function UnitHealth(unit)
-        if ( unit == 'raid'..RAIDMEMBER ) then
-            return OriginalUnitHealth('player');
-        elseif ( simParty[unit] ) then
-            return simParty[unit].health;
-        end
-        return OriginalUnitHealth(unit);
-    end
-
-    local OriginalUnitHealthMax = UnitHealthMax
-    function UnitHealthMax(unit)
-        if ( unit == 'raid'..RAIDMEMBER ) then
-            return OriginalUnitHealthMax('player');
-        elseif ( simParty[unit] ) then
-            return simParty[unit].maxhealth;
-        end
-        return OriginalUnitHealthMax(unit);
-    end
-
-    local OriginalUnitPower = UnitPower
-    function UnitPower(unit, type)
-        if ( unit == 'raid'..RAIDMEMBER ) then
-            return OriginalUnitPower('player', type);
-        elseif ( simParty[unit] ) then
-            return simParty[unit].power, 0;
-        end
-        return OriginalUnitPower(unit, type);
-    end
-
-    local OriginalUnitPowerMax = UnitPowerMax
-    function UnitPowerMax(unit, type)
-        if ( unit == 'raid'..RAIDMEMBER ) then
-            return OriginalUnitPowerMax('player', type);
-        elseif ( simParty[unit] ) then
-            return simParty[unit].maxpower, 0;
-        end
-        return OriginalUnitPowerMax(unit, type);
-    end
-    UnitMana = UnitPower;
-    UnitManaMax = UnitPowerMax;
-
-    function GetNumRaidMembers()
-        return RAIDMEMBER;
-    end
-
-    function IsRaidLeader()
-        return true;
-    end
-
-    function GetRaidRosterInfo(unit)
-        if ( unit == RAIDMEMBER ) then
-            local _,cls=UnitClass('player')
-            return UnitName('player'), 2, (math.floor((RAIDMEMBER-1)/5)+1), 80, cls, cls, '', true, false, nil, nil;
-        elseif ( simParty[unit] ) then
-            return simParty[unit].name, 0, simParty[unit].subGroup, 80, simParty[unit].class, simParty[unit].class, '', true, false, nil, nil;
-        end
-        return nil;
+SlashCmdList.TEST_EXTRABUTTON = function()
+    if ExtraActionBarFrame:IsShown() then
+        ExtraActionBarFrame:Hide()
+    else
+        ExtraActionBarFrame:Show()
+        ExtraActionBarFrame:SetAlpha(1)
+        ExtraActionButton1:Show()
+        ExtraActionButton1:SetAlpha(1)
+        ExtraActionButton1.icon:SetTexture("Interface\\Icons\\INV_Pet_DiseasedSquirrel")
+        ExtraActionButton1.icon:Show()
+        ExtraActionButton1.icon:SetAlpha(1)
     end
 end
-SLASH_RAIDFAKER1 = '/faker'
+SLASH_TEST_EXTRABUTTON1 = "/teb"
+
+SlashCmdList.TEST_ACHIEVEMENT = function()
+    PlaySound("LFG_Rewards")
+    if not AchievementFrame then
+        AchievementFrame_LoadUI()
+    end
+    
+    AchievementAlertFrame_ShowAlert(4912)
+    AchievementAlertFrame_ShowAlert(6193)
+    GuildChallengeAlertFrame_ShowAlert(3, 2, 5)
+    CriteriaAlertFrame_ShowAlert(6301, 29918)
+    MoneyWonAlertFrame_ShowAlert(9999999)
+    LootWonAlertFrame_ShowAlert(GetItemInfo(6948), -1, 1, 100)
+    ChallengeModeAlertFrame_ShowAlert()
+    AlertFrame_AnimateIn(ScenarioAlertFrame1)
+    AlertFrame_FixAnchors()
+end
+
+SLASH_TEST_ACHIEVEMENT1 = "/tach"
+
+SlashCmdList['GM'] = function()
+    ToggleHelpFrame() 
+end
+
+SLASH_GM1 = '/gm'
+SLASH_GM2 = '/ticket'
+SLASH_GM3 = '/gamemaster'

@@ -12,7 +12,7 @@ local defaults = {
 	maxbars = 12,
 	width = 161,
 	maxfights = 5,
-	reportstrings = 5,
+	reportstrings = 10,
 	backdrop_color = C.Media.BackdropColor,
 	border_color = {0, 0, 0, 0},
 	border_size = 2,
@@ -885,8 +885,7 @@ local OnEvent = function(self, event, ...)
 			local Backdrop = CreateFrame('Frame', nil, LanDamageFrame)
 			Backdrop:SetPoint('TOPLEFT', LanDamageFrame, 0, 4)
 			Backdrop:SetPoint('BOTTOMRIGHT', LanDamageFrame, 0, -4)
-			Backdrop:SetTemplate()
-		end
+			Backdrop:SetTemplate()end
 	elseif event == 'GROUP_ROSTER_UPDATE' or event == 'PLAYER_ENTERING_WORLD' then
 		CheckRoster()
 	elseif event == 'PLAYER_REGEN_DISABLED' then
@@ -910,14 +909,6 @@ addon:RegisterEvent('PLAYER_REGEN_DISABLED')
 addon:RegisterEvent('UNIT_PET')
 
 SlashCmdList['LanDamage'] = function(msg)
-	--[[if MainFrame:GetAlpha() > 0 then
-		MainFrame:SetAlpha(0)
-		MainFrame:EnableMouse(false)
-	else
-		MainFrame:SetAlpha(1)
-		MainFrame:EnableMouse(true)
-	end]]
-	
 	for i = 1, 20 do
         units[i] = {name = UnitName('player'), class = select(2, UnitClass('player')), unit = '1'}
         Add(i, i*10000, DAMAGE)
