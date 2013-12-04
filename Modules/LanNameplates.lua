@@ -1,5 +1,6 @@
--- Credit to Neav for this!
+local F, C, G = unpack(select(2, ...))
 
+-- Credit to Neav for this!
 
     -- Local stuff
 
@@ -15,6 +16,7 @@ local UnitCastingInfo = UnitCastingInfo
 local UnitChannelInfo = UnitChannelInfo
 
 local borderColor = {0.47, 0.47, 0.47}
+
 local noThreatColor = {0, 1, 0}
 
 local glowTexture = 'Interface\\AddOns\\LanUI\\Media\\textureNewGlow'
@@ -70,18 +72,6 @@ local function FormatValue(number)
     else
         return number
     end
-end
-
-local function RGBHex(r, g, b)
-    if (type(r) == 'table') then
-        if (r.r) then
-            r, g, b = r.r, r.g, r.b
-        else
-            r, g, b = unpack(r)
-        end
-    end
-
-    return ('|cff%02x%02x%02x'):format(r * 255, g * 255, b * 255)
 end
 
     -- The plate functions
@@ -209,8 +199,13 @@ local function UpdateCastbarValue(self, curValue)
         self.Overlay:SetVertexColor(1, 0, 1, 1)
         self.Overlay:Show()
     else
-        local r, g, b = unpack(borderColor)
-        self.Overlay:SetVertexColor(r, g, b, 1 )
+        if C.Media.ClassColor then
+            local r, g, b = F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b
+            self.Overlay:SetVertexColor(r, g, b, 1 )
+        else
+            local r, g, b = unpack(borderColor)
+            self.Overlay:SetVertexColor(r, g, b, 1 )
+        end
     end
 
     if (channel) then
@@ -228,7 +223,7 @@ local function UpdateNameL(self)
     self.NewName:SetTextColor(1, 1, 1)
     
     local levelText = self.Level:GetText() or ''
-    local levelColor = RGBHex(self.Level:GetTextColor())
+    local levelColor = F.RGBToHex(self.Level:GetTextColor())
     local eliteTexture = self.EliteIcon:IsVisible()
 
     if (self.BossIcon:IsVisible()) then
@@ -241,10 +236,11 @@ local function UpdateNameL(self)
 end
 
 local function UpdateEliteTexture(self)
-    local r, g, b = unpack(borderColor)
-    if (self.BossIcon:IsVisible() or self.EliteIcon:IsVisible()) then
+        if (self.BossIcon:IsVisible() or self.EliteIcon:IsVisible()) then
+        local r, g, b = unpack(borderColor)
         self.Overlay:SetGradientAlpha('HORIZONTAL', r, g, b, 1, 1, 1, 0, 1)
     else
+        local r, g, b = F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b
         self.Overlay:SetVertexColor(r, g, b, 1)
     end
 end
@@ -293,8 +289,8 @@ local function SkinPlate(self, nameFrame)
 
     self.Overlay:SetTexCoord(0, 1, 0, 1)
     self.Overlay:ClearAllPoints()
-    self.Overlay:SetPoint('TOPRIGHT', self.Health, 35.66666667, 5.66666667)
-    self.Overlay:SetPoint('BOTTOMLEFT', self.Health, -36.66666667, -5.66666667)
+    self.Overlay:SetPoint('TOPRIGHT', self.Health, 35.66666667, 5)
+    self.Overlay:SetPoint('BOTTOMLEFT', self.Health, -37.66666667, -4.5)
     self.Overlay:SetDrawLayer('BORDER')
     self.Overlay:SetTexture(overlayTexture)
 
@@ -306,7 +302,7 @@ local function SkinPlate(self, nameFrame)
     })
     self.Health:SetBackdropColor(0, 0, 0, 0.55)
     
-    self.Health:SetStatusBarTexture('Interface\\Addons\\oUF_Lanerra\\Media\\statusbarTexture.tga')
+    self.Health:SetStatusBarTexture('Interface\\Addons\\LanUI\\Media\\StatusBar.tga')
 
     self.Health:SetScript('OnValueChanged', function()
         UpdateHealthText(self)
@@ -318,15 +314,14 @@ local function SkinPlate(self, nameFrame)
     if (not self.Health.Value) then
         self.Health.Value = self.Health:CreateFontString(nil, 'OVERLAY')
         self.Health.Value:SetPoint('CENTER', self.Health, 0, 0)
-        self.Health.Value:SetFont('Fonts\\ARIALN.ttf', 9)
+        self.Health.Value:SetFont(C.Media.Font, 9)
         self.Health.Value:SetShadowOffset(1, -1)
     end
 
     if (not self.NewName) then
         self.NewName = self:CreateFontString(nil, 'ARTWORK')
-        self.NewName:SetFont('Fonts\\ARIALN.ttf', 11, 'THINOUTLINE')
+        self.NewName:SetFont(C.Media.Font, 11, 'THINOUTLINE')
         self.NewName:SetShadowOffset(0, 0)
-        -- self.NewName:SetPoint('CENTER', self.Health, 'CENTER', 0, 9)
         self.NewName:SetPoint('BOTTOM', self.Health, 'TOP', 0, 2)
         self.NewName:SetSize(110, 13)
     end

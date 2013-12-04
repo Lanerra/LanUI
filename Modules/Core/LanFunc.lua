@@ -166,40 +166,55 @@ local function Kill(object)
 	object:Hide()
 end
 
-local function StyleButton(button) 
+local function StyleButton(button)
+	local path = 'Interface\\AddOns\\LanUI\\Media\\'
+	
 	if button.SetHighlightTexture and not button.hover then
 		local hover = button:CreateTexture('frame', nil, self)
-		hover:SetTexture(1, 1, 1, 0.3)
-		hover:Point('TOPLEFT', 2, -2)
-		hover:Point('BOTTOMRIGHT', -2, 2)
+		hover:SetTexture(path..'textureHighlight')
+		hover:Point('TOPRIGHT', 1, 1)
+		hover:Point('BOTTOMLEFT', -1, -1)
 		button.hover = hover
 		button:SetHighlightTexture(hover)
 	end
 
 	if button.SetPushedTexture and not button.pushed then
 		local pushed = button:CreateTexture('frame', nil, self)
-		pushed:SetTexture(0.9, 0.8, 0.1, 0.3)
-		pushed:Point('TOPLEFT', 2, -2)
-		pushed:Point('BOTTOMRIGHT', -2, 2)
+		pushed:SetTexture(path..'texturePushed')
+		pushed:Point('TOPRIGHT', 1, 1)
+		pushed:Point('BOTTOMLEFT', -1, -1)
 		button.pushed = pushed
 		button:SetPushedTexture(pushed)
 	end
 
 	if button.SetCheckedTexture and not button.checked then
 		local checked = button:CreateTexture('frame', nil, self)
-		checked:SetTexture(0,1,0,.3)
-		checked:Point('TOPLEFT', 2, -2)
-		checked:Point('BOTTOMRIGHT', -2, 2)
+		checked:SetTexture(path..'textureChecked')
+		checked:Point('TOPRIGHT', 1, 1)
+		checked:Point('BOTTOMLEFT', -1, -1)
 		button.checked = checked
 		button:SetCheckedTexture(checked)
+	end
+	
+	if button.SetNormalTexture and not button.normal then
+		local normal = button:CreateTexture('frame', nil, self)
+		normal:SetTexture(path..'textureNormal')
+		normal:Point('TOPRIGHT', 1, 1)
+		normal:Point('BOTTOMLEFT', -1, -1)
+		normal:SetVertexColor(0, 0, 0, 0)
+		button.normal = normal
+		button:SetNormalTexture(normal)		
 	end
 
 	local cooldown = button:GetName() and _G[button:GetName()..'Cooldown']
 	if cooldown then
 		cooldown:ClearAllPoints()
-		cooldown:Point('TOPLEFT', 2, -2)
-		cooldown:Point('BOTTOMRIGHT', -2, 2)
+		cooldown:Point('TOPRIGHT', 1, 1)
+		cooldown:Point('BOTTOMLEFT', -1, -1)
 	end
+	
+	button:SetTemplate()
+	button:SetBeautyBorderPadding(2)
 end
 
 local function FontString(parent, name, fontName, fontHeight, fontStyle)

@@ -1,6 +1,6 @@
 ## Interface: 50400
 ## Title: |cff0099ffLan|rUI
-## Version: 0.7a
+## Version: 0.8a
 ## Author: Lanerra
 ## Notes: Lightweight UI Modification
 
@@ -25,21 +25,21 @@ Modules\Minimap\Minimap.lua
 Modules\Minimap\Clock.lua
 Modules\Minimap\InstanceDifficulty.lua
 
+Modules\LanBags.lua
 Modules\LanBars.lua
+Modules\LanBuffs.lua
 Modules\LanBlizz.lua
 Modules\LanChat.lua
 Modules\LanCombat.lua
 Modules\LanDamage.lua
+Modules\LanFonts.lua
 Modules\LanLoot.lua
 Modules\LanNameplates.lua
 Modules\LanPanels.lua
+Modules\LanRunes.lua
 Modules\LanScroll.lua
-#Modules\LanSkin.lua
+Modules\LanSkin.lua
 Modules\LanStats.lua
-Modules\LanThreat.lua
-Modules\LanTips.lua
 Modules\LanTooltip.lua
 Modules\LanTweaks.lua
 Modules\LanWarning.lua
-Modules\nBuff.lua
-Modules\nRunes.lua

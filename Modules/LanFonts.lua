@@ -205,56 +205,6 @@ for _, font in pairs({
 }) do
     font:SetFont(C.Media.Font, 12)
 end
-
---- THANKS HANKTHETANK I LOVE YOU --------
-
---[[
-
-local dummy = CreateFrame('Frame')
-local FontFinderToolTip = CreateFrame('GameTooltip', 'FontFinderToolTip', UIParent, 'GameTooltipTemplate')
-local WorldFrame = WorldFrame
-
-local totalElapsed = 0
-local currentFrame = nil
-dummy:SetScript('OnUpdate', function(self, elapsed)
-	totalElapsed = totalElapsed + elapsed
-	if totalElapsed > 0.1 then
-		local frame = GetMouseFocus()
-		
-		if not frame then frame = WorldFrame end
-		if frame ~= currentFrame then FontFinderToolTip:ClearLines() else return end
-		local frames = { frame }
-		for i = 1, #({frame:GetChildren()}) do table.insert(frames, ({frame:GetChildren()})[i]) end
-		
-		FontFinderToolTip:SetOwner(UIParent, 'ANCHOR_CURSOR')
-		for _, frame in ipairs(frames) do
-			local addedHeader = false
-			if frame:GetRegions() then
-				for i = 1, select('#', frame:GetRegions()) do
-					local region = select(i, frame:GetRegions())
-					if region.GetObjectType and region:GetObjectType() == 'FontString' then
-						if not addedHeader then
-							FontFinderToolTip:AddLine((frame:GetName() or '(Anonymous)'), 1, 0.65, 0.16, false)
-						end
-						FontFinderToolTip:AddDoubleLine(
-							'<' .. region:GetObjectType() .. ':' .. (region:GetName() or '(Anonymous)') .. '>',
-							region:GetFontObject() and region:GetFontObject():GetName() or '(No FontObject)',
-							1, 1, 1,
-							0.85, 1, 0.2
-						)
-						addedHeader = true
-					end
-				end
-			end
-		end
-
-		FontFinderToolTip:Show()
-		currentFrame = frame
-		totalElapsed = 0
-	end
-end)
-
---]]
 	
 -- Item level crap :D
 

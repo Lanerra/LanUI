@@ -6,14 +6,16 @@ for i = 1, NUM_CHAT_WINDOWS do
 	G.Chat['ChatFrame'..i] = _G['ChatFrame'..i]
 end
 
-CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1.0
-CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 1.0     -- set to 0 if u want to hide the tabs when no mouse is over them or the chat
+local _G = _G
+
+_G.CHAT_FRAME_TAB_SELECTED_MOUSEOVER_ALPHA = 1.0
+_G.CHAT_FRAME_TAB_SELECTED_NOMOUSE_ALPHA = 1.0     -- set to 0 if u want to hide the tabs when no mouse is over them or the chat
     
-CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA = 1.0
-CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = 1.0       -- set to 0 if u want to hide the tabs when no mouse is over them or the chat
+_G.CHAT_FRAME_TAB_NORMAL_MOUSEOVER_ALPHA = 1.0
+_G.CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = 1.0       -- set to 0 if u want to hide the tabs when no mouse is over them or the chat
     
-CHAT_FRAME_FADE_OUT_TIME = 0.5
-CHAT_FRAME_FADE_TIME = 0.1
+_G.CHAT_FRAME_FADE_OUT_TIME = 0.5
+_G.CHAT_FRAME_FADE_TIME = 0.1
 
 function Spam(self, event, arg1)
     if strfind(arg1, 'You have unlearned') or strfind(arg1,'You have learned a new spell:') or strfind(arg1, 'You have learned a new ability:') or strfind(arg1, 'Your pet has unlearned') then
@@ -95,7 +97,7 @@ CHAT_FONT_HEIGHTS = {
 CURRENCY_GAINED = '+ |cffffffff%s|r'
 CURRENCY_GAINED_MULTIPLE = '+ |cffffffff%s|r x|cffffffff%d|r'
 
-LOOT_MONEY = '|cffffff00+|r |cffffffff%s'
+--[[LOOT_MONEY = '|cffffff00+|r |cffffffff%s'
 YOU_LOOT_MONEY = '|cffffff00+|r |cffffffff%s'
 YOU_LOOT_MONEY_GUILD = '|cffffff00+|r |cffffffff%s|r |cffffff00+|r |cffffffff( %s )|r'
 LOOT_MONEY_SPLIT_GUILD = '|cffffff00+|r |cffffffff%s|r |cffffff00+|r |cffffffff( %s )|r'
@@ -146,7 +148,7 @@ CHAT_WHISPER_INFORM_GET = '|cffad2424@|r %s:\32'
 ERR_FRIEND_OFFLINE_S = '%s has gone |cffff0000offline|r!'
 ERR_FRIEND_ONLINE_SS = '|Hplayer:%s|h[%s]|h has come |cff00ff00online|r!'
 
-CHAT_SUSPENDED_NOTICE_BN = '- |Hchannel:%d|h%s|h'
+CHAT_SUSPENDED_NOTICE_BN = '- |Hchannel:%d|h%s|h']]
 
 ChatTypeInfo['CHANNEL'].sticky = 1
 ChatTypeInfo['GUILD'].sticky = 1

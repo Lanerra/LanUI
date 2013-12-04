@@ -56,7 +56,7 @@ local function UpdateVehicleButton()
     end
 end
 
-hooksecurefunc('PetActionBar_Update', function()
+hooksecurefunc('PetActionBar_Update', function()    
     for _, name in pairs({
         'PetActionButton',
         'PossessButton',    
@@ -69,14 +69,6 @@ hooksecurefunc('PetActionBar_Update', function()
                 if cast then
                     cast:SetAlpha(0)
                     cast.SetAlpha = F.Dummy
-                end
-
-                if (not InCombatLockdown()) then
-                    local cooldown = _G[name..i..'Cooldown']
-                    cooldown:ClearAllPoints()
-                    cooldown:SetPoint('TOPRIGHT', button, -2, -2)
-                    cooldown:SetPoint('BOTTOMLEFT', button, 1, 1)
-                    -- cooldown:SetDrawEdge(true)
                 end
 
                 if (not button.Shadow) then
@@ -93,17 +85,6 @@ hooksecurefunc('PetActionBar_Update', function()
 
                     local flash = _G[name..i..'Flash']
                     flash:SetTexture(flashtex)
-
-                    button:SetCheckedTexture(path..'textureChecked')
-                    button:GetCheckedTexture():SetAllPoints(normal)
-                    -- button:GetCheckedTexture():SetDrawLayer('OVERLAY')
-
-                    button:SetPushedTexture(path..'texturePushed')
-                    button:GetPushedTexture():SetAllPoints(normal)
-                    -- button:GetPushedTexture():SetDrawLayer('OVERLAY')
-
-                    button:SetHighlightTexture(path..'textureHighlight')
-                    button:GetHighlightTexture():SetAllPoints(normal)
 
                     local buttonBg = _G[name..i..'FloatingBG']
                     if (buttonBg) then
@@ -127,20 +108,6 @@ end)
 
 -- Force an update for StanceButton for those who doesn't have pet bar
 securecall('PetActionBar_Update')
-
-hooksecurefunc('PetActionBar_OnEvent', function()
-    if C.Panels.ABPanel then
-        PetActionBarFrame:SetWidth(ABPanel:GetWidth())
-        PetActionBarFrame:SetHeight(C.ActionBars.ButtonSize + (C.ActionBars.ButtonSpacing * 2))
-        PetActionBarFrame:ClearAllPoints()
-        PetActionBarFrame:SetPoint('BOTTOM', ABPanel, 'TOP')
-        PetActionBarFrame.ClearAllPoints = F.Dummy
-        PetActionBarFrame.SetPoint = F.Dummy
-        PetActionBarFrame:SetFrameStrata('HIGH')
-    end
-end)
-
-securecall('PetActionBar_OnEvent')
 
 hooksecurefunc('ActionButton_Update', function(self)
     if (IsSpecificButton(self, 'MultiCast')) then
@@ -166,39 +133,8 @@ hooksecurefunc('ActionButton_Update', function(self)
         local button = _G[self:GetName()]
         
         if (not button.Background) then
-            local normal = _G[self:GetName()..'NormalTexture']
-            if (normal) then
-                normal:ClearAllPoints()
-                normal:SetPoint('TOPRIGHT', button, 1, 1)
-                normal:SetPoint('BOTTOMLEFT', button, -1, -1)
-                normal:SetVertexColor(0, 0, 0, 0)
-                -- normal:SetDrawLayer('ARTWORK')
-            end
-
-            button:SetNormalTexture(path..'textureNormal')
-
-            button:SetCheckedTexture(path..'textureChecked')
-            button:GetCheckedTexture():SetAllPoints(normal)
-
-            button:SetPushedTexture(path..'texturePushed')
-            button:GetPushedTexture():SetAllPoints(normal)
-
-            button:SetHighlightTexture(path..'textureHighlight')
-            button:GetHighlightTexture():SetAllPoints(normal)
-
             local icon = _G[self:GetName()..'Icon']
             icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-            -- icon:SetPoint('TOPRIGHT', button, -1, -1)
-            -- icon:SetPoint('BOTTOMLEFT', button, 1, 1)
-            -- icon:SetDrawLayer('BORDER')
-
-            local border = _G[self:GetName()..'Border']
-            if (border) then
-                border:SetAllPoints(normal)
-                -- border:SetDrawLayer('OVERLAY')
-                border:SetTexture(path..'textureHighlight')
-                border:SetVertexColor(0, 1, 0)
-            end
 
             local count = _G[self:GetName()..'Count']
             if (count) then
@@ -211,7 +147,6 @@ hooksecurefunc('ActionButton_Update', function(self)
                 if not C.ActionBars.Macro then
                     macroname:SetAlpha(0)
                 else
-                    -- macroname:SetDrawLayer('OVERLAY')
                     macroname:SetWidth(button:GetWidth() + 15)
                     macroname:SetFont(C.Media.Font, 17, 'OUTLINE')
                 end
@@ -229,14 +164,8 @@ hooksecurefunc('ActionButton_Update', function(self)
             button.Background:SetTexture(path..'textureBackground')
             button.Background:SetPoint('TOPRIGHT', button, 14, 12)
             button.Background:SetPoint('BOTTOMLEFT', button, -14, -16)
-        end
-
-        if (not InCombatLockdown()) then
-            local cooldown = _G[self:GetName()..'Cooldown']
-            cooldown:ClearAllPoints()
-            cooldown:SetPoint('TOPRIGHT', button, -2, -2.5)
-            cooldown:SetPoint('BOTTOMLEFT', button, 2, 2)
-            -- cooldown:SetDrawEdge(true)
+            
+            button:StyleButton()
         end
 
         local border = _G[self:GetName()..'Border']
@@ -252,7 +181,10 @@ end)
 
 hooksecurefunc('ActionButton_ShowGrid', function(self)
     local normal = _G[self:GetName()..'NormalTexture']
-    normal:SetVertexColor(0, 0, 0, 0)
+    
+    if normal then
+        normal:SetVertexColor(0, 0, 0, 0)
+    end
 end)
 
 hooksecurefunc('ActionButton_UpdateUsable', function(self)
@@ -277,7 +209,6 @@ hooksecurefunc('ActionButton_UpdateHotkeys', function(self)
         if (C.ActionBars.Hotkey) then
             hotkey:ClearAllPoints()
             hotkey:SetPoint('TOPRIGHT', self, 0, -3)
-            -- hotkey:SetDrawLayer('OVERLAY')
             hotkey:SetFont(C.Media.Font, 18, 'OUTLINE')
         else
             hotkey:Hide()    
@@ -475,10 +406,6 @@ end
 MainMenuExpBar:SetTemplate()
 MainMenuExpBar:SetHeight(13)
 
-if C.Panels.ABPanel then
-    MainMenuExpBar:SetPoint('TOP', ABPanel, 'BOTTOM')
-end
-
 -- Remove XP divider
 
 for i = 1, 19, 2 do
@@ -513,8 +440,64 @@ MultiBarBottomRight:EnableMouse(false)
 
 MultiBarBottomRightButton1:ClearAllPoints()
 
+local safety = CreateFrame('Frame')
+safety:RegisterEvent('PLAYER_REGEN_ENABLED')
+safety:RegisterEvent('PLAYER_LOGIN')
+safety:SetScript('OnEvent', function()
+    if C.Panels.ABPanel then
+        PetActionBarFrame:SetWidth(ABPanel:GetWidth())
+        PetActionBarFrame:SetHeight(C.ActionBars.ButtonSize + (C.ActionBars.ButtonSpacing * 2))
+        PetActionBarFrame:ClearAllPoints()
+        PetActionBarFrame:SetPoint('BOTTOM', ABPanel, 'TOP')
+        PetActionBarFrame.ClearAllPoints = F.Dummy
+        PetActionBarFrame.SetPoint = F.Dummy
+        PetActionBarFrame:SetFrameStrata('HIGH')
+    end
+end)
+
 if C.Panels.ABPanel then
     MultiBarBottomRight:SetPoint('TOP', ABPanel, 'BOTTOM', 0, -6)
+    MainMenuExpBar:SetPoint('TOP', ABPanel, 'BOTTOM')
+    
+    for _, name in pairs({
+        'MultiBarBottomLeftButton',
+        'MultiBarBottomRightButton',
+        'ActionButton',
+    }) do
+        if not InCombatLockdown() then
+            for i = 1, 12 do
+                local button = _G[name..i]
+                local normal = _G[name..i..'NormalTexture'] or _G[name..i..'NormalTexture2']
+                
+                if normal then
+                    normal:SetVertexColor(0, 0, 0, 0)
+                end
+
+                if button then
+                    button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
+                    button:StyleButton()
+                end
+            end
+            
+            for i = 2, 12 do
+                local action = _G['ActionButton'..i]
+                local lastact = _G['ActionButton'..i-1]
+                local left = _G['MultiBarBottomLeftButton'..i]
+                local lastleft = _G['MultiBarBottomLeftButton'..i-1]
+                local right = _G['MultiBarBottomRightButton'..i]
+                local lastright = _G['MultiBarBottomRightButton'..i-1]
+                
+                ActionButton1:ClearAllPoints()
+                ActionButton1:SetPoint('TOPLEFT', ABPanel, 6, -6)
+                MultiBarBottomLeftButton1:ClearAllPoints()
+                MultiBarBottomLeftButton1:SetPoint('TOPLEFT', ActionButton1, 'BOTTOMLEFT', 0, -C.ActionBars.ButtonSpacing)
+                
+                action:SetPoint('LEFT', lastact, 'RIGHT', C.ActionBars.ButtonSpacing, 0)
+                left:SetPoint('LEFT', lastleft, 'RIGHT', C.ActionBars.ButtonSpacing, 0)
+                right:SetPoint('LEFT', lastright, 'RIGHT', C.ActionBars.ButtonSpacing, 0)
+            end
+        end
+    end
 else
     MultiBarBottomRightButton1:SetPoint('BOTTOMLEFT', MultiBarBottomLeftButton1, 'TOPLEFT', 0, 6)
 end
@@ -542,16 +525,10 @@ local function hookPet()
         if not InCombatLockdown() then
             for i = 1, 12 do
                 local button = _G['PetActionButton'..i]
-                local normal = _G['PetActionButton'..i..'NormalTexture'] or _G['PetActionButton'..i..'NormalTexture2']
-                
-                if normal then
-                    normal:SetVertexColor(0, 0, 0, 0)
-                end
 
                 if button then
                     button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
-                    button:SetTemplate()
-                    button:SetBeautyBorderPadding(2)
+                    button:StyleButton()
                 end
             end
             
@@ -572,45 +549,27 @@ for i = 1, 10 do
     hooksecurefunc(pet, 'Show', hookPet)
 end
 
-if C.Panels.ABPanel then
-    for _, name in pairs({
-        'MultiBarBottomLeftButton',
-        'MultiBarBottomRightButton',
-        'ActionButton',
-    }) do
-        if not InCombatLockdown() then
-            for i = 1, 12 do
-                local button = _G[name..i]
-                local normal = _G[name..i..'NormalTexture'] or _G[name..i..'NormalTexture2']
-                
-                if normal then
-                    normal:SetVertexColor(0, 0, 0, 0)
-                end
+-- Strip and skin the ExtraActionButton
+local button = ExtraActionButton1
+local texture = button.style
 
-                if button then
-                    button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
-                    button:SetTemplate()
-                    button:SetBeautyBorderPadding(2)
-                end
-            end
-            
-            for i = 2, 12 do
-                local action = _G['ActionButton'..i]
-                local lastact = _G['ActionButton'..i-1]
-                local left = _G['MultiBarBottomLeftButton'..i]
-                local lastleft = _G['MultiBarBottomLeftButton'..i-1]
-                local right = _G['MultiBarBottomRightButton'..i]
-                local lastright = _G['MultiBarBottomRightButton'..i-1]
-                
-                ActionButton1:ClearAllPoints()
-                ActionButton1:SetPoint('TOPLEFT', ABPanel, 6, -6)
-                MultiBarBottomLeftButton1:ClearAllPoints()
-                MultiBarBottomLeftButton1:SetPoint('TOPLEFT', ActionButton1, 'BOTTOMLEFT', 0, -C.ActionBars.ButtonSpacing)
-                
-                action:SetPoint('LEFT', lastact, 'RIGHT', C.ActionBars.ButtonSpacing, 0)
-                left:SetPoint('LEFT', lastleft, 'RIGHT', C.ActionBars.ButtonSpacing, 0)
-                right:SetPoint('LEFT', lastright, 'RIGHT', C.ActionBars.ButtonSpacing, 0)
-            end
-        end
+local disableTexture = function(style, texture)
+    if texture then
+        style:SetTexture(nil)
     end
 end
+
+button.style:SetTexture(nil)
+ExtraActionButton1Icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+
+local normal = ExtraActionButton1NormalTexture2 or ExtraActionButton1NormalTexture
+normal:SetVertexColor(0, 0, 0, 0)
+
+button:GetParent():ClearAllPoints()
+button:GetParent():SetPoint('BOTTOM', PetActionBarFrame, 'TOP')
+button:GetParent().ClearAllPoints = F.Dummy
+button:GetParent().SetPoint = F.Dummy
+
+hooksecurefunc(texture, 'SetTexture', disableTexture)
+
+button:StyleButton()

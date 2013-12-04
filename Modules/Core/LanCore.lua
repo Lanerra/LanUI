@@ -34,16 +34,16 @@ TicketStatusFrame:ClearAllPoints()
 TicketStatusFrame:SetPoint('BOTTOMRIGHT', UIParent, 0, 0)
 
 -- Custodial Stuff :P
-local eventCount = 0
+local eventcount = 0
 local LanJanitor = CreateFrame("Frame")
 LanJanitor:RegisterAllEvents()
 LanJanitor:SetScript("OnEvent", function(self, event)
-    eventCount = eventCount + 1
+    eventcount = eventcount + 1
     if InCombatLockdown() then return end
 
-    if eventCount > 10000 then
+    if (InCombatLockdown() and eventcount > 25000) or (not InCombatLockdown() and eventcount > 10000) or event == "PLAYER_ENTERING_WORLD" then
         collectgarbage("collect")
-        eventCount = 0        
+        eventcount = 0        
     end
 end)
 
