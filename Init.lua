@@ -160,14 +160,33 @@ SlashCmdList.TEST_EXTRABUTTON = function()
 end
 SLASH_TEST_EXTRABUTTON1 = "/teb"
 
+SlashCmdList.TEST_OVERRIDE = function()
+    if OverrideActionBar:IsShown() then
+        OverrideActionBar:Hide()
+    else
+        OverrideActionBar:Show()
+        OverrideActionBar:SetAlpha(1)
+        
+        for i = 1, 6 do
+            local Override = _G['OverrideActionBarButton'..i]
+            Override:Show()
+            Override:SetAlpha(1)
+            Override.icon:SetTexture("Interface\\Icons\\INV_Pet_DiseasedSquirrel")
+            Override.icon:Show()
+            Override.icon:SetAlpha(1)
+        end
+    end
+end
+SLASH_TEST_OVERRIDE1 = "/tob"
+
 SlashCmdList.TEST_ACHIEVEMENT = function()
     PlaySound("LFG_Rewards")
     if not AchievementFrame then
         AchievementFrame_LoadUI()
     end
     
-    AchievementAlertFrame_ShowAlert(4912)
-    AchievementAlertFrame_ShowAlert(6193)
+    AchievementAlertFrame_ShowAlert(8399)
+    AchievementAlertFrame_ShowAlert(8401)
     GuildChallengeAlertFrame_ShowAlert(3, 2, 5)
     CriteriaAlertFrame_ShowAlert(6301, 29918)
     MoneyWonAlertFrame_ShowAlert(9999999)
@@ -178,6 +197,18 @@ SlashCmdList.TEST_ACHIEVEMENT = function()
 end
 
 SLASH_TEST_ACHIEVEMENT1 = "/tach"
+
+SlashCmdList.SPOOF = function()
+    PlaySound("LFG_Rewards")
+    if not AchievementFrame then
+        AchievementFrame_LoadUI()
+    end
+    
+    AchievementAlertFrame_ShowAlert(8399)
+    AchievementAlertFrame_ShowAlert(8401)
+end
+
+SLASH_SPOOF1 = '/spoof'
 
 SlashCmdList['GM'] = function()
     ToggleHelpFrame() 

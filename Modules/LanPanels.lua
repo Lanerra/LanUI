@@ -1,5 +1,24 @@
 local F, C, G = unpack(select(2, ...))
 
+if C.ActionBars.Bar2 == true then
+    if C.Panels.ABPanel == true then
+        local ABPanel = CreateFrame('Frame', 'ABPanel', UIParent)
+    
+        ABPanel:SetPoint('BOTTOM', UIParent, 0, 50)
+        --ABPanel:SetSize((C.ActionBars.ButtonSize * 12) + (C.ActionBars.ButtonSpacing * 13), (C.ActionBars.ButtonSize * 1) + (C.ActionBars.ButtonSpacing * 2))
+        ABPanel:SetWidth((C.ActionBars.ButtonSize * 12) + (C.ActionBars.ButtonSpacing * 14))
+        ABPanel:SetHeight((C.ActionBars.ButtonSize * 2) + (C.ActionBars.ButtonSpacing * 4))
+        ABPanel:SetFrameStrata('BACKGROUND')
+        
+        ABPanel:SetTemplate()
+        
+        for i = 1, 12 do
+            _G['ActionButton'..i]:SetFrameStrata('HIGH')
+            _G['MultiBarBottomLeftButton'..i]:SetFrameStrata('HIGH')
+        end
+    end
+end
+
 if C.Panels.BP == true then
     local BottomPanel = CreateFrame('Frame', 'BottomPanel', UIParent)
 	

@@ -36,6 +36,126 @@ local function UpdateColor(t)
 	template = t
 end
 
+F.PetBarUpdate = function(self, event)
+	local petActionButton, petActionIcon, petAutoCastableTexture, petAutoCastShine
+	for i = 1, NUM_PET_ACTION_SLOTS, 1 do
+		local buttonName = "PetActionButton"..i
+		petActionButton = _G[buttonName]
+		petActionIcon = _G[buttonName.."Icon"]
+		petAutoCastableTexture = _G[buttonName.."AutoCastable"]
+		petAutoCastShine = _G[buttonName.."Shine"]
+		local name, subtext, texture, isToken, isActive, autoCastAllowed, autoCastEnabled = GetPetActionInfo(i)
+
+		if not isToken then
+			petActionIcon:SetTexture(texture)
+			petActionButton.tooltipName = name
+		else
+			petActionIcon:SetTexture(_G[texture])
+			petActionButton.tooltipName = _G[name]
+		end
+
+		petActionButton.isToken = isToken
+		petActionButton.tooltipSubtext = subtext
+
+		if isActive and name ~= "PET_ACTION_FOLLOW" then
+			petActionButton:SetChecked(1)
+			if IsPetAttackAction(i) then
+				PetActionButton_StartFlash(petActionButton)
+			end
+		else
+			petActionButton:SetChecked(0)
+			if IsPetAttackAction(i) then
+				PetActionButton_StopFlash(petActionButton)
+			end
+		end
+
+		if autoCastAllowed then
+			petAutoCastableTexture:Show()
+		else
+			petAutoCastableTexture:Hide()
+		end
+
+		if autoCastEnabled then
+			AutoCastShine_AutoCastStart(petAutoCastShine)
+		else
+			AutoCastShine_AutoCastStop(petAutoCastShine)
+		end
+
+		if name then
+			petActionButton:SetAlpha(1)
+		else
+			petActionButton:SetAlpha(0)
+		end
+
+		if texture then
+			if GetPetActionSlotUsable(i) then
+				SetDesaturation(petActionIcon, nil)
+			else
+				SetDesaturation(petActionIcon, 1)
+			end
+			petActionIcon:Show()
+		else
+			petActionIcon:Hide()
+		end
+
+		if not PetHasActionBar() and texture and name ~= "PET_ACTION_FOLLOW" then
+			PetActionButton_StopFlash(petActionButton)
+			SetDesaturation(petActionIcon, 1)
+			petActionButton:SetChecked(0)
+		end
+	end
+end
+
+F.StylePet = function()
+	for _, name in pairs({
+		'PetActionButton',
+		'PossessButton',    
+		'StanceButton', 
+	}) do
+		for i = 1, 12 do
+			local button = _G[name..i]
+			local cast = _G[name..i..'AutoCastable']
+			if (button) then
+				if cast then
+					cast:SetAlpha(0)
+					cast.SetAlpha = F.Dummy
+				end
+
+				if (not button.Shadow) then
+					local normal = _G[name..i..'NormalTexture2'] or _G[name..i..'NormalTexture']
+					normal:ClearAllPoints()
+					normal:SetPoint('TOPRIGHT', button, 1, 1)
+					normal:SetPoint('BOTTOMLEFT', button, -1, -1)
+					normal:SetVertexColor(0, 0, 0, 0)
+					
+					local icon = _G[name..i..'Icon']
+					icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+					icon:SetPoint('TOPRIGHT', button, 1, 1)
+					icon:SetPoint('BOTTOMLEFT', button, -1, -1)
+
+					local flash = _G[name..i..'Flash']
+					flash:SetTexture(flashtex)
+
+					local buttonBg = _G[name..i..'FloatingBG']
+					if (buttonBg) then
+						buttonBg:ClearAllPoints()
+						buttonBg:SetPoint('TOPRIGHT', button, 5, 5)
+						buttonBg:SetPoint('BOTTOMLEFT', button, -5, -5)
+						buttonBg:SetVertexColor(0, 0, 0, 0.5)
+						button.Shadow = true
+					else
+						button.Shadow = button:CreateTexture(nil, 'BACKGROUND')
+						button.Shadow:SetParent(button) 
+						button.Shadow:SetPoint('TOPRIGHT', normal, 4, 4)
+						button.Shadow:SetPoint('BOTTOMLEFT', normal, -4, -4)
+						button.Shadow:SetVertexColor(0, 0, 0, 0.5)
+					end
+				end
+			end
+		end
+	end
+end
+
 -- API stuff
 
 local function Size(frame, width, height)
@@ -82,7 +202,7 @@ local function SetInside(obj, anchor, xOffset, yOffset)
 	obj:Point('BOTTOMRIGHT', anchor, 'BOTTOMRIGHT', -xOffset, yOffset)
 end
 
-function IsButton(frame, name)
+local function Filter(frame, name)
     if not frame:GetName() then return end
 	local sbut = frame:GetName():match(name)
     if (sbut) then
@@ -98,7 +218,7 @@ local function SetTemplate(f, t)
 	
 	UpdateColor(t)
 	
-	if f.SetBackdrop and not IsButton(f, 'Button') then
+	if f.SetBackdrop and not Filter(f, 'Button') and not Filter(f, 'Overlay') then
 		f:SetBackdrop({
 			bgFile = texture, 
 		})
@@ -106,6 +226,10 @@ local function SetTemplate(f, t)
 		f:SetBackdropColor(backdropr, backdropg, backdropb, backdropa)
 		f:SetBackdropBorderColor(borderr, borderg, borderb)
 	end
+	
+	--[[if Filter(f, 'Button') then
+		ChatFrame1:AddMessage('Nope, '..f:GetName()..' gets no backdrop.')
+	end]]
     
     if C.Media.ClassColor == true then
         CreateBorderLight(f, C.Media.BorderSize, C.Media.BorderColor.r, C.Media.BorderColor.g, C.Media.BorderColor.b)
@@ -142,8 +266,8 @@ local function CreateBackdrop(f, t, tex)
 	if not t then t = 'Default' end
 
 	local b = CreateFrame('Frame', nil, f)
-	b:Point('TOPLEFT', -2 + Inset, 2 - Inset)
-	b:Point('BOTTOMRIGHT', 2 - Inset, -2 + Inset)
+	b:Point('TOPLEFT', -2, 2)
+	b:Point('BOTTOMRIGHT', 2, -2)
 	b:SetTemplate(t, tex)
 
 	if f:GetFrameLevel() - 1 >= 0 then
@@ -156,6 +280,12 @@ local function CreateBackdrop(f, t, tex)
 end
 
 local function Kill(object)
+	if object.IsProtected then 
+		if object:IsProtected() then
+			error("Attempted to kill a protected object: <"..object:GetName()..">")
+		end
+	end
+	
 	if object.UnregisterAllEvents then
 		object:UnregisterAllEvents()
 		object:SetParent(LanUIHider)
@@ -167,7 +297,10 @@ local function Kill(object)
 end
 
 local function StyleButton(button)
+	if button.stylish then return end
+	
 	local path = 'Interface\\AddOns\\LanUI\\Media\\'
+	local norm = _G[button:GetName()..'NormalTexture']
 	
 	if button.SetHighlightTexture and not button.hover then
 		local hover = button:CreateTexture('frame', nil, self)
@@ -196,14 +329,8 @@ local function StyleButton(button)
 		button:SetCheckedTexture(checked)
 	end
 	
-	if button.SetNormalTexture and not button.normal then
-		local normal = button:CreateTexture('frame', nil, self)
-		normal:SetTexture(path..'textureNormal')
-		normal:Point('TOPRIGHT', 1, 1)
-		normal:Point('BOTTOMLEFT', -1, -1)
-		normal:SetVertexColor(0, 0, 0, 0)
-		button.normal = normal
-		button:SetNormalTexture(normal)		
+	if norm then
+		norm:SetAlpha(0)
 	end
 
 	local cooldown = button:GetName() and _G[button:GetName()..'Cooldown']
@@ -215,6 +342,9 @@ local function StyleButton(button)
 	
 	button:SetTemplate()
 	button:SetBeautyBorderPadding(2)
+	
+	button.stylish = true
+	--ChatFrame1:AddMessage(button:GetName().. ' successfully skinned!')
 end
 
 local function FontString(parent, name, fontName, fontHeight, fontStyle)
@@ -557,7 +687,7 @@ F.SkinCheckBox = SkinCheckBox -- Compatibility, yo
 
 local function SkinCloseButton(f, point)	
 	if point then
-		Point(f, 'TOPRIGHT', point, 'TOPRIGHT', 2, 2)
+		Point(f, 'TOPRIGHT', point, 'TOPRIGHT', -5, -5)
 	end
 	
 	f:SetNormalTexture('')
@@ -566,7 +696,7 @@ local function SkinCloseButton(f, point)
 	f:SetDisabledTexture('')
 
 	f.t = f:CreateFontString(nil, 'OVERLAY')
-	f.t:SetFont(C.media.pixelfont, 12, 'OUTLINE')
+	f.t:SetFont(C.Media.Font, 12, 'OUTLINE')
 	f.t:SetPoint('CENTER', 0, 1)
 	f.t:SetText('x')
 end

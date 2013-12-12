@@ -50,21 +50,6 @@ f.InstanceText:SetPoint('TOP', Minimap, 0, -3.5)
 f.InstanceText:SetTextColor(1, 1, 1)
 f.InstanceText:Show()
 
---[[
-MiniMapInstanceDifficulty:UnregisterAllEvents()
-MiniMapInstanceDifficulty:Hide()
-MiniMapInstanceDifficulty:ClearAllPoints()
-MiniMapInstanceDifficulty:SetPoint('TOPLEFT', Minimap, 1, 5)
-MiniMapInstanceDifficulty:SetScale(0.9)
-
-GuildInstanceDifficulty:UnregisterAllEvents()
-GuildInstanceDifficulty:Hide()
-GuildInstanceDifficulty:Show()
-GuildInstanceDifficulty:ClearAllPoints()
-GuildInstanceDifficulty:SetPoint('TOPLEFT', Minimap, 1, 5)
-GuildInstanceDifficulty:SetScale(0.9)
---]]
-
 hooksecurefunc(GuildInstanceDifficulty, 'Show', function()
     isGuildGroup = true
     HideDifficultyFrame()
@@ -92,12 +77,12 @@ MiniMapInstanceDifficulty:HookScript('OnEvent', function(self)
     Minimap.InstanceText:SetText(GetDifficultyText())
 end)
 
-    Minimap.InstanceText:SetAlpha(0)
+Minimap.InstanceText:SetAlpha(0)
 
-    Minimap:HookScript('OnEnter', function(self)
-        securecall('UIFrameFadeIn', self.InstanceText, 0.235, 0, 1)
-    end)
+Minimap:HookScript('OnEnter', function(self)
+    securecall('UIFrameFadeIn', self.InstanceText, 0.235, 0, 1)
+end)
 
-    Minimap:HookScript('OnLeave', function(self)
-        securecall('UIFrameFadeOut', self.InstanceText, 0.235, 1, 0)
-    end)
+Minimap:HookScript('OnLeave', function(self)
+    securecall('UIFrameFadeOut', self.InstanceText, 0.235, 1, 0)
+end)

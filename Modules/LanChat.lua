@@ -97,59 +97,6 @@ CHAT_FONT_HEIGHTS = {
 CURRENCY_GAINED = '+ |cffffffff%s|r'
 CURRENCY_GAINED_MULTIPLE = '+ |cffffffff%s|r x|cffffffff%d|r'
 
---[[LOOT_MONEY = '|cffffff00+|r |cffffffff%s'
-YOU_LOOT_MONEY = '|cffffff00+|r |cffffffff%s'
-YOU_LOOT_MONEY_GUILD = '|cffffff00+|r |cffffffff%s|r |cffffff00+|r |cffffffff( %s )|r'
-LOOT_MONEY_SPLIT_GUILD = '|cffffff00+|r |cffffffff%s|r |cffffff00+|r |cffffffff( %s )|r'
-LOOT_MONEY_SPLIT = '|cffffff00+|r |cffffffff%s'
-
-LOOT_ITEM = '%s |cffffff00+|r %s'
-LOOT_ITEM_MULTIPLE = '%s |cffffff00+|r %sx%d'
-LOOT_ITEM_SELF = '|cffffff00+|r %s'
-LOOT_ITEM_SELF_MULTIPLE = '|cffffff00+|r %sx%d'
-LOOT_ITEM_PUSHED_SELF = '|cffffff00+|r %s'
-LOOT_ITEM_PUSHED_SELF_MULTIPLE = '|cffffff00+|r %sx%d'
-LOOT_ROLL_ALL_PASSED = 'All passed on %s'
-LOOT_ROLL_PASSED_AUTO = '%s passed %s (auto)'
-LOOT_ROLL_PASSED_SELF_AUTO = 'pass %s (auto)'
-
-ACHIEVEMENT_BROADCAST = '%s achieved %s!'
-ERR_AUCTION_SOLD_S = '|cff1eff00%s|r |cffFF0000Sold.|r'
-ERR_SKILL_UP_SI = '%s |cff1eff00%d|r'
-NORMAL_QUEST_DISPLAY = '|cffffffff%s|r'
-TRIVIAL_QUEST_DISPLAY = '|cffffffff%s (low level)|r'
-FACTION_STANDING_DECREASED = '|3-7(%s) -%d'
-FACTION_STANDING_INCREASED = '|3-7(%s) +%d'
-CHAT_FLAG_AFK = '[AFK] '
-CHAT_FLAG_DND = '[DND] '
-CHAT_FLAG_GM = '[GM] '
-CHAT_SAY_GET = '%s:\32'
-CHAT_YELL_GET = '%s:\32'
-CHAT_GUILD_GET = '[G] %s:\32'
-CHAT_OFFICER_GET = '[O] %s:\32'
-CHAT_PARTY_GUIDE_GET  = '[PG] %s:\32' 
-CHAT_PARTY_GET = '[P] %s:\32'
-CHAT_PARTY_LEADER_GET = '[PL] %s:\32'
-CHAT_MONSTER_PARTY_GET = '[|Hchannel:raid|hR|h] %s:\32'
-CHAT_RAID_GET = '[R] %s:\32'
-CHAT_RAID_WARNING_GET = '[RW] %s:\32'
-CHAT_RAID_LEADER_GET = '[RL] %s:\32'
-CHAT_BATTLEGROUND_GET = '[BG] %s:\32'
-CHAT_BATTLEGROUND_LEADER_GET = '[BL] %s:\32'
-CHAT_YOU_CHANGED_NOTICE = '# |Hchannel:%d|h%s|h'
-CHAT_YOU_JOINED_NOTICE = '+ |Hchannel:%d|h%s|h'
-CHAT_YOU_LEFT_NOTICE = '- |Hchannel:%d|h%s|h'
-BN_INLINE_TOAST_FRIEND_OFFLINE = '%s has gone |cffff0000offline|r!'
-BN_INLINE_TOAST_FRIEND_ONLINE = '%s has come |cff00ff00online|r!'
-CHAT_BN_WHISPER_GET = 'From %s:\32'
-CHAT_BN_WHISPER_INFORM_GET = '|cffad2424@|r %s:\32'
-CHAT_WHISPER_GET = 'f - %s:\32'
-CHAT_WHISPER_INFORM_GET = '|cffad2424@|r %s:\32'
-ERR_FRIEND_OFFLINE_S = '%s has gone |cffff0000offline|r!'
-ERR_FRIEND_ONLINE_SS = '|Hplayer:%s|h[%s]|h has come |cff00ff00online|r!'
-
-CHAT_SUSPENDED_NOTICE_BN = '- |Hchannel:%d|h%s|h']]
-
 ChatTypeInfo['CHANNEL'].sticky = 1
 ChatTypeInfo['GUILD'].sticky = 1
 ChatTypeInfo['OFFICER'].sticky = 1
@@ -372,6 +319,9 @@ for i = 1, NUM_CHAT_WINDOWS do
     chat:SetFrameStrata('LOW')
     _G['ChatFrame'..i..'Background']:Kill()
     
+	local chatframe = _G[("ChatFrame%d"):format(i)]
+    chatframe:SetFading(0)
+    
     local x = CreateFrame('Frame', _G['ChatHolder'..i], chat)
     x:SetPoint('TOPLEFT', chat, -5, 5)
     x:SetPoint('BOTTOMRIGHT', chat, 5, -7)
@@ -470,5 +420,18 @@ f:SetScript('OnEvent', function(_, event)
         
         GMChatFrameBottomButton:SetAlpha(0)
         GMChatFrameBottomButton:EnableMouse(false)
+    end
+end)
+
+local CombatChat = CreateFrame('Frame')
+CombatChat:RegisterEvent('PLAYER_REGEN_ENABLED')
+CombatChat:RegisterEvent('PLAYER_REGEN_DISABLED')
+CombatChat:SetScript('OnEvent', function(self, event)
+    if event == 'PLAYER_REGEN_DISABLED' then
+        ChatFrame1:SetHeight(50)
+        ChatFrame3:SetHeight(50)
+    elseif event == 'PLAYER_REGEN_ENABLED' then
+        ChatFrame1:SetHeight(200)
+        ChatFrame3:SetHeight(200)
     end
 end)

@@ -431,12 +431,6 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             SetHealthBarColor(unit)
         end
 
-            -- Custom healthbar coloring
-
-        GameTooltipStatusBar:HookScript('OnValueChanged', function()
-            SetHealthBarColor(unit)
-        end)
-
             -- Show player item lvl
 
         if ilvl > 1 then

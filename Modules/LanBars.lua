@@ -1,26 +1,5 @@
 local F, C, G = unpack(select(2, ...))
 
-if C.ActionBars.Bar2 == true then
-    if C.Panels.ABPanel == true then
-        local ABPanel = CreateFrame('Frame', 'ABPanel', UIParent)
-    
-        ABPanel:SetPoint('BOTTOM', UIParent, 0, 50)
-        --ABPanel:SetSize((C.ActionBars.ButtonSize * 12) + (C.ActionBars.ButtonSpacing * 13), (C.ActionBars.ButtonSize * 1) + (C.ActionBars.ButtonSpacing * 2))
-        ABPanel:SetWidth((C.ActionBars.ButtonSize * 12) + (C.ActionBars.ButtonSpacing * 14))
-        ABPanel:SetHeight((C.ActionBars.ButtonSize * 2) + (C.ActionBars.ButtonSpacing * 4))
-        ABPanel:SetFrameStrata('BACKGROUND')
-        
-        ABPanel:SetTemplate()
-        
-        for i = 1, 12 do
-            _G['ActionButton'..i]:SetFrameStrata('HIGH')
-            _G['MultiBarBottomLeftButton'..i]:SetFrameStrata('HIGH')
-        end
-    end
-else
-    return
-end
-
 MainMenuBar:SetScale(1)
 OverrideActionBar:SetScale(0.8)
 MultiBarBottomLeft:SetAlpha(1)
@@ -30,6 +9,13 @@ MultiBarLeft:SetScale(1)
 MultiBarLeft:SetParent(UIParent)
 MultiBarRight:SetAlpha(1)
 MultiBarRight:SetScale(1)
+
+-- Kill Blizzard options for ActionBars
+InterfaceOptionsActionBarsPanelBottomLeft:Kill()
+InterfaceOptionsActionBarsPanelBottomRight:Kill()
+InterfaceOptionsActionBarsPanelRight:Kill()
+InterfaceOptionsActionBarsPanelRightTwo:Kill()
+InterfaceOptionsActionBarsPanelAlwaysShowActionBars:Kill()
 
 local _G, pairs, unpack = _G, pairs, unpack
 local path = 'Interface\\AddOns\\LanUI\\Media\\'
@@ -56,54 +42,68 @@ local function UpdateVehicleButton()
     end
 end
 
-hooksecurefunc('PetActionBar_Update', function()    
-    for _, name in pairs({
-        'PetActionButton',
-        'PossessButton',    
-        'StanceButton', 
-    }) do
-        for i = 1, 12 do
-            local button = _G[name..i]
-            local cast = _G[name..i..'AutoCastable']
-            if (button) then
-                if cast then
-                    cast:SetAlpha(0)
-                    cast.SetAlpha = F.Dummy
-                end
+PetActionBarFrame:EnableMouse(false)
+PetActionBarFrame:UnregisterAllEvents()
+PetActionBarFrame:Hide()
+PetActionBarFrame:SetAlpha(0)
 
-                if (not button.Shadow) then
-                    local normal = _G[name..i..'NormalTexture2'] or _G[name..i..'NormalTexture']
-                    normal:ClearAllPoints()
-                    normal:SetPoint('TOPRIGHT', button, 1, 1)
-                    normal:SetPoint('BOTTOMLEFT', button, -1, -1)
-                    normal:SetVertexColor(0, 0, 0, 0)
-                    
-                    local icon = _G[name..i..'Icon']
-                    icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-                    icon:SetPoint('TOPRIGHT', button, 1, 1)
-                    icon:SetPoint('BOTTOMLEFT', button, -1, -1)
+local petbaranchor = CreateFrame('Frame', 'PetActionBarAnchor', LanUIPetBattleHider)
+petbaranchor:SetFrameStrata('LOW')
+petbaranchor:SetSize((C.ActionBars.ButtonSize * 10) + (C.ActionBars.ButtonSpacing * 9), (C.ActionBars.ButtonSize + C.ActionBars.ButtonSpacing))
 
-                    local flash = _G[name..i..'Flash']
-                    flash:SetTexture(flashtex)
+if C.Panels.ABPanel then
+    petbaranchor:SetPoint('BOTTOM', ABPanel, 'TOP', 0, 2)
+else
+    petbaranchor:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPRIGHT', 0, 5)
+end
 
-                    local buttonBg = _G[name..i..'FloatingBG']
-                    if (buttonBg) then
-                        buttonBg:ClearAllPoints()
-                        buttonBg:SetPoint('TOPRIGHT', button, 5, 5)
-                        buttonBg:SetPoint('BOTTOMLEFT', button, -5, -5)
-                        buttonBg:SetVertexColor(0, 0, 0, 0.5)
-                        button.Shadow = true
-                    else
-                        button.Shadow = button:CreateTexture(nil, 'BACKGROUND')
-                        button.Shadow:SetParent(button) 
-                        button.Shadow:SetPoint('TOPRIGHT', normal, 4, 4)
-                        button.Shadow:SetPoint('BOTTOMLEFT', normal, -4, -4)
-                        button.Shadow:SetVertexColor(0, 0, 0, 0.5)
-                    end
-                end
-            end
-        end
-    end
+local bar = CreateFrame('Frame', 'LanPetHolder', UIParent, 'SecureHandlerStateTemplate')
+bar:SetAllPoints(PetActionBarAnchor)
+
+bar:RegisterEvent('PLAYER_LOGIN')
+bar:RegisterEvent('PLAYER_CONTROL_LOST')
+bar:RegisterEvent('PLAYER_CONTROL_GAINED')
+bar:RegisterEvent('PLAYER_ENTERING_WORLD')
+bar:RegisterEvent('PLAYER_FARSIGHT_FOCUS_CHANGED')
+bar:RegisterEvent('PET_BAR_UPDATE')
+bar:RegisterEvent('PET_BAR_UPDATE_USABLE')
+bar:RegisterEvent('PET_BAR_UPDATE_COOLDOWN')
+bar:RegisterEvent('PET_BAR_HIDE')
+bar:RegisterEvent('UNIT_PET')
+bar:RegisterEvent('UNIT_FLAGS')
+bar:RegisterEvent('UNIT_AURA')
+bar:SetScript('OnEvent', function(self, event, arg1)
+	if event == 'PLAYER_LOGIN' then
+		PetActionBarFrame.showgrid = 1
+		
+        for i = 1, 10 do
+			local button = _G['PetActionButton'..i]
+			button:ClearAllPoints()
+			button:SetParent(LanPetHolder)
+			button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
+			if i == 1 then
+				button:SetPoint('BOTTOMLEFT', 0, 0)
+			else
+				button:SetPoint('LEFT', _G['PetActionButton'..i-1], 'RIGHT', C.ActionBars.ButtonSpacing, 0)
+			end
+		
+            button:Show()
+            F.StylePet()
+            button:StyleButton()
+			self:SetAttribute('addchild', button)
+		end
+        
+		RegisterStateDriver(self, 'visibility', '[pet,novehicleui,nopossessbar,nopetbattle] show; hide')
+        
+        
+		hooksecurefunc('PetActionBar_Update', F.PetBarUpdate)
+	elseif event == 'PET_BAR_UPDATE' or event == 'PLAYER_CONTROL_LOST' or event == 'PLAYER_CONTROL_GAINED' or event == 'PLAYER_FARSIGHT_FOCUS_CHANGED' or event == 'UNIT_FLAGS' or (event == 'UNIT_PET' and arg1 == 'player') or (arg1 == 'pet' and event == 'UNIT_AURA') then
+		F.PetBarUpdate()
+	elseif event == 'PET_BAR_UPDATE_COOLDOWN' then
+		PetActionBar_UpdateCooldowns()
+	else
+		F.StylePet()
+	end
 end)
 
 -- Force an update for StanceButton for those who doesn't have pet bar
@@ -166,6 +166,7 @@ hooksecurefunc('ActionButton_Update', function(self)
             button.Background:SetPoint('BOTTOMLEFT', button, -14, -16)
             
             button:StyleButton()
+            button:SetBackdropColor(0, 0, 0, 0)
         end
 
         local border = _G[self:GetName()..'Border']
@@ -440,24 +441,25 @@ MultiBarBottomRight:EnableMouse(false)
 
 MultiBarBottomRightButton1:ClearAllPoints()
 
-local safety = CreateFrame('Frame')
-safety:RegisterEvent('PLAYER_REGEN_ENABLED')
-safety:RegisterEvent('PLAYER_LOGIN')
-safety:SetScript('OnEvent', function()
-    if C.Panels.ABPanel then
-        PetActionBarFrame:SetWidth(ABPanel:GetWidth())
-        PetActionBarFrame:SetHeight(C.ActionBars.ButtonSize + (C.ActionBars.ButtonSpacing * 2))
-        PetActionBarFrame:ClearAllPoints()
-        PetActionBarFrame:SetPoint('BOTTOM', ABPanel, 'TOP')
-        PetActionBarFrame.ClearAllPoints = F.Dummy
-        PetActionBarFrame.SetPoint = F.Dummy
-        PetActionBarFrame:SetFrameStrata('HIGH')
-    end
-end)
-
 if C.Panels.ABPanel then
     MultiBarBottomRight:SetPoint('TOP', ABPanel, 'BOTTOM', 0, -6)
     MainMenuExpBar:SetPoint('TOP', ABPanel, 'BOTTOM')
+    
+    OverrideActionBar:SetAllPoints(ABPanel)
+    
+    for i = 1, 6 do
+        local over = _G['OverrideActionBarButton'..i]
+        local lastover = _G['OverrideActionBarButton'..i-1]
+        
+        if i == 1 then
+            over:SetPoint('CENTER', ABPanel, -((C.ActionBars.ButtonSize * 3) - C.ActionBars.ButtonSpacing), 0)
+        else
+            over:SetPoint('LEFT', lastover, 'RIGHT', C.ActionBars.ButtonSpacing, 0)
+        end
+        
+        over:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
+        over:SetScale(2)
+    end
     
     for _, name in pairs({
         'MultiBarBottomLeftButton',
@@ -520,35 +522,6 @@ MainMenuBarVehicleLeaveButton:HookScript('OnShow', function(self)
     end
 end)
 
-local function hookPet()
-    if C.Panels.ABPanel then
-        if not InCombatLockdown() then
-            for i = 1, 12 do
-                local button = _G['PetActionButton'..i]
-
-                if button then
-                    button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
-                    button:StyleButton()
-                end
-            end
-            
-            for i = 2, 12 do
-                local pet = _G['PetActionButton'..i]
-                local lastpet = _G['PetActionButton'..i-1]
-                
-                if pet then
-                    pet:SetPoint('LEFT', lastpet, 'RIGHT', C.ActionBars.ButtonSpacing, 0)
-                end
-            end
-        end
-    end
-end
-
-for i = 1, 10 do
-    local pet = _G['PetActionButton'..i]
-    hooksecurefunc(pet, 'Show', hookPet)
-end
-
 -- Strip and skin the ExtraActionButton
 local button = ExtraActionButton1
 local texture = button.style
@@ -566,10 +539,14 @@ local normal = ExtraActionButton1NormalTexture2 or ExtraActionButton1NormalTextu
 normal:SetVertexColor(0, 0, 0, 0)
 
 button:GetParent():ClearAllPoints()
-button:GetParent():SetPoint('BOTTOM', PetActionBarFrame, 'TOP')
+button:GetParent():SetPoint('BOTTOM', PetActionBarAnchor, 'TOP')
 button:GetParent().ClearAllPoints = F.Dummy
 button:GetParent().SetPoint = F.Dummy
+button:SetPoint('BOTTOM', button:GetParent())
+button:SetSize(32, 32)
 
 hooksecurefunc(texture, 'SetTexture', disableTexture)
 
 button:StyleButton()
+
+-- Position and skin StanceBarFrame

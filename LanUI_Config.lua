@@ -17,7 +17,14 @@ C['ActionBars'] = {
     ['Bar3'] = false, -- How about a third?
     ['Bar4'] = false, -- A fourth?
     ['Bar5'] = false, -- I think you get the picture by now
-}    
+}
+
+C['Bags'] = {
+    ['SlotSize'] = 32,
+    ['SlotSpacing'] = 4,
+    ['BankColumns'] = 17,
+    ['BagColumns'] = 10,
+}
 
 C['Minimap'] = {
     ['Tab'] = {
@@ -89,4 +96,132 @@ C['Buffs'] = {
     ['CountSize'] = 17, -- Count text size
     ['PadX'] = 7, -- Horizontal spacing
     ['PadY'] = 7, -- Vertical spacing
+}
+C['UF'] = {
+    Show = {
+        CastBars = true,
+        Focus = true,
+        ToT = true,
+        Party = true,
+        Raid = true,
+        HealerOverride = true
+    },
+    Media = {
+        FontSize = 15,
+        BorderSize = 12,
+        BorderColor = { 1, 1, 1 },
+        BackdropColor = { 0, 0, 0, 0.5 },
+        BorderPadding = 4
+    },
+    Units = {
+        Player = {
+            Height = 30,
+            Width = 200,
+            Position = {'CENTER', UIParent, -325, -175},
+            Health = {
+                Percent = false,
+                Deficit = false,
+                Current = true,
+            },
+            ShowPowerText = true,
+            ShowBuffs = false,
+        },
+        Pet = {
+            Height = 30,
+            Width = 80,
+            Position = {'CENTER', UIParent, -485, -175},
+            Health = {
+                Percent = false,
+                Deficit = false,
+                Current = false,
+            },
+        },
+        Target = {
+            Height = 30,
+            Width = 200,
+            Position = {'CENTER', UIParent, 325, -175},
+            Health = {
+                Percent = true,
+                Deficit = false,
+                Current = false,
+                PerCur = false,
+            },
+            ShowPowerText = true,
+            ShowBuffs = true,
+        },
+        ToT = {
+            Height = 30,
+            Width = 80,
+            Position = {'CENTER', UIParent, 485, -175},
+            Health = {
+                Percent = false,
+                Deficit = false,
+                Current = false,
+            },
+        },
+        Focus = {
+            Height = 30,
+            Width = 30,
+            Position = {'CENTER', UIParent, 0, -175},
+            Health = {
+                Percent = false,
+                Deficit = false,
+                Current = false,
+            },
+            VerticalHealth = true,
+        },
+        Party = {
+            Height = 20,
+            Width = 100,
+            TinyPosition = {'TOPLEFT', UIParent, 25, -210},
+            Position = {'TOPLEFT', UIParent, 25, -25},
+            Health = {
+                Percent = true,
+                Deficit = false,
+                Current = false,
+                ClassColor = true,
+            },
+            HidePower = true, -- Reserved for future use
+            Healer = true,
+            ShowBuffs = true,
+        },
+        Raid = {
+            Height = 18,
+            Width = 100,
+            TinyPosition = {'TOPLEFT', UIParent, 25, -210},
+            Position = {'TOPLEFT', UIParent, 25, -25},
+            Health = {
+                Percent = false,
+                Deficit = true,
+                Current = false,
+                ClassColor = true,
+            },
+            HidePower = true, -- Reserved for future use
+            Healer = true, -- If true, overrides height and width in this section and gets set to a static amount
+        },
+    },
+    CastBars = {
+        Player = {
+            Show = true,
+            Height = 25,
+            Width = 200,
+            Scale = 1,
+            Position = {'CENTER', UIParent, -325, -232},
+            ClassColor = false,
+            SafeZone = true,
+            Latency = false,
+            Color = {.25, .25, .25},
+        },
+        Target = {
+            Show = true,
+            Height = 25,
+            Width = 200,
+            Scale = 1,
+            Position = {'CENTER', UIParent, 325, -232},
+            ClassColor = false,
+            Color = {.25, .25, .25},
+            InterruptHighlight = true,
+            InterruptColor = {1, 0, 1},
+        },
+    },
 }

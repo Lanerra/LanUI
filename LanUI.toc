@@ -4,27 +4,33 @@
 ## Author: Lanerra
 ## Notes: Lightweight UI Modification
 
+# Libraries
 lib\LibStub\LibStub.lua
 lib\CallBackHandler-1.0\CallbackHandler-1.0.lua
 lib\LibBossEncounters\LibBossEncounters.lua
 lib\LibDataBroker\LibDataBroker-1.1.lua
+lib\oUF\oUF.xml
 
+# Core functionality
 Init.lua
 LanUI_Config.lua
-Modules\Core\LanFunc.lua
-Modules\Core\LanCore.lua
 Modules\Beautycase\Beautycase.lua
-
+Modules\Core\LanFunc.lua
+Modules\LanPanels.lua
+Modules\Core\LanCore.lua
 LanUI_Launch.lua
 
+# Datatext
 Modules\Data\Durability.lua
 Modules\Data\GuildFriend.lua
 Modules\Data\Gold.lua
 
+# Minimap
 Modules\Minimap\Minimap.lua
 Modules\Minimap\Clock.lua
 Modules\Minimap\InstanceDifficulty.lua
 
+# Modules
 Modules\LanBags.lua
 Modules\LanBars.lua
 Modules\LanBuffs.lua
@@ -35,7 +41,6 @@ Modules\LanDamage.lua
 Modules\LanFonts.lua
 Modules\LanLoot.lua
 Modules\LanNameplates.lua
-Modules\LanPanels.lua
 Modules\LanRunes.lua
 Modules\LanScroll.lua
 Modules\LanSkin.lua
@@ -43,3 +48,12 @@ Modules\LanStats.lua
 Modules\LanTooltip.lua
 Modules\LanTweaks.lua
 Modules\LanWarning.lua
+
+# Unitframes
+Modules\oUF_Lanerra\Modules\Smooth.lua
+Modules\oUF_Lanerra\Modules\DispellableDebuffs.lua
+Modules\oUF_Lanerra\Modules\Threat.lua
+
+Modules\oUF_Lanerra\AuraFilter.lua
+Modules\oUF_Lanerra\Tags.lua
+Modules\oUF_Lanerra\oUF_Lanerra.lua

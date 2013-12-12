@@ -222,12 +222,7 @@ hooksecurefunc('AuraButton_Update', function(self, index)
     
     if (button and not border) then
         if (not button.texture) then
-            button.texture = button:CreateTexture('$parentOverlay', 'ARTWORK')
-            button.texture:SetParent(button)
-            button.texture:SetTexture(C.Media.BuffBorder)
-            button.texture:SetPoint('TOPRIGHT', button, 1, 1)
-            button.texture:SetPoint('BOTTOMLEFT', button, -1, -1)
-            button.texture:SetVertexColor(unpack(C.Buffs.BorderColor))
+            button:SetTemplate()
         end
     end
 end)

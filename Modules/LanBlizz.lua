@@ -22,6 +22,7 @@ for _, frame in pairs({
 	'LFDMicroButton',
 	'CompanionsMicroButton',
 	'EJMicroButton',
+	'StoreMicroButton',
 	'MainMenuMicroButton',
 	'HelpMicroButton',
 	'MainMenuBarBackpackButton',

@@ -5,18 +5,18 @@ local dummy = F.Dummy
 -- Setup WatchFrame
 
 local f = CreateFrame('Frame')
-f:RegisterEvent('VARIABLES_LOADED')
 f:RegisterEvent('ADDON_LOADED')
-f:RegisterEvent('PLAYER_ENTERING_WORLD')
-f:SetScript('OnEvent', function(self, ...)
+
+f:SetScript('OnEvent', function (self, event, addon)
+    local Carb = _G['NxQuestWatch']
+    local Map = _G['NxMap1']
+    
     if IsAddOnLoaded('Carbonite') then
-        local Carb = _G['NxQuestWatch']
-        
         if Carb then
-            if skinned == true then
-                f:UnregisterEvent('VARIABLES_LOADED')
+            if Carb.HasBorder then
                 f:UnregisterEvent('ADDON_LOADED')
-                f:UnregisterEvent('PLAYER_ENTERING_WORLD')
+                
+                --ChatFrame1:AddMessage('Already got a border')
                 
                 return
             end
@@ -35,68 +35,70 @@ f:SetScript('OnEvent', function(self, ...)
                 select(i, Carb:GetRegions()):Hide()
             end
             
-            skinned = true
+            --ChatFrame1:AddMessage('It supposedly worked')
         end
+        
+        if Map then
+            if Map.HasBorder then
+                f:UnregisterEvent('ADDON_LOADED')
+                return
+            end
             
-        local x = CreateFrame('Frame', nil)
-        x:RegisterEvent('PLAYER_REGEN_DISABLED')
-        x:RegisterEvent('PLAYER_REGEN_ENABLED')
-        x:SetScript('OnEvent', function(self, event, ...)
-            if event == 'PLAYER_REGEN_DISABLED' then
-                NxQuestWatch:Hide()
-            elseif event == 'PLAYER_REGEN_ENABLED' then
-                NxQuestWatch:Show()
-            end
-        end)
-    else
-        local height = GetScreenHeight() / 1.6
-
-        local watchFrame = _G['WatchFrame']
-        watchFrame:SetHeight(height)
-        watchFrame:ClearAllPoints()	
-        watchFrame.ClearAllPoints = F.Dummy
-        watchFrame:SetPoint('TOP', Minimap, 'BOTTOM', 0, -30)
-        watchFrame.SetPoint = F.Dummy
-        watchFrame:SetScale(1.01)
-        watchFrame:SetTemplate()
-
-        local watchHead = _G['WatchFrameHeader']
-        local p1, frame, p2, x, y = watchHead:GetPoint()
-        watchHead:SetPoint(p1, frame, p2, x + 6, y)
-
-        local p1, frame, p2, x, y = nil
-
-        local watchLines = _G['WatchFrameLines']
-        local p1, frame, p2, x, y = watchLines:GetPoint()
-        watchLines:SetPoint(p1, frame, p2, x + 6, y)
-
-        local watchHeadTitle = _G['WatchFrameTitle']
-        watchHeadTitle:SetFont('Fonts\\ARIALN.ttf', 15)
-        watchHeadTitle:SetTextColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
-
-        local collapseButton = _G['WatchFrameCollapseExpandButton']
-        collapseButton:ClearAllPoints()
-        collapseButton:SetPoint('TOPRIGHT', watchFrame, -6, -6)
-
-        collapseButton:HookScript('OnClick', function()
-            if watchFrame.collapsed then
-                watchFrame:SetHeight(25)
-            else
-                watchFrame:SetHeight(height)
-            end
-        end)
-
-        hooksecurefunc('SetItemButtonTexture', function(button, texture)
-            if button:GetName():match('WatchFrameItem%d+') and not button.skinned then
-                local icon, border = _G[button:GetName() .. 'IconTexture'], _G[button:GetName() .. 'NormalTexture']	
-                button:SetSize(32, 32)      
-                CreateBorderLight(button, 12)
-                border:SetAlpha(0)
-                button.skinned = true
-            end
-        end)
+            Map:SetTemplate()
+            
+            --ChatFrame1:AddMessage('The map, too')
+        end
     end
 end)
+    
+if not IsAddOnLoaded('Carbonite') then
+    local height = GetScreenHeight() / 1.6
+
+    local watchFrame = _G['WatchFrame']
+    watchFrame:SetHeight(height)
+    watchFrame:ClearAllPoints()	
+    watchFrame.ClearAllPoints = F.Dummy
+    watchFrame:SetPoint('TOP', Minimap, 'BOTTOM', 0, -30)
+    watchFrame.SetPoint = F.Dummy
+    watchFrame:SetScale(1.01)
+    watchFrame:SetTemplate()
+
+    local watchHead = _G['WatchFrameHeader']
+    local p1, frame, p2, x, y = watchHead:GetPoint()
+    watchHead:SetPoint(p1, frame, p2, x + 6, y)
+
+    local p1, frame, p2, x, y = nil
+
+    local watchLines = _G['WatchFrameLines']
+    local p1, frame, p2, x, y = watchLines:GetPoint()
+    watchLines:SetPoint(p1, frame, p2, x + 6, y)
+
+    local watchHeadTitle = _G['WatchFrameTitle']
+    watchHeadTitle:SetFont('Fonts\\ARIALN.ttf', 15)
+    watchHeadTitle:SetTextColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
+
+    local collapseButton = _G['WatchFrameCollapseExpandButton']
+    collapseButton:ClearAllPoints()
+    collapseButton:SetPoint('TOPRIGHT', watchFrame, -6, -6)
+
+    collapseButton:HookScript('OnClick', function()
+        if watchFrame.collapsed then
+            watchFrame:SetHeight(25)
+        else
+            watchFrame:SetHeight(height)
+        end
+    end)
+
+    hooksecurefunc('SetItemButtonTexture', function(button, texture)
+        if button:GetName():match('WatchFrameItem%d+') and not button.skinned then
+            local icon, border = _G[button:GetName() .. 'IconTexture'], _G[button:GetName() .. 'NormalTexture']	
+            button:SetSize(32, 32)      
+            CreateBorderLight(button, 12)
+            border:SetAlpha(0)
+            button.skinned = true
+        end
+    end)
+end
 
 -- Quest modification
 
@@ -238,6 +240,35 @@ end
 
 hooksecurefunc('QuestLog_Update', QuestLog_Update)
 hooksecurefunc(QuestLogScrollFrame, 'update', QuestLog_Update)
+
+-- Auto-DE/Greed
+if C.Tweaks.AutoDEGreed == true then
+    if F.Level ~= MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()] then return end
+    
+    local greed = CreateFrame("Frame")
+    greed:RegisterEvent("START_LOOT_ROLL")
+    greed:SetScript("OnEvent", function(self, event, id)
+        local _, name, _, quality, BoP = GetLootRollItemInfo(id)
+        if id and quality == 2 and not BoP then
+            if RollOnLoot(id, 3) then
+                RollOnLoot(id, 3)
+            else
+                RollOnLoot(id, 2)
+            end
+        end
+    end)
+    
+    local de = CreateFrame("Frame")
+    de:RegisterEvent("CONFIRM_DISENCHANT_ROLL")
+    de:RegisterEvent("CONFIRM_LOOT_ROLL")
+    de:RegisterEvent("LOOT_BIND_CONFIRM")
+    de:SetScript("OnEvent", function(self, event, id)
+        for i = 1, STATICPOPUP_NUMDIALOGS do
+            local frame = _G["StaticPopup"..i]
+            if (frame.which == "CONFIRM_LOOT_ROLL" or frame.which == "LOOT_BIND") and frame:IsVisible() then StaticPopup_OnClick(frame, 1) end
+        end
+    end)
+end
 
 -- Auto repair/Sell greys
 

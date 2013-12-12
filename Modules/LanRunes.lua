@@ -108,13 +108,6 @@ end
 Rune:SetScript('OnEvent', function(self, event, arg1)
     if (event == 'RUNE_TYPE_UPDATE') then
 		Rune.Rune[arg1].type = GetRuneType(arg1)
-        
-        --[[
-        for i = 1, 6 do
-            Rune.Rune[i]:SetText(GetCooldown(i))
-            Rune.Rune[i]:SetTextColor(SetRuneColor(i))
-		end
-        --]]
 	end
     
     if (event == 'PLAYER_LOGIN') then
