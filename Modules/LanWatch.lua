@@ -257,7 +257,7 @@ bg:SetPoint('TOPLEFT', WatchFrameLines, -5, 5)
 bg:SetWidth(205)
 bg:SetTemplate()
 
-WatchFrame:HookScript('OnEvent', function(self, event)
+hooksecurefunc('WatchFrame_Update', function(self, event)
 	bg:SetHeight((#WATCHFRAME_LINKBUTTONS * 48) + 10)
 end)
 

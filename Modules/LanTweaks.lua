@@ -2,7 +2,6 @@ local F, C, G = unpack(select(2, ...))
 
 local dummy = F.Dummy
 
-
 -- Quest modification
 
 local eventFrame = CreateFrame('Frame')

@@ -407,18 +407,15 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
 
             -- Unit Health
         
-        self:AddDoubleLine(' ', F.ShortValue(UnitHealthMax(unit)), 1, 1, 1, 1, 1, 1)
-        
         GameTooltipStatusBarTexture:SetTexture('Interface\\AddOns\\LanUI\\Media\\StatusBar')
         
             -- Move the healthbar inside the tooltip
 
-        --self:AddLine(' ')
-        GameTooltipStatusBar:ClearAllPoints()
-        GameTooltipStatusBar:SetPoint('LEFT', self:GetName()..'TextLeft'..self:NumLines(), 1, -10)
-        GameTooltipStatusBar:SetPoint('RIGHT', self, -10, -10)
         self:AddLine(' ')
-
+        GameTooltipStatusBar:ClearAllPoints()
+        GameTooltipStatusBar:SetPoint('LEFT', self:GetName()..'TextLeft'..self:NumLines(), 1, -3)
+        GameTooltipStatusBar:SetPoint('RIGHT', self, -10, 0)
+        
             -- Border coloring
 
         if self.beautyBorder then
@@ -433,7 +430,8 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
         if UnitIsDead(unit) or UnitIsGhost(unit) then
             GameTooltipStatusBar:SetBackdropColor(0.5, 0.5, 0.5, 0.3)
         else
-            SetHealthBarColor(unit)
+            --SetHealthBarColor(unit)
+			GameTooltipStatusBar:SetBackdropColor(27/255, 243/255, 27/255, 0.3)
         end
 
             -- Show player item lvl
@@ -575,5 +573,56 @@ f:SetScript('OnEvent', function(self, event)
         end)
 
         self:UnregisterEvent('ADDON_LOADED')
+    end
+end)
+
+local bar = GameTooltipStatusBar
+bar.Text = bar:CreateFontString(nil, 'OVERLAY')
+bar.Text:SetPoint('CENTER', bar, 0, 1)
+bar.Text:SetFont(C.Media.Font, C.Media.FontSize, 'THINOUTLINE')
+bar.Text:SetShadowOffset(0, 0)
+
+local function GetHealthTag(text, cur, max)
+    local perc = format('%d', (cur/max)*100)
+
+    if (max == 1) then
+        return perc
+    end
+
+    text = gsub(text, '$cur', format('%s', F.ShortValue(cur)))
+    text = gsub(text, '$max', format('%s', F.ShortValue(max)))
+
+    return text
+end
+
+GameTooltipStatusBar:HookScript('OnValueChanged', function(self, value)
+    if (GameTooltipStatusBar.Text) then
+        self.Text:SetText('')
+    end
+
+    if (not value) then
+        return
+    end
+
+    local min, max = self:GetMinMaxValues()
+
+    if ((value < min) or (value > max) or (value == 0) or (value == 1)) then
+        return
+    end
+
+    if (not self.Text) then
+        CreateHealthString(self)
+    end
+
+    local fullString = GetHealthTag('$cur', value, max)
+    local normalString = GetHealthTag('$cur / $max', value, max)
+
+    local perc = (value/max)*100 
+    if (perc >= 100 and currentValue ~= 1) then
+        self.Text:SetText(fullString)
+    elseif (perc < 100 and currentValue ~= 1) then
+        self.Text:SetText(normalString)
+    else
+        self.Text:SetText('')
     end
 end)

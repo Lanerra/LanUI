@@ -457,6 +457,7 @@ end
 
 local function UpdateGuildText()
     if (IsInGuild()) then
+        GuildRoster()
         BuildGuildTable()
         UpdateGuildXP()
 
