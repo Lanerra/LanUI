@@ -385,6 +385,8 @@ local Clean = function()
 	wipe(total)
 	wipe(fights)
 	ResetDisplay(current)
+	
+	MainFrame:Hide()
 end
 
 local SetMode = function(mode)
@@ -752,6 +754,7 @@ local OnMouseWheel = function(self, direction)
 end
 
 local StartCombat = function()
+	MainFrame:Show()
 	wipe(current)
 	combatstarted = true
 
@@ -874,7 +877,13 @@ local OnEvent = function(self, event, ...)
 				end
 			end)
 			MainFrame:SetScript('OnMouseWheel', OnMouseWheel)
-			MainFrame:Show()
+			
+			if InCombatLockdown() then
+				MainFrame:Show()
+			else
+				MainFrame:Hide()
+			end
+			
 			UIDropDownMenu_Initialize(menuFrame, CreateMenu, 'MENU')
 			CheckRoster()
 			MainFrame.title = CreateFS(MainFrame)

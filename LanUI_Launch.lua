@@ -9,8 +9,6 @@ f:SetScript('OnEvent', function(_, event, ...)
 		    print('|cff0099ffIf you find a bug, please let me know via GitHub|r')
 		    print('|cff0099ffFor UI usage info type in /UIHelp|r')
 		    print('|cff0099ffEnjoy!|r')
-        else
-            print('|cff0099ffLan|rUI '..GetAddOnMetadata('LanUI', 'Version'))
         end
         
         SetCVar('useUiScale', 1) -- Use custom UI scale
@@ -224,3 +222,43 @@ event:SetScript('OnEvent', function(self, event, error)
 end)
 
 event:RegisterEvent('UI_ERROR_MESSAGE')
+
+local Events = CreateFrame('Frame')
+Events:SetScript('OnEvent', function(self, event, ...) self[event](...) end)
+
+local metatable = {
+	__call = function(funcs, self, ...)
+		for __, func in pairs(funcs) do
+			func(self, ...)
+		end
+	end
+}
+
+G.Initialize = {}
+F.RegisterEvent = function(event, method)
+	local current = Events[event]
+	if(current and method) then
+		if(type(current) == 'function') then
+			Events[event] = setmetatable({current, method}, metatable)
+		else
+			for __, func in pairs(current) do
+				if(func == method) then return end
+			end
+
+			table.insert(current, method)
+		end
+	else
+		Events[event] = method
+		Events:RegisterEvent(event)
+	end
+end
+
+function init()
+	for type, func in pairs(G.Initialize) do
+		func()
+	end
+
+	print('|cff0099ffLan|rUI '..GetAddOnMetadata('LanUI', 'Version')..' successfully initiliazed.')
+end
+
+init()

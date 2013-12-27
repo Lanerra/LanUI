@@ -256,7 +256,7 @@ local function GetUnitRoleString(unit)
     return roleList
 end
 
-    -- Healthbar coloring funtion
+    -- Healthbar coloring function
 
 local function SetHealthBarColor(unit)
     local r, g, b
@@ -405,14 +405,19 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             self:AppendText(' (*)')
         end
 
+            -- Unit Health
+        
+        self:AddDoubleLine(' ', F.ShortValue(UnitHealthMax(unit)), 1, 1, 1, 1, 1, 1)
+        
         GameTooltipStatusBarTexture:SetTexture('Interface\\AddOns\\LanUI\\Media\\StatusBar')
         
             -- Move the healthbar inside the tooltip
 
-        self:AddLine(' ')
+        --self:AddLine(' ')
         GameTooltipStatusBar:ClearAllPoints()
-        GameTooltipStatusBar:SetPoint('LEFT', self:GetName()..'TextLeft'..self:NumLines(), 1, -3)
-        GameTooltipStatusBar:SetPoint('RIGHT', self, -10, 0)
+        GameTooltipStatusBar:SetPoint('LEFT', self:GetName()..'TextLeft'..self:NumLines(), 1, -10)
+        GameTooltipStatusBar:SetPoint('RIGHT', self, -10, -10)
+        self:AddLine(' ')
 
             -- Border coloring
 

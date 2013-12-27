@@ -47,6 +47,7 @@ Modules\LanSkin.lua
 Modules\LanStats.lua
 Modules\LanTooltip.lua
 Modules\LanTweaks.lua
+Modules\LanWatch.lua
 Modules\LanWarning.lua
 
 # Unitframes

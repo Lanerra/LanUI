@@ -550,3 +550,6 @@ hooksecurefunc(texture, 'SetTexture', disableTexture)
 button:StyleButton()
 
 -- Position and skin StanceBarFrame
+
+-- Move AltPowerBar
+PlayerPowerBarAlt:SetPoint('BOTTOM', LanPetHolder, 'TOP')

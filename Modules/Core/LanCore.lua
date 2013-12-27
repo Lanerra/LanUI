@@ -29,6 +29,7 @@ LanJanitor:SetScript("OnEvent", function(self, event)
     end
 end)
 
+-- Kill annoying raid shit
 if not InCombatLockdown() then
     CompactRaidFrameManager:UnregisterAllEvents()
     CompactRaidFrameManager:SetParent(LanUIHider)

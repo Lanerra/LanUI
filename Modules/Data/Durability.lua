@@ -26,7 +26,7 @@ f:SetFrameStrata('LOW')
 f:SetFrameLevel(CharacterFrame:GetFrameLevel() - 1)
 f:EnableMouse(false)
 f:SetScale(0.94)
-f:SetPoint('TOP', PaperDollFrame, 'BOTTOM', 170, 5)
+f:SetPoint('LEFT', CharacterFrameTab4, 'RIGHT', 0, 4)
 f:RegisterEvent('PLAYER_ENTERING_WORLD')
 f:RegisterEvent('UPDATE_INVENTORY_DURABILITY')
 f:RegisterEvent('MERCHANT_SHOW')
@@ -134,7 +134,7 @@ f:SetScript('OnEvent', function(event)
         end
         
         f.Text:SetTextColor(r, g, b)
-        f.Text:SetText(string.format('%d%%', (overAll/total)*100)..' |cffffffff'..DURABILITY..'|r')
+        f.Text:SetText(string.format('%d%%', (overAll/total)*100))
         f:SetWidth(f.Text:GetWidth() + 44)
     end
 end)

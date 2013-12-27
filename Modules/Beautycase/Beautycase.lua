@@ -14,6 +14,7 @@ function CreateBorderLight(self, borderSize, R, G, B, ...)
             self.Border[i]:SetParent(self)
 			self.Border[i]:SetTexture(C.Media.OverlayBorder)
             self.Border[i]:SetSize(borderSize,borderSize)
+            self.Border[i]:SetDrawLayer('OVERLAY', -8)
             if (not R and not G and not B) then
                 self.Border[i]:SetVertexColor(1, 1, 1)
             else
@@ -60,10 +61,11 @@ function CreateBorderLight(self, borderSize, R, G, B, ...)
     end
 end
 
-function SetBorderLayer(self, layer)
+function SetBorderLayer(self, layer, sub)
     if (self.Border) then
 	    for i = 1, 8 do
-            self.Border[i]:SetDrawLayer(layer)
+            if not sub then sub = 0 end
+            self.Border[i]:SetDrawLayer(layer, sub)
 		end
     end
 end

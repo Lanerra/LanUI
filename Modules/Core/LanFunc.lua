@@ -7,7 +7,6 @@ local backdropr, backdropg, backdropb, backdropa = unpack(C.Media.BackdropColor)
 local borderr, borderg, borderb = unpack(C.Media.BorderColor)
 local bordera = 1
 local template
-local Inset = 0
 
 -- Workaround for 5.4.1 taint error
 setfenv(WorldMapFrame_OnShow, setmetatable({ UpdateMicroButtons = function() end }, { __index = _G }))

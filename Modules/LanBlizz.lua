@@ -36,6 +36,30 @@ for _, frame in pairs({
 	_G[frame].SetParent = F.Dummy
 end
 
+--[[for _, button in pairs({
+	'CharacterMicroButton',
+	'SpellbookMicroButton',
+	'TalentMicroButton',
+	'AchievementMicroButton',
+	'QuestLogMicroButton',
+	'GuildMicroButton',
+	'PVPMicroButton',
+	'LFDMicroButton',
+	'CompanionsMicroButton',
+	'EJMicroButton',
+	'StoreMicroButton',
+	'MainMenuMicroButton',
+	'HelpMicroButton',
+}) do
+	if BottomPanel then
+		_G[button]:SetParent(BottomPanel)
+		_G[button].SetParent = F.Dummy
+	else
+		_G[button]:SetParent(Hider)
+		_G[button].SetParent = F.Dummy
+	end
+end]]
+
 for _, texture in pairs({
 	'StanceBarLeft',
 	'StanceBarMiddle',

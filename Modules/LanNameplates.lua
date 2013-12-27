@@ -236,7 +236,7 @@ local function UpdateNameL(self)
 end
 
 local function UpdateEliteTexture(self)
-        if (self.BossIcon:IsVisible() or self.EliteIcon:IsVisible()) then
+    if (self.BossIcon:IsVisible() or self.EliteIcon:IsVisible()) then
         local r, g, b = unpack(borderColor)
         self.Overlay:SetGradientAlpha('HORIZONTAL', r, g, b, 1, 1, 1, 0, 1)
     else

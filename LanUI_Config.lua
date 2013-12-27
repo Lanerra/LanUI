@@ -97,6 +97,7 @@ C['Buffs'] = {
     ['PadX'] = 7, -- Horizontal spacing
     ['PadY'] = 7, -- Vertical spacing
 }
+
 C['UF'] = {
     Show = {
         CastBars = true,

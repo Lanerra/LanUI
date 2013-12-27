@@ -160,6 +160,30 @@ SlashCmdList.TEST_EXTRABUTTON = function()
 end
 SLASH_TEST_EXTRABUTTON1 = "/teb"
 
+local p = PlayerPowerBarAlt
+local a = CreateFrame("Frame", nil, UIParent)
+p:SetSize(100, 20)
+a:SetSize(100, 20)
+a:SetPoint("TOP", p, "TOP", 0, 2.5)
+a:EnableMouse(true)
+p:SetMovable(true)
+p:SetUserPlaced(true)
+a:SetScript("OnMouseDown", function() p:StartMoving() end)
+a:SetScript("OnMouseUp", function() p:StopMovingOrSizing() end)
+a.t = a:CreateTexture()
+a.t:SetAllPoints()
+a.t:SetTexture(1,1,1)
+a.t:SetAlpha(0.3)
+a:Hide()
+SlashCmdList["MOVEPOWERBAR"] = function()
+    if a:IsShown() then
+        a:Hide()
+    else
+        a:Show()
+    end
+end
+SLASH_MOVEPOWERBAR1 = "/mpb"
+
 SlashCmdList.TEST_OVERRIDE = function()
     if OverrideActionBar:IsShown() then
         OverrideActionBar:Hide()

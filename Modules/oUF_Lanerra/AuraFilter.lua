@@ -830,7 +830,7 @@ end
 if playerClass == "DEATHKNIGHT" or playerClass == "MONK" or playerClass == "PALADIN" or playerClass == "WARRIOR" then
 	-- druids need to keep Thrash up anyway, no need to see both
 	tinsert(updateFuncs, function(auraList)
-		if ns.GetPlayerRole() == "TANK" then
+		if GetPlayerRole() == "TANK" then
 			--print("Adding Weakened Blows")
 			auraList[109466] = 1 -- Curse of Enfeeblement (warlock)
 			auraList[60256]  = 1 -- Demoralizing Roar (hunter bear)
@@ -839,43 +839,6 @@ if playerClass == "DEATHKNIGHT" or playerClass == "MONK" or playerClass == "PALA
 		end
 	end)
 end
-
-------------------------------------------------------------------------
---	PvP
-
---[[tinsert(updateFuncs, function(auraList)
-	if ns.config.PVP then
-		--print("Adding PVP auras")
-		-- Disarmed
-		auraList[50541]  = 1 -- Clench (hunter scorpid)
-		auraList[676]    = 1 -- Disarm (warrior)
-		auraList[51722]  = 1 -- Dismantle (rogue)
-		auraList[117368] = 1 -- Grapple Weapon (monk)
-		auraList[91644]  = 1 -- Snatch (hunter bird of prey)
-		--	Silenced
-		auraList[25046]  = 1 -- Arcane Torrent (blood elf - rogue)
-		auraList[28730]  = 1 -- Arcane Torrent (blood elf - mage, paladin, priest, warlock)
-		auraList[50613]  = 1 -- Arcane Torrent (blood elf - death knight)
-		auraList[69179]  = 1 -- Arcane Torrent (blood elf - warrior)
-		auraList[80483]  = 1 -- Arcane Torrent (blood elf - hunter)
-		auraList[129597] = 1 -- Arcane Torrent (blood elf - monk)
-		auraList[31935]  = 1 -- Avenger's Shield (paladin)
-		auraList[102051] = 1 -- Frostjaw (mage)
-		auraList[1330]   = 1 -- Garrote - Silence (rogue)
-		auraList[50479]  = 1 -- Nether Shock (hunter nether ray)
-		auraList[15487]  = 1 -- Silence (priest)
-		auraList[18498]  = 1 -- Silenced - Gag Order (warrior)
-		auraList[34490]  = 1 -- Silencing Shot (hunter)
-		auraList[78675]  = 1 -- Solar Beam (druid)
-		auraList[97547]  = 1 -- Solar Beam (druid)
-		auraList[113286] = 1 -- Solar Beam (symbiosis)
-		auraList[113287] = 1 -- Solar Beam (symbiosis)
-		auraList[113288] = 1 -- Solar Beam (symbiosis)
-		auraList[116709] = 1 -- Spear Hand Strike (monk)
-		auraList[24259]  = 1 -- Spell Lock (warlock felhunter)
-		auraList[47476]  = 1 -- Strangulate (death knight)
-	end
-end)]]
 
 ------------------------------------------------------------------------
 --	Taunted
@@ -891,16 +854,9 @@ if playerClass == "DEATHKNIGHT" or playerClass == "DRUID" or playerClass == "MON
 		[355]    = 1, -- Taunt
 	}
 	tinsert(updateFuncs, function(auraList)
-		if ns.config.PVP then
-			--print("Removing taunts for PVP")
-			for aura in pairs(Taunts) do
-				BaseAuras[aura] = nil
-			end
-		else
-			--print("Adding taunts for PVE")
-			for aura, filter in pairs(Taunts) do
-				auraList[aura] = filter
-			end
+		--print("Adding taunts for PVE")
+		for aura, filter in pairs(Taunts) do
+			auraList[aura] = filter
 		end
 	end)
 end

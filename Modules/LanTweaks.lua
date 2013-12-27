@@ -2,103 +2,6 @@ local F, C, G = unpack(select(2, ...))
 
 local dummy = F.Dummy
 
--- Setup WatchFrame
-
-local f = CreateFrame('Frame')
-f:RegisterEvent('ADDON_LOADED')
-
-f:SetScript('OnEvent', function (self, event, addon)
-    local Carb = _G['NxQuestWatch']
-    local Map = _G['NxMap1']
-    
-    if IsAddOnLoaded('Carbonite') then
-        if Carb then
-            if Carb.HasBorder then
-                f:UnregisterEvent('ADDON_LOADED')
-                
-                --ChatFrame1:AddMessage('Already got a border')
-                
-                return
-            end
-            
-            local QWBG = CreateFrame('Frame', 'CarbBG', select(5, Carb:GetChildren()))
-            QWBG:SetPoint('TOPLEFT', -25, 2)
-            QWBG:SetPoint('BOTTOMRIGHT', 5, -5)
-            QWBG:SetFrameStrata('LOW')
-            QWBG:SetFrameLevel(1)
-            QWBG:SetTemplate()
-            
-            local y = select(1, select(5, Carb:GetChildren()):GetRegions())
-            y:Kill()
-            
-            for i = 2, 10 do
-                select(i, Carb:GetRegions()):Hide()
-            end
-            
-            --ChatFrame1:AddMessage('It supposedly worked')
-        end
-        
-        if Map then
-            if Map.HasBorder then
-                f:UnregisterEvent('ADDON_LOADED')
-                return
-            end
-            
-            Map:SetTemplate()
-            
-            --ChatFrame1:AddMessage('The map, too')
-        end
-    end
-end)
-    
-if not IsAddOnLoaded('Carbonite') then
-    local height = GetScreenHeight() / 1.6
-
-    local watchFrame = _G['WatchFrame']
-    watchFrame:SetHeight(height)
-    watchFrame:ClearAllPoints()	
-    watchFrame.ClearAllPoints = F.Dummy
-    watchFrame:SetPoint('TOP', Minimap, 'BOTTOM', 0, -30)
-    watchFrame.SetPoint = F.Dummy
-    watchFrame:SetScale(1.01)
-    watchFrame:SetTemplate()
-
-    local watchHead = _G['WatchFrameHeader']
-    local p1, frame, p2, x, y = watchHead:GetPoint()
-    watchHead:SetPoint(p1, frame, p2, x + 6, y)
-
-    local p1, frame, p2, x, y = nil
-
-    local watchLines = _G['WatchFrameLines']
-    local p1, frame, p2, x, y = watchLines:GetPoint()
-    watchLines:SetPoint(p1, frame, p2, x + 6, y)
-
-    local watchHeadTitle = _G['WatchFrameTitle']
-    watchHeadTitle:SetFont('Fonts\\ARIALN.ttf', 15)
-    watchHeadTitle:SetTextColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
-
-    local collapseButton = _G['WatchFrameCollapseExpandButton']
-    collapseButton:ClearAllPoints()
-    collapseButton:SetPoint('TOPRIGHT', watchFrame, -6, -6)
-
-    collapseButton:HookScript('OnClick', function()
-        if watchFrame.collapsed then
-            watchFrame:SetHeight(25)
-        else
-            watchFrame:SetHeight(height)
-        end
-    end)
-
-    hooksecurefunc('SetItemButtonTexture', function(button, texture)
-        if button:GetName():match('WatchFrameItem%d+') and not button.skinned then
-            local icon, border = _G[button:GetName() .. 'IconTexture'], _G[button:GetName() .. 'NormalTexture']	
-            button:SetSize(32, 32)      
-            CreateBorderLight(button, 12)
-            border:SetAlpha(0)
-            button.skinned = true
-        end
-    end)
-end
 
 -- Quest modification
 
@@ -183,7 +86,7 @@ eventFrame:SetScript('OnEvent', function(self, event, ...)
 
     end
 
-    if (UnitLevel('player') == 90) then
+    if F.MyLevel ~= MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()] then
         if event == 'QUEST_DETAIL' then
             AcceptQuest()
             CompleteQuest()
@@ -328,57 +231,162 @@ merchant:SetScript('OnEvent', function(self, event)
     end
 end)
 
-local m = CreateFrame('Button', nil, InboxFrame, 'UIPanelButtonTemplate')
-m:SetPoint('TOPRIGHT', -58, -30)
-m:SetSize(100, 22)
-m:SetText(OPENMAIL)
+-- Mail handling
 
-local totalMoney = 0
-local processing = false
-local function OnEvent()
-    if (not MailFrame:IsShown()) then
-        return 
+do
+    local lastReceipient
+    F.RegisterEvent('MAIL_SEND_SUCCESS', function()
+        if(lastReceipient) then
+            SendMailNameEditBox:SetText(lastReceipient)
+            SendMailNameEditBox:ClearFocus()
+        end
+    end)
+
+    hooksecurefunc('SendMail', function(name)
+        lastReceipient = name
+    end)
+end
+
+F.RegisterEvent('UPDATE_PENDING_MAIL', function()
+    for index = 1, GetNumTrackingTypes() do
+        local name, texture, active = GetTrackingInfo(index)
+        if(name == MINIMAP_TRACKING_MAILBOX) then
+            if(HasNewMail() and not active) then
+                return SetTracking(index, true)
+            elseif(not HasNewMail() and active) then
+                return SetTracking(index, false)
+            end
+        end
+    end
+end)
+
+F.RegisterEvent('UI_ERROR_MESSAGE', function(msg)
+    if(msg == ERR_MAIL_INVALID_ATTACHMENT_SLOT) then
+        SendMailMailButton:Click()
+    end
+end)
+
+do
+    local button = CreateFrame('Button', nil, InboxFrame, 'UIPanelButtonTemplate')
+
+    local totalElapsed = 0
+    local function UpdateInbox(self, elapsed)
+        if(totalElapsed < 10) then
+            totalElapsed = totalElapsed + elapsed
+        else
+            totalElapsed = 0
+
+            CheckInbox()
+        end
     end
 
-    local num = GetInboxNumItems()
-    if (processing) then
-        if (num == 0) then
-            MiniMapMailFrame:Hide()
-            processing = false
+    local function MoneySubject(self)
+        if(self:GetText() ~= '' and SendMailSubjectEditBox:GetText() == '') then
+            SendMailSubjectEditBox:SetText(MONEY)
+        end
+    end
+
+    local function GetFreeSlots()
+        local slots = 0
+        for bag = BACKPACK_CONTAINER, NUM_BAG_SLOTS do
+            local free, family = GetContainerNumFreeSlots(bag)
+            if(family == 0) then
+                slots = slots + free
+            end
+        end
+
+        return slots
+    end
+
+    local skipNum, lastNum, cashOnly, unreadOnly
+    local function GetMail()
+        if(GetInboxNumItems() - skipNum <= 0) then
+            button:Enable()
+            button:UnregisterEvent('MAIL_INBOX_UPDATE')
             return
         end
 
-        for i = num, 1, -1 do
-            local _, _, _, _, money, COD, _, item = GetInboxHeaderInfo(i)
-            if (item and COD < 1) then
-                TakeInboxItem(i)
-                return
-            end
+        local index = 1 + skipNum
+        local __, __, __, __, money, cod, __, multiple, read, __, __, __, __, single = GetInboxHeaderInfo(index)
 
-            if (money > 0) then
-                totalMoney = totalMoney + money
-                TakeInboxMoney(i)
-                return
-            end
-        end
-
-        if (totalMoney > 0) then
-            local chatWindowFontSize = select(2, GetChatWindowInfo(1))
-            DEFAULT_CHAT_FRAME:AddMessage('Total money collected from mailbox was '..GetCoinTextureString(totalMoney, chatWindowFontSize)..'.')
+        if(cod > 0 or (cashOnly and multiple) or (unreadOnly and read)) then
+            skipNum = skipNum + 1
+            GetMail()
+        elseif(money > 0) then
+            TakeInboxMoney(index)
+        elseif(single and (GetFreeSlots() > 6)) then
+            AutoLootMailItem(index)
+        elseif(multiple and (GetFreeSlots() + multiple > 6)) then
+            AutoLootMailItem(index)
         end
     end
+
+    button:SetScript('OnEvent', function(self)
+        local num = GetInboxNumItems()
+        if(lastNum ~= num) then
+            lastNum = num
+        else
+            return
+        end
+
+        GetMail()
+    end)
+
+    button:SetScript('OnClick', function(self)
+        self:RegisterEvent('MAIL_INBOX_UPDATE')
+        self:Disable()
+
+        cashOnly = IsShiftKeyDown()
+        unreadOnly = IsControlKeyDown()
+        lastNum = 0
+        skipNum = 0
+
+        GetMail()
+    end)
+
+    local initialized
+    F.RegisterEvent('MAIL_SHOW', function()
+        if(initialized) then
+            button:Enable()
+            button:SetText(QUICKBUTTON_NAME_EVERYTHING)
+            return
+        end
+
+        button:SetPoint('BOTTOM', -28, 100)
+        button:SetSize(90, 25)
+        button:SetText(QUICKBUTTON_NAME_EVERYTHING)
+
+        InboxFrame:HookScript('OnUpdate', UpdateInbox)
+
+        SendMailMoneyGold:HookScript('OnTextChanged', MoneySubject)
+        SendMailMoneySilver:HookScript('OnTextChanged', MoneySubject)
+        SendMailMoneyCopper:HookScript('OnTextChanged', MoneySubject)
+
+        initialized = true
+    end)
+
+    F.RegisterEvent('MODIFIER_STATE_CHANGED', function()
+        if(not InboxFrame:IsShown()) then return end
+
+        if(IsShiftKeyDown()) then
+            button:SetText('Money')
+        elseif(IsControlKeyDown()) then
+            button:SetText('Unread')
+        else
+            button:SetText('Everything')
+        end
+    end)
 end
 
-m:RegisterEvent('MAIL_INBOX_UPDATE')
-m:SetScript('OnEvent', OnEvent)
-m:SetScript('OnClick', function(self) 
-    if (not processing) then 
-        totalMoney = 0
-        processing = true 
-        OnEvent() 
-    end 
+-- Cinematic Handling
+F.RegisterEvent('CINEMATIC_START', function(boolean)
+    SetCVar('Sound_EnableMusic', 1)
+    SetCVar('Sound_EnableAmbience', 1)
+    SetCVar('Sound_EnableSFX', 1)
 end)
 
-m:SetScript('OnHide', function(self) 
-    processing = false 
+F.RegisterEvent('CINEMATIC_STOP', function()
+    SetCVar('Sound_EnableMusic', 0)
+    SetCVar('Sound_EnableAmbience', 1)
+    SetCVar('Sound_EnableSFX', 1)
 end)

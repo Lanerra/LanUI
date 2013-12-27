@@ -435,16 +435,19 @@ end
 
 -- Aura Icon Creation Function
 local function PostCreateAuraIcon(iconframe, button)
-	button:SetTemplate()
-	button:SetBeautyBorderPadding(2)
+	local border = CreateFrame('Frame', nil, button)
+	border:SetAllPoints(button)
+	border:SetTemplate()
+	border:SetBeautyBorderPadding(2)
+	border:SetBackdropColor(0, 0, 0, 0)
 	
-	if button:GetParent() == 'oUF_Lanerra_Player' then
+	--[[if button:GetParent() == 'oUF_Lanerra_Player' then
 		button:SetBeautyBorderPadding(2)
 	end
 	
 	if button:GetParent() == 'oUF_Lanerra_Target' then
 		button:SetBeautyBorderPadding(2)
-	end
+	end]]
 	
 	button:SetBackdropColor(0, 0, 0, 0)
 
@@ -884,6 +887,7 @@ local Stylish = function(self, unit, isSingle)
         self.Status:SetParent(self.Overlay)
         self.Status:SetFont(C.Media.Font, C.UF.Media.FontSize)
 		self.Status:SetPoint('LEFT', self.Health, 'TOPLEFT', 2, 2)
+		self.Status:SetDrawLayer('OVERLAY', 7)
 
 		self:Tag(self.Status, '[LanLeader][LanMaster]')
         
@@ -891,16 +895,18 @@ local Stylish = function(self, unit, isSingle)
         self.Resting:SetParent(self.Overlay)
 		self.Resting:SetPoint('CENTER', self.Health, 'BOTTOMLEFT', 0, -4)
 		self.Resting:SetSize(20, 20)
+		self.Resting:SetDrawLayer('OVERLAY', 7)
 
 		self.Combat = self.Health:CreateTexture(nil, 'OVERLAY')
         self.Combat:SetParent(self.Overlay)
 		self.Combat:SetPoint('CENTER', self.Health, 'BOTTOMRIGHT', 0, -4)
 		self.Combat:SetSize(24, 24)
+		self.Combat:SetDrawLayer('OVERLAY', 7)
     end
     
     -- Aura/buff/debuff handling, update those suckers!
     if (unit == 'player' and C.UF.Units.Player.ShowBuffs) then
-		local GAP = 0
+		local GAP = 4
 
 		self.Buffs = CreateFrame('Frame', nil, self)
 		self.Buffs:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 0, 10)
@@ -911,7 +917,7 @@ local Stylish = function(self, unit, isSingle)
 		self.Buffs['growth-y'] = 'UP'
 		self.Buffs['initialAnchor'] = 'BOTTOMRIGHT'
 		self.Buffs['num'] = math.floor((C.UF.Units.Player.Width - 4 + GAP) / (30 + GAP))
-		self.Buffs['size'] = C.UF.Units.Player.Height
+		self.Buffs['size'] = C.UF.Units.Player.Height - 6
 		self.Buffs['spacing-x'] = GAP
 		self.Buffs['spacing-y'] = GAP
 
@@ -921,7 +927,7 @@ local Stylish = function(self, unit, isSingle)
 
 		self.Buffs.parent = self
 	elseif (unit == 'target') and C.UF.Units.Target.ShowBuffs then
-		local GAP = 2
+		local GAP = 4
 
         local MAX_ICONS = math.floor((C.UF.Units.Target.Width + GAP) / (C.UF.Units.Target.Height + GAP)) - 1
         local NUM_BUFFS = math.max(1, math.floor(MAX_ICONS * 0.2))
@@ -936,7 +942,7 @@ local Stylish = function(self, unit, isSingle)
         end
         
         self.Debuffs = CreateFrame('Frame', nil, self)
-        self.Debuffs:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 0, 24)
+        self.Debuffs:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', -2, 16)
 		self.Debuffs:SetWidth((C.UF.Units.Target.Height * NUM_DEBUFFS - 1) + (GAP * (NUM_DEBUFFS - 1)))
 		self.Debuffs:SetHeight((C.UF.Units.Target.Height * 2) + (GAP * 2))
 
@@ -945,7 +951,7 @@ local Stylish = function(self, unit, isSingle)
 		self.Debuffs['initialAnchor'] = 'BOTTOMLEFT'
 		self.Debuffs['num'] = debuffs
 		self.Debuffs['showType'] = false
-		self.Debuffs['size'] = C.UF.Units.Target.Height
+		self.Debuffs['size'] = C.UF.Units.Target.Height - 6
 		self.Debuffs['spacing-x'] = GAP
 		self.Debuffs['spacing-y'] = GAP * 2
 
@@ -956,7 +962,7 @@ local Stylish = function(self, unit, isSingle)
 		self.Debuffs.parent = self
 
 		self.Buffs = CreateFrame('Frame', nil, self)
-        self.Buffs:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', 2, 24)
+        self.Buffs:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', 2, 16)
 		self.Buffs:SetWidth((C.UF.Units.Target.Height * NUM_BUFFS + 1) + (GAP * (NUM_BUFFS - 1)))
 		self.Buffs:SetHeight((C.UF.Units.Target.Height * 2) + (GAP * 2))
 
@@ -965,7 +971,7 @@ local Stylish = function(self, unit, isSingle)
 		self.Buffs['initialAnchor'] = 'BOTTOMRIGHT'
 		self.Buffs['num'] = buffs
 		self.Buffs['showType'] = false
-		self.Buffs['size'] = C.UF.Units.Target.Height
+		self.Buffs['size'] = C.UF.Units.Target.Height - 8
 		self.Buffs['spacing-x'] = GAP
 		self.Buffs['spacing-y'] = GAP * 2
 
@@ -1117,6 +1123,7 @@ local Stylish = function(self, unit, isSingle)
         self.RaidIcon:SetHeight(18)
         self.RaidIcon:SetWidth(18)
         self.RaidIcon:SetPoint('CENTER', self.Overlay, 'TOP')
+		self.RaidIcon:SetDrawLayer('OVERLAY', 7)
     end
     
 	-- Custom sizes for our frames
@@ -1173,8 +1180,8 @@ local function StylishGroup(self, unit)
 	self:EnableMouse(true)
 	self:RegisterForClicks('AnyUp')
 	
-	if (C.UF.Show.Party) then
-		if (C.UF.Units.Party.Healer) then
+	if C.UF.Show.Party and not InCombatLockdown() then
+		if C.UF.Units.Party.Healer then
 			self:SetSize(100, 35)
 		else
 			self:SetSize(C.UF.Units.Party.Width, C.UF.Units.Party.Height)
@@ -1280,6 +1287,7 @@ local function StylishGroup(self, unit)
 		self.Status = self.Overlay:CreateFontString(nil, 'OVERLAY')
         self.Status:SetFont(C.Media.Font, C.UF.Media.FontSize)
 		self.Status:SetPoint('RIGHT', self.Health, 'BOTTOMRIGHT', -2, 0)
+		self.Status:SetDrawLayer('OVERLAY', 7)
 
 		self:Tag(self.Status, '[LanMaster][LanLeader]')
 	end
@@ -1289,15 +1297,19 @@ local function StylishGroup(self, unit)
 	self.RaidIcon:SetHeight(18)
 	self.RaidIcon:SetWidth(18)
 	self.RaidIcon:SetPoint('CENTER', self.Overlay, 'TOP')
+	self.RaidIcon:SetDrawLayer('OVERLAY', 7)
 	
     -- LFD Role
     self.LFDRole = self.Overlay:CreateTexture(nil, 'OVERLAY')
     self.LFDRole:SetPoint('CENTER', self, 'RIGHT', 2, 0)
     self.LFDRole:SetSize(16, 16)
+	self.LFDRole:SetDrawLayer('OVERLAY', 7)
     
     -- Buffs
 	if C.UF.Units.Party.ShowBuffs then
 		local GAP = 4
+		
+		if not NUM_DEBUFFS then NUM_DEBUFFS = 1 end
 		
 		self.Debuffs = CreateFrame('Frame', nil, self)
         self.Debuffs:SetPoint('BOTTOMLEFT', self, 'TOPLEFT', 0, 24)
@@ -1382,8 +1394,8 @@ local function StylishRaid(self, unit)
 	self:EnableMouse(true)
 	self:RegisterForClicks('AnyUp')
 	
-	if (C.UF.Show.Raid) then
-		if (C.UF.Units.Raid.Healer) then
+	if C.UF.Show.Raid and not InCombatLockdown() then
+		if C.UF.Units.Raid.Healer then
 			self:SetSize(HealW, HealH)
 		else
 			self:SetSize(C.UF.Units.Raid.Width, C.UF.Units.Raid.Height)
@@ -1425,7 +1437,8 @@ local function StylishRaid(self, unit)
     
     -- Improve border drawing
     self.Overlay = CreateFrame('Frame', nil, self)
-	self.Overlay:SetAllPoints(self)
+	self.Overlay:SetPoint('TOPLEFT')
+	self.Overlay:SetPoint('BOTTOMRIGHT', -1, -0.5)
 	self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
 		
 	-- Display group names
@@ -1495,6 +1508,7 @@ local function StylishRaid(self, unit)
     self.Status = self.Overlay:CreateFontString(nil, 'OVERLAY')
     self.Status:SetFont(C.Media.Font, C.UF.Media.FontSize)
     self.Status:SetPoint('RIGHT', self.Health, 'BOTTOMRIGHT', -2, 0)
+	self.Status:SetDrawLayer('OVERLAY', 7)
 
     self:Tag(self.Status, '[LanMaster][LanLeader]')
 	
@@ -1503,6 +1517,7 @@ local function StylishRaid(self, unit)
 	self.RaidIcon:SetHeight(18)
 	self.RaidIcon:SetWidth(18)
 	self.RaidIcon:SetPoint('RIGHT', self.Name, 'LEFT', -2, 0)
+	self.RaidIcon:SetDrawLayer('OVERLAY', 7)
 	
     -- Range-finding support
 	self.Range = {
@@ -1756,3 +1771,112 @@ function oUF:DisableBlizzard(unit)
 		SetCVar('showArenaEnemyFrames', '0', 'SHOW_ARENA_ENEMY_FRAMES_TEXT')
 	end
 end
+
+-- Role Checker
+
+local playerClass = F.MyClass
+
+local CURRENT_ROLE = "DAMAGER"
+local getRole, updateEvents
+
+function GetPlayerRole()
+	return CURRENT_ROLE
+end
+
+if playerClass == "DEATHKNIGHT" then
+	updateEvents = "UPDATE_SHAPESHIFT_FORM"
+	function getRole()
+		if GetSpecialization() == 1 then -- Blood 1, Frost 2, Unholy 3
+			return "TANK"
+		end
+	end
+elseif playerClass == "DRUID" then
+	updateEvents = "UPDATE_SHAPESHIFT_FORM"
+	function getRole()
+		local form = GetShapeshiftFormID() -- Aquatic 4, Bear 5, Cat 1, Flight 29, Moonkin 31, Swift Flight 27, Travel 3, Tree 2
+		if form == 5 then
+			return "TANK"
+		elseif GetSpecialization() == 4 then -- Balance 1, Feral 2, Guardian 3, Restoration 4
+			return "HEALER"
+		end
+	end
+elseif playerClass == "MONK" then
+	updateEvents = "UPDATE_SHAPESHIFT_FORM"
+	function getRole()
+		local form = GetShapeshiftFormID() -- Tiger 24, Ox 23, Serpent 20
+		if form == 23 then
+			return "TANK"
+		elseif form == 20 then
+			return "HEALER"
+		end
+	end
+elseif playerClass == "PALADIN" then
+	local RIGHTEOUS_FURY = GetSpellInfo(25780)
+	updateEvents = "PLAYER_REGEN_DISABLED"
+	function getRole()
+		if UnitAura("player", RIGHTEOUS_FURY, "HELPFUL") then
+			return "TANK"
+		elseif GetSpecialization() == 1 then -- Holy 1, Protection 2, Retribution 3
+			return "HEALER"
+		end
+	end
+elseif playerClass == "PRIEST" then
+	function getRole()
+		if GetSpecialization() ~= 3 then -- Discipline 1, Holy 2, Shadow 3
+			return "HEALER"
+		end
+	end
+elseif playerClass == "SHAMAN" then
+	function getRole()
+		if GetSpecialization() == 3 then -- Elemental 1, Enhancement 2, Restoration 3
+			return "HEALER"
+		end
+	end
+elseif playerClass == "WARRIOR" then
+	updateEvents = "UPDATE_SHAPESHIFT_FORM"
+	function getRole()
+		if GetSpecialization() == 3 and GetShapeshiftFormID() == 18 then -- Battle 17, Berserker 19, Defensive 18
+			return "TANK"
+		end
+	end
+end
+
+if getRole then
+	local eventFrame = CreateFrame("Frame")
+	eventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+	eventFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
+	if updateEvents then
+		for event in gmatch(updateEvents, "%S+") do
+			eventFrame:RegisterEvent(event)
+		end
+	end
+	eventFrame:SetScript("OnEvent", function(_, event, ...)
+		local role = getRole() or "DAMAGER"
+		if role ~= CURRENT_ROLE then
+			--print(event, CURRENT_ROLE, "->", role)
+			CURRENT_ROLE = role
+			F.UpdateAuraList()
+			for _, frame in pairs(objects) do
+				if frame.updateOnRoleChange then
+					for _, func in pairs(frame.updateOnRoleChange) do
+						func(frame, role)
+					end
+				end
+			end
+		end
+	end)
+end
+
+function hideBossFrames()
+	for i = 1, 4 do
+		local frame = _G["Boss"..i.."TargetFrame"]
+		
+		if frame then
+			frame:UnregisterAllEvents()
+			frame:Hide()
+			frame.Show = function () end
+		end
+	end
+end
+-- Call the hide function
+hideBossFrames()
