@@ -2,6 +2,7 @@ local F, C, G = unpack(select(2, ...))
 
 local oUF = oUF
 
+objects = {}
 -------------------------------------------------
 -- Kill some unneeded settings
 -------------------------------------------------
@@ -421,6 +422,7 @@ local AuraIconCD_OnHide = function(cd)
 	local button = cd:GetParent()
 	button.count:SetParent(button)
 end
+
 -- Aura Icon Overlay
 local AuraIconOverlay_SetBorderColor = function(overlay, r, g, b)
 	if not r or not g or not b then
@@ -440,6 +442,7 @@ local function PostCreateAuraIcon(iconframe, button)
 	border:SetTemplate()
 	border:SetBeautyBorderPadding(2)
 	border:SetBackdropColor(0, 0, 0, 0)
+	button.border = border
 	
 	--[[if button:GetParent() == 'oUF_Lanerra_Player' then
 		button:SetBeautyBorderPadding(2)
@@ -541,6 +544,8 @@ local Stylish = function(self, unit, isSingle)
     self:SetScript('OnLeave', UnitFrame_OnLeave)
     
 	self.ignoreHealComm = true
+	
+	tinsert(objects, self)
 	
 	self:EnableMouse(true)
 	self:RegisterForClicks('AnyUp')
@@ -1176,6 +1181,7 @@ local function StylishGroup(self, unit)
 	self.ignoreHealComm = true
 	
 --    print('Spawn', self:GetName(), unit)
+	tinsert(objects, self)
     
 	self:EnableMouse(true)
 	self:RegisterForClicks('AnyUp')
@@ -1390,6 +1396,7 @@ local function StylishRaid(self, unit)
 	self.ignoreHealComm = true
 	
 --    print('Spawn', self:GetName(), unit)
+	tinsert(objects, self)
     
 	self:EnableMouse(true)
 	self:RegisterForClicks('AnyUp')
@@ -1773,8 +1780,6 @@ function oUF:DisableBlizzard(unit)
 end
 
 -- Role Checker
-
-local playerClass = F.MyClass
 
 local CURRENT_ROLE = "DAMAGER"
 local getRole, updateEvents

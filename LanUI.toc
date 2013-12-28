@@ -1,6 +1,6 @@
 ## Interface: 50400
 ## Title: |cff0099ffLan|rUI
-## Version: 0.8a
+## Version: 0.8.5a
 ## Author: Lanerra
 ## Notes: Lightweight UI Modification
 
