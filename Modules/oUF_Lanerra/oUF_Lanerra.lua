@@ -56,6 +56,8 @@ Loader:SetScript("OnEvent", function(self, event, addon)
 	F.UpdateAuraList()
 end)
 
+local cc = F.PlayerColor
+
 -- A little backdrop local to save us some typing...because I'm lazy
 local backdrop = {
 	bgFile = C.Media.Backdrop,
@@ -79,18 +81,10 @@ PowerBarColor['ENERGY'] = { r = 1, g = 1, b = 35/255 }
 PowerBarColor['RUNIC_POWER'] = { r = 0.45, g = 0.85, b = 1 }
 
 -- Threat color handling
-oUF.colors.threat = {}
+colors.threat = {}
 for i = 1, 3 do
 	local r, g, b = GetThreatStatusColor(i)
 	oUF.colors.threat[i] = { r, g, b }
-end
-
--- Debuff color handling
-colors.debuff = {}
-for type, color in pairs(DebuffTypeColor) do
-	if (type ~= 'none') then
-		colors.debuff[type] = { color.r, color.g, color.b }
-	end
 end
 
 ---- No More Lazy Stuff!
@@ -99,43 +93,25 @@ end
 local function UpdateBorder(self)
 	local threat, debuff, dispellable = self.threatLevel, self.debuffType, self.debuffDispellable
 
-	local color, glow
+	local color
 	if debuff and dispellable then
 		color = colors.debuff[debuff]
-		glow = true
 	elseif threat and threat > 1 then
 		color = colors.threat[threat]
-		glow = true
-	elseif debuff then
+	elseif debuff and not ns.config.dispelFilter then
 		color = colors.debuff[debuff]
 	elseif threat and threat > 0 then
 		color = colors.threat[threat]
 	end
 
 	if color then
-		self:SetBeautyBorderTexture('white')
-		self:SetBeautyBorderColor(color[1], color[2], color[3], 1)
-	elseif C.Media.ClassColor then
-		self:SetBeautyBorderTexture('white')
-		self:SetBeautyBorderColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
+		self.Overlay:SetBeautyBorderColor(color[1], color[2], color[3])
 	else
-		self:SetBeautyBorderTexture('default')
-		self:SetBeautyBorderColor(C.Media.BorderColor)
-	end
-end
-
--- Formatting function for the display of health and power text
-local function ShortValue(value)
-	if value >= 1e7 then
-		return ('%.1fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
-	elseif value >= 1e6 then
-		return ('%.2fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
-	elseif value >= 1e5 then
-		return ('%.0fk'):format(value / 1e3)
-	elseif value >= 1e3 then
-		return ('%.1fk'):format(value / 1e3):gsub('%.?0+([km])$', '%1')
-	else
-		return value
+		if C.Media.ClassColor then
+			self.Overlay:SetBeautyBorderColor(cc.r, cc.g, cc.b)
+		else
+			self.Overlay:SetBeautyBorderColor(unpack(C.Media.BorderColor))
+		end
 	end
 end
 
@@ -257,9 +233,9 @@ local UpdateHealth = function(Health, unit, min, max)
 		elseif (C.UF.Units.Target.Health.Deficit) then
 			Health.Value:SetText((min ~= max) and format('%d', min - max) or '')
 		elseif (C.UF.Units.Target.Health.Current) then
-			Health.Value:SetText(ShortValue(min))
+			Health.Value:SetText(F.ShortValue(min))
 		elseif (C.UF.Units.Target.Health.PerCur) then
-            Health.Value:SetText((min/max * 100 and format('%s - %d%%', ShortValue(min), min/max * 100)))
+            Health.Value:SetText((min/max * 100 and format('%s - %d%%', F.ShortValue(min), min/max * 100)))
         else
 			Health.Value:SetText()
 		end
@@ -432,7 +408,9 @@ local AuraIconOverlay_SetBorderColor = function(overlay, r, g, b)
 			r, g, b = unpack(C.Media.BorderColor)
 		end
 	end
-	overlay:GetParent():SetBeautyBorderColor(r, g, b)
+	
+	local over = overlay:GetParent()
+	over.border:SetBeautyBorderColor(r, g, b)
 end
 
 -- Aura Icon Creation Function
@@ -443,16 +421,6 @@ local function PostCreateAuraIcon(iconframe, button)
 	border:SetBeautyBorderPadding(2)
 	border:SetBackdropColor(0, 0, 0, 0)
 	button.border = border
-	
-	--[[if button:GetParent() == 'oUF_Lanerra_Player' then
-		button:SetBeautyBorderPadding(2)
-	end
-	
-	if button:GetParent() == 'oUF_Lanerra_Target' then
-		button:SetBeautyBorderPadding(2)
-	end]]
-	
-	button:SetBackdropColor(0, 0, 0, 0)
 
 	button.cd:SetReverse(true)
 	button.cd:SetScript('OnHide', AuraIconCD_OnHide)
@@ -513,27 +481,29 @@ local function PostUpdateAuraIcon(iconframe, unit, button, index, offset)
 end
 
 -- Dispel highlighting function
-local function UpdateDispelHighlight(self, event, unit, debuffType, canDispel)
-	if (self.unit ~= unit) then
-        return
-    end
-    
-	if (self.debuffType == debuffType) then
-        return
-    end
+local function UpdateDispelHighlight(element, debuffType, canDispel)
+	local frame = element.__owner
 
-	self.debuffType = debuffType
-	self.debuffDispellable = canDispel
-    
-    self:UpdateBorder()
+	if frame.debuffType == debuffType then return end
+
+	frame.debuffType = debuffType
+	frame.debuffDispellable = canDispel
+
+	frame:UpdateBorder()
 end
 
 -- Threat highlighting function
-local function UpdateThreatHighlight(self, unit, status)
-	if self.threatLevel == status then return end
+local function UpdateThreatHighlight(element, status)
+	if not status then
+		status = 0
+	end
 
-	self.threatLevel = status
-	self:UpdateBorder()
+	local frame = element.__owner
+	if frame.threatLevel == status then return end
+
+	frame.threatLevel = status
+
+	frame:UpdateBorder()
 end
 
 -- Time to give our solo unit frames some style!
@@ -976,7 +946,7 @@ local Stylish = function(self, unit, isSingle)
 		self.Buffs['initialAnchor'] = 'BOTTOMRIGHT'
 		self.Buffs['num'] = buffs
 		self.Buffs['showType'] = false
-		self.Buffs['size'] = C.UF.Units.Target.Height - 8
+		self.Buffs['size'] = C.UF.Units.Target.Height - 6
 		self.Buffs['spacing-x'] = GAP
 		self.Buffs['spacing-y'] = GAP * 2
 
@@ -988,10 +958,6 @@ local Stylish = function(self, unit, isSingle)
 
 		self.Buffs.parent = self
 	end
-	
-	-- DebuffHighlight Support
-	self.DebuffHighlightBackdrop = false
-	self.DebuffHighlightFilter = true
 	
 	-- Various oUF plugins support
 	if (unit == 'player') then
@@ -1162,11 +1128,16 @@ local Stylish = function(self, unit, isSingle)
     self.UpdateBorder = UpdateBorder
 
     -- Dispel highlight support
-    self.DispelHighlight = UpdateDispelHighlight
+    self.DispelHighlight = {
+		Override = UpdateDispelHighlight,
+		filter = false,
+	}
     
     -- Threat highlight support
     self.threatLevel = 0
-	self.ThreatHighlight = UpdateThreatHighlight
+	self.ThreatHighlight = {
+		Override = UpdateThreatHighlight,
+	}
        
     return self
 end
@@ -1373,11 +1344,16 @@ local function StylishGroup(self, unit)
     self.UpdateBorder = UpdateBorder
 
     -- Dispel highlight support
-    self.DispelHighlight = UpdateDispelHighlight
+    self.DispelHighlight = {
+		Override = UpdateDispelHighlight,
+		filter = false,
+	}
     
     -- Threat highlight support
     self.threatLevel = 0
-	self.ThreatHighlight = UpdateThreatHighlight
+	self.ThreatHighlight = {
+		Override = UpdateThreatHighlight,
+	}
     
     return self
 end
@@ -1542,11 +1518,16 @@ local function StylishRaid(self, unit)
     self.UpdateBorder = UpdateBorder
 
     -- Dispel highlight support
-    self.DispelHighlight = UpdateDispelHighlight
+    self.DispelHighlight = {
+		Override = UpdateDispelHighlight,
+		filter = false,
+	}
     
     -- Threat highlight support
     self.threatLevel = 0
-	self.ThreatHighlight = UpdateThreatHighlight
+	self.ThreatHighlight = {
+		Override = UpdateThreatHighlight,
+	}
     
     return self
 end
@@ -1858,7 +1839,6 @@ if getRole then
 	eventFrame:SetScript("OnEvent", function(_, event, ...)
 		local role = getRole() or "DAMAGER"
 		if role ~= CURRENT_ROLE then
-			--print(event, CURRENT_ROLE, "->", role)
 			CURRENT_ROLE = role
 			F.UpdateAuraList()
 			for _, frame in pairs(objects) do

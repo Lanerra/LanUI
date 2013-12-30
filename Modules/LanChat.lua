@@ -435,3 +435,13 @@ CombatChat:SetScript('OnEvent', function(self, event)
         ChatFrame3:SetHeight(200)
     end
 end)
+
+local function RemoveCurrentRealmName(self, event, msg, author, ...)
+	local realmName = GetRealmName()
+
+	if msg:find("-" .. realmName) then
+		return false, gsub(msg, "%-"..realmName, ""), author, ...
+	end
+end
+
+ChatFrame_AddMessageEventFilter("CHAT_MSG_SYSTEM", RemoveCurrentRealmName)

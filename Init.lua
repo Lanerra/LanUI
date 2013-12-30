@@ -92,7 +92,7 @@ RegisterStateDriver(PetBattleHider, 'visibility', '[petbattle] hide; show')
 -- Where it's due...
 SLASH_CREDITS1 = '/credits'
 SlashCmdList['CREDITS'] = function()
-    ChatFrame1:AddMessage('Special thanks to Neav, Bellagarba, Phanx, Tekkub, Elv, p3lim, Tukz, Haste, Haleth, and Roth. Without him I would not have had the inspiration or insight to be able to make this UI')
+    ChatFrame1:AddMessage('Special thanks to Neav, Bellagarba, Phanx, Tekkub, Elv, p3lim, Tukz, Haste, Haleth, and Roth. Without them I would not have had the inspiration or insight to be able to make this UI')
 end
 
 -- Easy ReloadUI

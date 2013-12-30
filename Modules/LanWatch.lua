@@ -226,7 +226,7 @@ F.RegisterEvent('PLAYER_LOGIN', function(self, event)
 	origClear(WatchFrame)
 	origSet(WatchFrame, 'TOPRIGHT', MinimapCluster, 'BOTTOMRIGHT', 0, 0)
 
-	WatchFrame:SetHeight(UIParent:GetHeight() - 300)
+	WatchFrame:SetHeight(F.ScreenHeight / 1.6)
 
 	WatchFrameCollapseExpandButton:Hide()
 	WatchFrameCollapseExpandButton.Show = F.Dummy
@@ -254,11 +254,12 @@ end)
 
 local bg = CreateFrame('Frame', 'WatchBG', WatchFrame)
 bg:SetPoint('TOPLEFT', WatchFrameLines, -5, 5)
+bg:SetPoint('BOTTOM', _G['WatchFrameLinkButton'..#WATCHFRAME_LINKBUTTONS], 0, -30)
 bg:SetWidth(205)
 bg:SetTemplate()
 
 hooksecurefunc('WatchFrame_Update', function(self, event)
-	bg:SetHeight((#WATCHFRAME_LINKBUTTONS * 48) + 10)
+	bg:SetPoint('BOTTOM', _G['WatchFrameLinkButton'..#WATCHFRAME_LINKBUTTONS], 0, -30)
 end)
 
 F.RegisterEvent('PLAYER_REGEN_DISABLED', function()
