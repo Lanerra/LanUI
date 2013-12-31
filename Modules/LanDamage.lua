@@ -17,8 +17,8 @@ local defaults = {
 	border_color = {0, 0, 0, 0},
 	border_size = 2,
 	font_style = '',
-	font_size = 12,
-	hidetitle = true,
+	font_size = 13,
+	hidetitle = false,
 	barcolor = {0.4, 0.4, 0.4, 1},
 	classcolorbar = true,
 	onlyboss = false,
@@ -119,6 +119,7 @@ end
 local CreateFS = CreateFS or function(frame)
 	local fstring = frame:CreateFontString(nil, 'OVERLAY')
 	fstring:SetFont(font, dmconf.font_size, dmconf.font_style)
+	fstring:SetShadowOffset(1, -1)
 	return fstring
 end
 
@@ -254,10 +255,10 @@ local CreateBar = function()
 	newbar:SetWidth(MainFrame:GetWidth() - 10)
 	newbar:SetHeight(dmconf.barheight)
 	newbar.left = CreateFS(newbar)
-	newbar.left:SetPoint('LEFT', 2, 0)
+	newbar.left:SetPoint('LEFT', 2, 1)
 	newbar.left:SetJustifyH('LEFT')
 	newbar.right = CreateFS(newbar)
-	newbar.right:SetPoint('RIGHT', -2, 0)
+	newbar.right:SetPoint('RIGHT', -2, 1)
 	newbar.right:SetJustifyH('RIGHT')
 	newbar:SetScript('OnEnter', OnBarEnter)
 	newbar:SetScript('OnLeave', OnBarLeave)
@@ -870,7 +871,9 @@ local OnEvent = function(self, event, ...)
 			MainFrame:SetSize(dmconf.width, dmconf.maxbars*(dmconf.barheight+dmconf.spacing)-dmconf.spacing)
 			MainFrame:SetPoint(anchor, x, y)
 			MainFrame:EnableMouse(true)
+			MainFrame:SetMovable(true)
 			MainFrame:EnableMouseWheel(true)
+			
 			MainFrame:SetScript('OnMouseUp', function(self, button)
 				if button == 'RightButton' then
 					ToggleDropDownMenu(1, nil, menuFrame, 'cursor', 0, 0)
@@ -887,14 +890,39 @@ local OnEvent = function(self, event, ...)
 			UIDropDownMenu_Initialize(menuFrame, CreateMenu, 'MENU')
 			CheckRoster()
 			MainFrame.title = CreateFS(MainFrame)
-			MainFrame.title:SetPoint('BOTTOM', MainFrame, 'TOP', 0, 1)
+			MainFrame.title:SetPoint('BOTTOM', MainFrame, 'TOP', 0, 2)
 			MainFrame.title:SetText(sMode)
+
 			UpdateWindow()
 			
-			local Backdrop = CreateFrame('Frame', nil, LanDamageFrame)
-			Backdrop:SetPoint('TOPLEFT', LanDamageFrame, 0, 4)
-			Backdrop:SetPoint('BOTTOMRIGHT', LanDamageFrame, 0, -4)
-			Backdrop:SetTemplate()end
+			local Backdrop = CreateFrame('Frame', nil, MainFrame)
+			
+			if dmconf.hidetitle then
+				Backdrop:SetPoint('TOPLEFT', MainFrame, 0, 4)
+			else
+				Backdrop:SetPoint('TOP', MainFrame.title, 0, 2)
+			end
+			
+			Backdrop:SetPoint('BOTTOMRIGHT', MainFrame, 0, -4)
+			Backdrop:SetBackdrop(backdrop)
+			Backdrop:SetBackdropColor(0, 0, 0, 0.5)
+			Backdrop:SetFrameStrata('BACKGROUND')
+			Backdrop:EnableMouse(true)
+			Backdrop:RegisterForDrag('LeftButton')
+			
+			Backdrop:SetScript("OnDragStart", function(self) 
+				MainFrame.moving = true 
+				MainFrame:SetUserPlaced(true) 
+				MainFrame:StartMoving() 
+			end)
+			
+			Backdrop:SetScript("OnDragStop", function(self) 
+				MainFrame.moving = false 
+				MainFrame:StopMovingOrSizing() 
+			end)
+			
+			Backdrop:SetTemplate()
+		end
 	elseif event == 'GROUP_ROSTER_UPDATE' or event == 'PLAYER_ENTERING_WORLD' then
 		CheckRoster()
 	elseif event == 'PLAYER_REGEN_DISABLED' then
@@ -923,7 +951,10 @@ SlashCmdList['LanDamage'] = function(msg)
         Add(i, i*10000, DAMAGE)
         units[i] = nil
     end
+	
     display = current
     UpdateBars()
+	
+	LanDamageFrame:Show()
 end
 SLASH_LanDamage1 = '/landmg'
