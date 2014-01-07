@@ -21,7 +21,7 @@ local defaults = {
 	hidetitle = false,
 	barcolor = {0.4, 0.4, 0.4, 1},
 	classcolorbar = true,
-	onlyboss = false,
+	onlyboss = true,
 	classcolorname = false,
 	mergeHealAbsorbs = false,
 }

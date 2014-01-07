@@ -1,210 +1,71 @@
 local F, C, G = unpack(select(2, ...))
 
-for _, font in pairs({
+local LanFonts = CreateFrame("Frame", "LanFonts", UIParent)
+
+local SetFont = function(obj, font, size, style, r, g, b, sr, sg, sb, sox, soy)
+	obj:SetFont(font, size, style)
+	if sr and sg and sb then obj:SetShadowColor(sr, sg, sb) end
+	if sox and soy then obj:SetShadowOffset(sox, soy) end
+	if r and g and b then obj:SetTextColor(r, g, b)
+	elseif r then obj:SetAlpha(r) end
+end
+
+LanFonts:RegisterEvent("ADDON_LOADED")
+LanFonts:SetScript("OnEvent", function(self, event, addon)
+	if addon ~= "LanUI" then return end
 	
-    _G['GameFontHighlight'],
-    _G['GameFontDisable'],
-    _G['GameFontNormal'],
-	_G['GameFontHighlightMedium'],
-	_G['ReputationDetailFont'],
-	_G['ItemTextFontNormal'],
-	_G['DialogButtonNormalText'],
-	
-}) do
-    font:SetFont(C.Media.Font, 12)
-end
+	local Font     = C.Media.Font
 
--- mail box font
+	UIDROPDOWNMENU_DEFAULT_TEXT_HEIGHT = 12
+	CHAT_FONT_HEIGHTS = {12, 13, 14, 15, 16, 17, 18, 19, 20}
 
-for _, font in pairs({
+	UNIT_NAME_FONT     = Font
+	NAMEPLATE_FONT     = Font
+	DAMAGE_TEXT_FONT   = Font
+	STANDARD_TEXT_FONT = Font
 
-	_G['InvoiceTextFontNormal'],
-    _G['InvoiceTextFontSmall'],
-	_G['MailTextFontNormal'],
-	
-}) do
-   font:SetFont(C.Media.Font, 13)
-   font:SetTextColor(1, 1, 1)
-end   
+	-- Base fonts
+	SetFont(GameTooltipHeader,                  Font, 12)
+	SetFont(NumberFont_OutlineThick_Mono_Small, Font, 12, "OUTLINE")
+	SetFont(NumberFont_Outline_Huge,            Font, 28, "THICKOUTLINE", 28)
+	SetFont(NumberFont_Outline_Large,           Font, 15, "OUTLINE")
+	SetFont(NumberFont_Outline_Med,             Font, 13, "OUTLINE")
+	SetFont(NumberFont_Shadow_Med,              Font, 12)
+	SetFont(NumberFont_Shadow_Small,            Font, 12)
+	SetFont(QuestFont,                          Font, 14)
+	SetFont(QuestFont_Large,                    Font, 14)
+	SetFont(SystemFont_Large,                   Font, 15)
+	SetFont(SystemFont_Med1,                    Font, 12)
+	SetFont(SystemFont_Med3,                    Font, 13)
+	SetFont(SystemFont_OutlineThick_Huge2,      Font, 20, "THICKOUTLINE")
+	SetFont(SystemFont_Outline_Small,           Font, 12, "OUTLINE")
+	SetFont(SystemFont_Shadow_Large,            Font, 15)
+	SetFont(SystemFont_Shadow_Med1,             Font, 12)
+	SetFont(SystemFont_Shadow_Med3,             Font, 13)
+	SetFont(SystemFont_Shadow_Outline_Huge2,    Font, 20, "OUTLINE")
+	SetFont(SystemFont_Shadow_Small,            Font, 11)
+	SetFont(SystemFont_Small,                   Font, 12)
+	SetFont(SystemFont_Tiny,                    Font, 12)
+	SetFont(Tooltip_Med,                        Font, 12)
+	SetFont(Tooltip_Small,                      Font, 12)
+	SetFont(CombatTextFont,                     Font, 100, "OUTLINE") -- number here just increase the font quality.
+	SetFont(SystemFont_Shadow_Huge1,            Font, 20, "THINOUTLINE")
+	SetFont(ZoneTextString,                     Font, 32, "OUTLINE")
+	SetFont(SubZoneTextString,                  Font, 25, "OUTLINE")
+	SetFont(PVPInfoTextString,                  Font, 22, "THINOUTLINE")
+	SetFont(PVPArenaTextString,                 Font, 22, "THINOUTLINE")
+	SetFont(FriendsFont_Normal,                 Font, 12)
+	SetFont(FriendsFont_Small,                  Font, 11)
+	SetFont(FriendsFont_Large,                  Font, 14)
+	SetFont(FriendsFont_UserText,               Font, 11)
 
-for _, font in pairs({
+	SetFont = nil
+	self:SetScript("OnEvent", nil)
+	self:UnregisterAllEvents()
+	self = nil
+end)
 
-    _G['GameFontHighlightSmall'],
-	_G['GameFontNormalSmall'],
-    _G['GameFontDisableSmall'],
-	
-}) do
-    font:SetFont(C.Media.Font, 11)
-end
-
--- small font in the spell book.
-
-for _, font in pairs({  
-  
-	_G['SubSpellFont'],
-	
-}) do
-    font:SetFont(C.Media.Font, 11)
-	font:SetTextColor(1, 1, 1)
-end	
-
-for _, font in pairs({  
-  
-	_G['NumberFontNormalSmall'],
-	
-}) do
-    font:SetFont(C.Media.Font, 13)
-end
-
-for _, font in pairs({
-
-    _G['WorldMapTextFont'],
-    _G['MovieSubtitleFont'],
-	
-}) do
-    font:SetFont(C.Media.Font, 14)
-end	
-
-for _, font in pairs({
-
-    _G['NumberFontNormal'],
-	
-}) do
-    font:SetFont(C.Media.Font, 14)
-end
-
-for _, font in pairs({
-
-    _G['NumberFontNormalLarge'],
-    _G['NumberFontNormalHuge'],
-    _G['GameFontNormalHuge'],
-	_G['GameFontNormalLarge'],
-	
-}) do
-    font:SetFont(C.Media.Font, 14)
-end
-
-for _, font in pairs({
-
-    _G['QuestFontHighlight'],
-    _G['QuestFontNormalSmall'],
-    _G['QuestLogNoQuestText'],
-	_G['QuestLogTitleText'],
-	
-}) do
-   font:SetFont(C.Media.Font, 14)
-   font:SetTextColor(1, 1, 1)
-end
-
-for _, font in pairs({
-
-    _G['QuestTitleFont'],
-    _G['QuestFont'],
-
-}) do
-   font:SetFont(C.Media.Font, 14)
-   font:SetTextColor(1, 1, 1)
-end
-	
-for _, font in pairs({
- 
-	_G['AchievementPointsFont'],
-    _G['AchievementPointsFontSmall'],
-    _G['AchievementDateFont'],
-	
-}) do
-    font:SetFont(C.Media.Font, 12)
-end
- 
-for _, font in pairs({
-
-    _G['AchievementCriteriaFont'],
-    _G['AchievementDescriptionFont'],
-
-}) do
-   font:SetFont(C.Media.Font, 12)
-   font:SetTextColor(1, 1, 1)
-end
-
--- Change Zone Text
-
-for _, font in pairs({
-
-    _G['ZoneTextFont'],									
-    _G['SubZoneTextFont'],
-    _G['PVPInfoTextFont'],
-	
-}) do
-   font:SetFont(C.Media.Font, 35)
-end	
-
--- Friend List / Real ID
-
-for _, font in pairs({
-
-	_G['FriendsFont_Large'],               
-	_G['FriendsFont_Normal'],            
-	_G['FriendsFont_Small'],                 
-	_G['FriendsFont_UserText'], 
-
-}) do
-   font:SetFont(C.Media.Font, 11)
-end
-
--- Tooltip Font.
-
-for _, font in pairs({
-
-	_G['GameTooltipHeaderText'],               
-
-
-}) do
-   font:SetFont(C.Media.Font, 15)
-end
-
-for _, font in pairs({
-
-	_G['GameTooltipText'],               
-
-
-}) do
-   font:SetFont(C.Media.Font, 12)
-end
-
-for _, font in pairs({
-
-	_G['GameTooltipTextSmall'],               
-
-
-}) do
-   font:SetFont(C.Media.Font, 11)
-end
-
--- Bag Frame Money Font.
-
-for _, font in pairs({
-
-	_G['ContainerFrame1MoneyFrameGoldButtonText'], 
-	_G['ContainerFrame1MoneyFrameSilverButtonText'],
-	_G['ContainerFrame1MoneyFrameCopperButtonText'],
-	_G['BankFrameMoneyFrameGoldButtonText'],
-	_G['BankFrameMoneyFrameSilverButtonText'],
-	_G['BankFrameMoneyFrameCopperButtonText'],
-    
-
-}) do
-    font:SetFont(C.Media.Font, 14)
-end	
-
-for _, font in pairs({
-
-    _G['BackpackTokenFrameToken1Count'],
-	_G['BackpackTokenFrameToken2Count'],
-	_G['BackpackTokenFrameToken3Count'],
-
-}) do
-    font:SetFont(C.Media.Font, 12)
-end
+G.Misc.Fonts = LanFonts
 	
 -- Item level crap :D
 

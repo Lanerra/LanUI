@@ -48,7 +48,7 @@ PetActionBarFrame:Hide()
 PetActionBarFrame:SetAlpha(0)
 
 local petbaranchor = CreateFrame('Frame', 'PetActionBarAnchor', LanUIPetBattleHider)
-petbaranchor:SetFrameStrata('LOW')
+petbaranchor:SetFrameStrata('BACKGROUND')
 petbaranchor:SetSize((C.ActionBars.ButtonSize * 10) + (C.ActionBars.ButtonSpacing * 9), (C.ActionBars.ButtonSize + C.ActionBars.ButtonSpacing))
 
 if C.Panels.ABPanel then
@@ -87,9 +87,13 @@ bar:SetScript('OnEvent', function(self, event, arg1)
 				button:SetPoint('LEFT', _G['PetActionButton'..i-1], 'RIGHT', C.ActionBars.ButtonSpacing, 0)
 			end
 		
+            button:SetFrameStrata('BACKGROUND')
+            
             button:Show()
-            F.StylePet()
             button:StyleButton()
+            button:SetTemplate(true)
+            button:SetBeautyBorderPadding(2)
+            
 			self:SetAttribute('addchild', button)
 		end
         
@@ -166,7 +170,8 @@ hooksecurefunc('ActionButton_Update', function(self)
             button.Background:SetPoint('BOTTOMLEFT', button, -14, -16)
             
             button:StyleButton()
-            button:SetBackdropColor(0, 0, 0, 0)
+            button:SetTemplate(true)
+            button:SetBeautyBorderPadding(2)
         end
 
         local border = _G[self:GetName()..'Border']
@@ -364,7 +369,7 @@ ReputationWatchBar:HookScript('OnLeave', function()
     securecall('UIFrameFadeOut', ReputationWatchStatusBarText, 0.2, ReputationWatchStatusBarText:GetAlpha(), 0) 
 end)
 
-StanceBarFrame:SetFrameStrata('HIGH')
+StanceBarFrame:SetFrameStrata('BACKGROUND')
 
 StanceBarFrame:SetScale(1)
 StanceBarFrame:SetAlpha(1)
@@ -477,7 +482,10 @@ if C.Panels.ABPanel then
 
                 if button then
                     button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
+                    button:SetFrameStrata('BACKGROUND')
                     button:StyleButton()
+                    button:SetTemplate(true)
+                    button:SetBeautyBorderPadding(2)
                 end
             end
             
@@ -504,23 +512,23 @@ else
     MultiBarBottomRightButton1:SetPoint('BOTTOMLEFT', MultiBarBottomLeftButton1, 'TOPLEFT', 0, 6)
 end
 
--- Move the vehicle button
+-- Move and skin the vehicle button
+local VB = MainMenuBarVehicleLeaveButton
 
-MainMenuBarVehicleLeaveButton:HookScript('OnShow', function(self)
-    self:StripTextures()
-    
-    local x = self:CreateFontString(nil, 'ARTWORK')
-    x:SetFont(C.Media.Font, C.Media.FontSize)
-    x:SetText('X')
-    
-    self:SetTemplate()
-    
-    if C.Panels.ABPanel then
-        self:SetPoint('TOPRIGHT', ABPanel, 'TOPLEFT', 5, 0)
-    else
-        self:SetPoint('LEFT', MainMenuBar, 'RIGHT', 10, 75)
-    end
-end)
+VB:ClearAllPoints()
+if C.Panels.ABPanel then
+    VB:SetParent(ABPanel)
+    VB:SetPoint('TOPRIGHT', ABPanel, 'TOPLEFT', -1, -1)
+else
+    VB:SetPoint('LEFT', MainMenuBar, 'RIGHT', 10, 75)
+end
+VB.SetPoint = F.Dummy
+
+VB:StripTextures()
+
+VB:SetTemplate()
+VB:SetBackdropColor(1, 0, 0, 0.5)
+VB:SetSize(C.Media.FontSize, C.Media.FontSize)
 
 -- Strip and skin the ExtraActionButton
 local button = ExtraActionButton1
@@ -548,8 +556,10 @@ button:SetSize(32, 32)
 hooksecurefunc(texture, 'SetTexture', disableTexture)
 
 button:StyleButton()
+button:SetTemplate(true)
+button:SetBeautyBorderPadding(2)
 
 -- Position and skin StanceBarFrame
 
 -- Move AltPowerBar
-PlayerPowerBarAlt:SetPoint('BOTTOM', LanPetHolder, 'TOP')
+PlayerPowerBarAlt:SetPoint('TOP', ABPanel, 'BOTTOM', 0, -2)

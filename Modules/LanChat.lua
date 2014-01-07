@@ -17,22 +17,35 @@ _G.CHAT_FRAME_TAB_NORMAL_NOMOUSE_ALPHA = 1.0       -- set to 0 if u want to hide
 _G.CHAT_FRAME_FADE_OUT_TIME = 0.5
 _G.CHAT_FRAME_FADE_TIME = 0.1
 
-function Spam(self, event, arg1)
-    if strfind(arg1, 'You have unlearned') or strfind(arg1,'You have learned a new spell:') or strfind(arg1, 'You have learned a new ability:') or strfind(arg1, 'Your pet has unlearned') then
+-- Spam cleanup!
+
+function Spam(self, event, msg)
+    if strfind(msg, 'You have unlearned') or strfind(msg,'You have learned a new spell:') or strfind(msg, 'You have learned a new ability:') or strfind(msg, 'Your pet has unlearned') then
        return true
-    end
-    
-    if strfind(arg1, 'Welcome to World of Warcraft!') or strfind(arg1,'We care about player security and encourage you to') or strfind(arg1, 'visit http://us.battle.net/security/ for helpful information') or strfind(arg1, 'and tips.') then
-        return true
-    end
-    
-    if strfind(arg1, 'AucAdvanced: Util:AutoMagic loaded!') or strfind(arg1, 'AucAdvanced: Util:EasyBuyout loaded!') or strfind(arg1, 'AucAdvanced: Util:GlypherPost loaded!') or strfind(arg1, 'Auctioneer: Util:ScanFinish loaded!') or strfind(arg1, 'AucAdvanced: Util:ScanStart loaded!') then
-        return true
     end
 end
 
 ChatFrame_AddMessageEventFilter('CHAT_MSG_SYSTEM', Spam)
 
+local SpamCheck = CreateFrame('Frame', nil)
+SpamCheck:RegisterEvent('PLAYER_ENTERING_WORLD')
+SpamCheck:SetScript('OnEvent', function()
+    local text, accessID, lineID, extraData, keeper
+    for i = 1, ChatFrame1:GetNumMessages(0) do
+        text, accessID, lineID, extraData = ChatFrame1:GetMessageInfo(i)
+
+        if strfind(text, 'Lan') then
+            keeper = tostring(text)
+            break
+        end
+    end
+
+    ChatFrame1:RemoveMessagesByAccessID(0)
+    ChatFrame1:AddMessage(keeper, nil, nil, nil, lineID, nil, accessID, extraData)
+    SpamCheck:UnregisterEvent('PLAYER_ENTERING_WORLD')
+end)
+
+-- Skin chat bubbles
 local BubbleHook = CreateFrame('Frame')
 
 local function StyleBubble(frame)

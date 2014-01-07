@@ -8,47 +8,47 @@ function CreateBorderLight(self, borderSize, R, G, B, ...)
         end
     end
     if (not self.HasBorder) then
-        self.Border = {}
+        self.Borders = {}
         for i = 1, 8 do
-            self.Border[i] = self:CreateTexture(nil, 'OVERLAY')
-            self.Border[i]:SetParent(self)
-			self.Border[i]:SetTexture(C.Media.OverlayBorder)
-            self.Border[i]:SetSize(borderSize,borderSize)
-            self.Border[i]:SetDrawLayer('OVERLAY', -8)
+            self.Borders[i] = self:CreateTexture(nil, 'OVERLAY')
+            self.Borders[i]:SetParent(self)
+			self.Borders[i]:SetTexture(C.Media.OverlayBorder)
+            self.Borders[i]:SetSize(borderSize,borderSize)
+            self.Borders[i]:SetDrawLayer('OVERLAY', -8)
             if (not R and not G and not B) then
-                self.Border[i]:SetVertexColor(1, 1, 1)
+                self.Borders[i]:SetVertexColor(1, 1, 1)
             else
-                self.Border[i]:SetVertexColor(R, G, B)
+                self.Borders[i]:SetVertexColor(R, G, B)
             end
         end
         
-        self.Border[1]:SetTexCoord(0, 1/3, 0, 1/3) 
-        self.Border[1]:SetPoint('TOPLEFT', self, -(uL1 or 0), uL2 or 0)
+        self.Borders[1]:SetTexCoord(0, 1/3, 0, 1/3) 
+        self.Borders[1]:SetPoint('TOPLEFT', self, -(uL1 or 0), uL2 or 0)
 
-        self.Border[2]:SetTexCoord(2/3, 1, 0, 1/3)
-        self.Border[2]:SetPoint('TOPRIGHT', self, uR1 or 0, uR2 or 0)
+        self.Borders[2]:SetTexCoord(2/3, 1, 0, 1/3)
+        self.Borders[2]:SetPoint('TOPRIGHT', self, uR1 or 0, uR2 or 0)
 
-        self.Border[3]:SetTexCoord(0, 1/3, 2/3, 1)
-        self.Border[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0), -(bL2 or 0))
+        self.Borders[3]:SetTexCoord(0, 1/3, 2/3, 1)
+        self.Borders[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0), -(bL2 or 0))
 
-        self.Border[4]:SetTexCoord(2/3, 1, 2/3, 1)
-        self.Border[4]:SetPoint('BOTTOMRIGHT', self, bR1 or 0, -(bR2 or 0))
+        self.Borders[4]:SetTexCoord(2/3, 1, 2/3, 1)
+        self.Borders[4]:SetPoint('BOTTOMRIGHT', self, bR1 or 0, -(bR2 or 0))
 
-        self.Border[5]:SetTexCoord(1/3, 2/3, 0, 1/3)
-        self.Border[5]:SetPoint('TOPLEFT', self.Border[1], 'TOPRIGHT')
-        self.Border[5]:SetPoint('TOPRIGHT', self.Border[2], 'TOPLEFT')
+        self.Borders[5]:SetTexCoord(1/3, 2/3, 0, 1/3)
+        self.Borders[5]:SetPoint('TOPLEFT', self.Borders[1], 'TOPRIGHT')
+        self.Borders[5]:SetPoint('TOPRIGHT', self.Borders[2], 'TOPLEFT')
 
-        self.Border[6]:SetTexCoord(1/3, 2/3, 2/3, 1)
-        self.Border[6]:SetPoint('BOTTOMLEFT', self.Border[3], 'BOTTOMRIGHT')
-        self.Border[6]:SetPoint('BOTTOMRIGHT', self.Border[4], 'BOTTOMLEFT')
+        self.Borders[6]:SetTexCoord(1/3, 2/3, 2/3, 1)
+        self.Borders[6]:SetPoint('BOTTOMLEFT', self.Borders[3], 'BOTTOMRIGHT')
+        self.Borders[6]:SetPoint('BOTTOMRIGHT', self.Borders[4], 'BOTTOMLEFT')
 
-        self.Border[7]:SetTexCoord(0, 1/3, 1/3, 2/3)
-        self.Border[7]:SetPoint('TOPLEFT', self.Border[1], 'BOTTOMLEFT')
-        self.Border[7]:SetPoint('BOTTOMLEFT', self.Border[3], 'TOPLEFT')
+        self.Borders[7]:SetTexCoord(0, 1/3, 1/3, 2/3)
+        self.Borders[7]:SetPoint('TOPLEFT', self.Borders[1], 'BOTTOMLEFT')
+        self.Borders[7]:SetPoint('BOTTOMLEFT', self.Borders[3], 'TOPLEFT')
 
-        self.Border[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
-        self.Border[8]:SetPoint('TOPRIGHT', self.Border[2], 'BOTTOMRIGHT')
-        self.Border[8]:SetPoint('BOTTOMRIGHT', self.Border[4], 'TOPRIGHT')
+        self.Borders[8]:SetTexCoord(2/3, 1, 1/3, 2/3)
+        self.Borders[8]:SetPoint('TOPRIGHT', self.Borders[2], 'BOTTOMRIGHT')
+        self.Borders[8]:SetPoint('BOTTOMRIGHT', self.Borders[4], 'TOPRIGHT')
         
         local space
         if (borderSize >= 10) then
@@ -62,10 +62,10 @@ function CreateBorderLight(self, borderSize, R, G, B, ...)
 end
 
 function SetBorderLayer(self, layer, sub)
-    if (self.Border) then
+    if (self.Borders) then
 	    for i = 1, 8 do
             if not sub then sub = 0 end
-            self.Border[i]:SetDrawLayer(layer, sub)
+            self.Borders[i]:SetDrawLayer(layer, sub)
 		end
     end
 end
@@ -79,15 +79,15 @@ function SetTexture(self, texture)
         x = texture
     end
     
-    if (self.Border) then
+    if (self.Borders) then
 	    for i = 1, 8 do
-            self.Border[i]:SetTexture(x)
+            self.Borders[i]:SetTexture(x)
 		end
     end
 end
 
 function SetColorShadow(self, R, G, B, A)
-	if (self.Border) then
+	if (self.Borders) then
         for i = 1, 8 do
             self.Shadow[i]:SetVertexColor(R, G, B, A)
         end        
@@ -95,9 +95,9 @@ function SetColorShadow(self, R, G, B, A)
 end
 	
 function ColorBorder(self, R, G, B)
-    if (self.Border) then
+    if (self.Borders) then
         for i = 1, 8 do
-            self.Border[i]:SetVertexColor(R, G, B)
+            self.Borders[i]:SetVertexColor(R, G, B)
         end        
     end
 end
@@ -105,10 +105,10 @@ end
 local function GetBeautyBorderInfo(self)
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
-    elseif (self.Border) then
-        local tex = self.Border[1]:GetTexture()
-        local size = self.Border[1]:GetSize()
-        local r, g, b, a = self.Border[1]:GetVertexColor()
+    elseif (self.Borders) then
+        local tex = self.Borders[1]:GetTexture()
+        local size = self.Borders[1]:GetSize()
+        local r, g, b, a = self.Borders[1]:GetVertexColor()
 
         return size, tex, r, g, b, a
     else
@@ -143,13 +143,13 @@ local function SetBeautyBorderPadding(self, uL1, ...)
     end
 
     if (self.HasBorder) then
-        self.Border[1]:SetPoint('TOPLEFT', self, -(uL1 or 0), uL2 or 0)
+        self.Borders[1]:SetPoint('TOPLEFT', self, -(uL1 or 0), uL2 or 0)
 
-        self.Border[2]:SetPoint('TOPRIGHT', self, uR1 or 0, uR2 or 0)
+        self.Borders[2]:SetPoint('TOPRIGHT', self, uR1 or 0, uR2 or 0)
 
-        self.Border[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0), -(bL2 or 0))
+        self.Borders[3]:SetPoint('BOTTOMLEFT', self, -(bL1 or 0), -(bL2 or 0))
 
-        self.Border[4]:SetPoint('BOTTOMRIGHT', self, bR1 or 0, -(bR2 or 0))
+        self.Borders[4]:SetPoint('BOTTOMRIGHT', self, bR1 or 0, -(bR2 or 0))
     end
 end
 

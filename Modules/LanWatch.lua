@@ -67,7 +67,8 @@ local function HighlightLine(self, highlight)
 				local r, g, b, prefix = GetQuestData(self)
 				local text = line.text:GetText()
 				if(text and string.sub(text, -1) ~= '\032') then
-					line.text:SetFormattedText('[%s] %s\032', prefix, text)
+					--line.text:SetFormattedText('[%s] %s\032', prefix, text)
+					line.text:SetFormattedText('%s\032', text)
 				end
 
 				if(highlight) then
@@ -87,11 +88,7 @@ local function HighlightLine(self, highlight)
 						line.square:SetBackdropColor(1/5, 1/2, 4/5)
 					end
 				else
-					--[[if C.Media.ClassColor then
-						line.text:SetTextColor(cc.r, cc.g, cc.b)
-					else]]
-						line.text:SetTextColor(5/7, 5/7, 5/7)
-					--end
+					line.text:SetTextColor(5/7, 5/7, 5/7)
 
 					if(line.square) then
 						if(IsSuperTracked(self)) then
@@ -253,6 +250,7 @@ F.RegisterEvent('PLAYER_LOGIN', function(self, event)
 end)
 
 local bg = CreateFrame('Frame', 'WatchBG', WatchFrame)
+bg:SetFrameStrata('BACKGROUND')
 bg:SetPoint('TOPLEFT', WatchFrameLines, -5, 5)
 bg:SetPoint('BOTTOM', _G['WatchFrameLinkButton'..#WATCHFRAME_LINKBUTTONS], 0, -30)
 bg:SetWidth(205)

@@ -76,6 +76,27 @@ local function GetTableIndex(table, fieldIndex, value)
 	return -1
 end
 
+-- Menu handler
+
+local menuFrame = CreateFrame('Frame', 'ContactDropDownMenu', UIParent, 'UIDropDownMenuTemplate')
+local menuList = {
+    {
+        text = OPTIONS_MENU,
+        isTitle = true,
+        notCheckable = true
+    },
+    {
+        text = INVITE,
+        hasArrow = true,
+        notCheckable = true,
+    },
+    {
+        text = CHAT_MSG_WHISPER_INFORM,
+        hasArrow = true,
+        notCheckable = true,
+    }
+}
+
 local function inviteClick(self, arg1, arg2, checked)
 	menuFrame:Hide()
 	if type(arg1) ~= 'number' then
@@ -357,27 +378,6 @@ local function InfoOnEvent(self)
         end
     end
 end
-
--- Menu handler
-
-local menuFrame = CreateFrame('Frame', 'ContactDropDownMenu', UIParent, 'UIDropDownMenuTemplate')
-local menuList = {
-    {
-        text = OPTIONS_MENU,
-        isTitle = true,
-        notCheckable = true
-    },
-    {
-        text = INVITE,
-        hasArrow = true,
-        notCheckable = true,
-    },
-    {
-        text = CHAT_MSG_WHISPER_INFORM,
-        hasArrow = true,
-        notCheckable = true,
-    }
-}
 
 -- Guild datatext
 

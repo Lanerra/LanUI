@@ -48,6 +48,7 @@ C['Media'] = {
     ['DebuffBorder'] = [[Interface\Addons\LanUI\Media\textureDebuff]], -- Debuff border texture
     ['OverlayBorder'] = [[Interface\Addons\LanUI\Media\textureOverlay]], -- Overlay border for other elements
     ['Backdrop'] = [[Interface\BUTTONS\WHITE8X8]], -- Background texture for panels/skinning
+    ['Glow'] = [[Interface\AddOns\LanUI\Media\glowTex]], -- Texture used for glows
     ['BackdropColor'] = {0, 0, 0, 0.5}, -- Background color for panels/skinning
     ['BorderColor'] = {1, 1, 1}, -- Border color
     ['BorderSize'] = 12, -- Border size
@@ -55,8 +56,10 @@ C['Media'] = {
 }
 
 -- NO TOUCHY!
-if C.Media.ClassColor == true then
+if C.Media.ClassColor then
     C.Media.BorderColor = F.PlayerColor
+else
+    C.Media.BorderColor.r, C.Media.BorderColor.g, C.Media.BorderColor.b = C.Media.BorderColor[1], C.Media.BorderColor[2], C.Media.BorderColor[3]
 end
 
 C['Panels'] = {

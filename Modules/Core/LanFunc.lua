@@ -7,9 +7,7 @@ local backdropr, backdropg, backdropb, backdropa = unpack(C.Media.BackdropColor)
 local borderr, borderg, borderb = unpack(C.Media.BorderColor)
 local bordera = 1
 local template
-
--- Workaround for 5.4.1 taint error
-setfenv(WorldMapFrame_OnShow, setmetatable({ UpdateMicroButtons = function() end }, { __index = _G }))
+local bc = C.Media.BorderColor
 
 -- Pixel perfect script of custom UI scale
 local Mult = 768/string.match(F.Resolution, '%d+x(%d+)')/C.Tweaks.UIScale
@@ -38,11 +36,11 @@ end
 F.PetBarUpdate = function(self, event)
 	local petActionButton, petActionIcon, petAutoCastableTexture, petAutoCastShine
 	for i = 1, NUM_PET_ACTION_SLOTS, 1 do
-		local buttonName = "PetActionButton"..i
+		local buttonName = 'PetActionButton'..i
 		petActionButton = _G[buttonName]
-		petActionIcon = _G[buttonName.."Icon"]
-		petAutoCastableTexture = _G[buttonName.."AutoCastable"]
-		petAutoCastShine = _G[buttonName.."Shine"]
+		petActionIcon = _G[buttonName..'Icon']
+		petAutoCastableTexture = _G[buttonName..'AutoCastable']
+		petAutoCastShine = _G[buttonName..'Shine']
 		local name, subtext, texture, isToken, isActive, autoCastAllowed, autoCastEnabled = GetPetActionInfo(i)
 
 		if not isToken then
@@ -56,7 +54,7 @@ F.PetBarUpdate = function(self, event)
 		petActionButton.isToken = isToken
 		petActionButton.tooltipSubtext = subtext
 
-		if isActive and name ~= "PET_ACTION_FOLLOW" then
+		if isActive and name ~= 'PET_ACTION_FOLLOW' then
 			petActionButton:SetChecked(1)
 			if IsPetAttackAction(i) then
 				PetActionButton_StartFlash(petActionButton)
@@ -97,7 +95,7 @@ F.PetBarUpdate = function(self, event)
 			petActionIcon:Hide()
 		end
 
-		if not PetHasActionBar() and texture and name ~= "PET_ACTION_FOLLOW" then
+		if not PetHasActionBar() and texture and name ~= 'PET_ACTION_FOLLOW' then
 			PetActionButton_StopFlash(petActionButton)
 			SetDesaturation(petActionIcon, 1)
 			petActionButton:SetChecked(0)
@@ -153,6 +151,28 @@ F.StylePet = function()
 			end
 		end
 	end
+end
+
+function F.RGBToHex(r, g, b)
+	r = r <= 1 and r >= 0 and r or 0
+	g = g <= 1 and g >= 0 and g or 0
+	b = b <= 1 and b >= 0 and b or 0
+	return string.format('|cff%02x%02x%02x', r*255, g*255, b*255)
+end
+
+function F.ShortValue(v)
+	if (v >= 1e6) then
+		return ('%.1fm'):format(v / 1e6):gsub('%.?0+([km])$', '%1')
+	elseif (v >= 1e3 or v <= -1e3) then
+		return ('%.1fk'):format(v / 1e3):gsub('%.?0+([km])$', '%1')
+	else
+		return v
+	end
+end
+
+function F.Round(number, decimals)
+	if not decimals then decimals = 0 end
+    return (('%%.%df'):format(decimals)):format(number)
 end
 
 -- API stuff
@@ -211,35 +231,32 @@ local function Filter(frame, name)
     end
 end
 
-local function SetTemplate(f, t)
+local function SetTemplate(f, nobd)
 	if f.skinned then return end
     texture = C.Media.Backdrop
 	
 	UpdateColor(t)
 	
-	if f.SetBackdrop and not Filter(f, 'Button') and not Filter(f, 'Overlay') then
+	if not nobd and f.SetBackdrop then
 		f:SetBackdrop({
 			bgFile = texture, 
 		})
 		
 		f:SetBackdropColor(backdropr, backdropg, backdropb, backdropa)
-		f:SetBackdropBorderColor(borderr, borderg, borderb)
 	end
-	
-	--[[if Filter(f, 'Button') then
-		ChatFrame1:AddMessage('Nope, '..f:GetName()..' gets no backdrop.')
-	end]]
     
     if C.Media.ClassColor == true then
-        CreateBorderLight(f, C.Media.BorderSize, C.Media.BorderColor.r, C.Media.BorderColor.g, C.Media.BorderColor.b)
+        CreateBorderLight(f, C.Media.BorderSize, bc.r, bc.g, bc.b)
         SetTexture(f, 'white')
     else
-        CreateBorderLight(f, C.Media.BorderSize, unpack(C.Media.BorderColor))
+        CreateBorderLight(f, C.Media.BorderSize, bc.r, bc.g, bc.b)
         SetTexture(f, 'default')
     end
 	
+	f:SetBeautyBorderPadding(1)
 	f.skinned = true
 end
+F.SetTemplate = SetTemplate -- Compatibility, yo
 
 local borders = {
 	'insettop',
@@ -260,28 +277,10 @@ local function HideInsets(f)
 	end
 end
 
-local function CreateBackdrop(f, t, tex)
-	if f.backdrop then return end
-	if not t then t = 'Default' end
-
-	local b = CreateFrame('Frame', nil, f)
-	b:Point('TOPLEFT', -2, 2)
-	b:Point('BOTTOMRIGHT', 2, -2)
-	b:SetTemplate(t, tex)
-
-	if f:GetFrameLevel() - 1 >= 0 then
-		b:SetFrameLevel(f:GetFrameLevel() - 1)
-	else
-		b:SetFrameLevel(0)
-	end
-	
-	f.backdrop = b
-end
-
 local function Kill(object)
 	if object.IsProtected then 
 		if object:IsProtected() then
-			error("Attempted to kill a protected object: <"..object:GetName()..">")
+			error('Attempted to kill a protected object: <'..object:GetName()..'>')
 		end
 	end
 	
@@ -296,55 +295,51 @@ local function Kill(object)
 end
 
 local function StyleButton(button)
-	if button.stylish then return end
+	--[[local norm
 	
-	local path = 'Interface\\AddOns\\LanUI\\Media\\'
-	local norm = _G[button:GetName()..'NormalTexture']
+	if button:GetNormalTexture() then
+		norm = _G[button:GetName()..'NormalTexture']
+	end
+	
+	if norm then
+		norm:SetAlpha(0)
+	end]]
 	
 	if button.SetHighlightTexture and not button.hover then
 		local hover = button:CreateTexture('frame', nil, self)
-		hover:SetTexture(path..'textureHighlight')
-		hover:Point('TOPRIGHT', 1, 1)
-		hover:Point('BOTTOMLEFT', -1, -1)
+		hover:SetTexture(1, 1, 1, 0.3)
+		hover:Point('TOPLEFT', 1, -1)
+		hover:Point('BOTTOMRIGHT', -1, 1)
 		button.hover = hover
 		button:SetHighlightTexture(hover)
 	end
 
 	if button.SetPushedTexture and not button.pushed then
 		local pushed = button:CreateTexture('frame', nil, self)
-		pushed:SetTexture(path..'texturePushed')
-		pushed:Point('TOPRIGHT', 1, 1)
-		pushed:Point('BOTTOMLEFT', -1, -1)
+		pushed:SetTexture(0.9, 0.8, 0.1, 0.3)
+		pushed:Point('TOPLEFT', 1, -1)
+		pushed:Point('BOTTOMRIGHT', -1, 1)
 		button.pushed = pushed
 		button:SetPushedTexture(pushed)
 	end
 
 	if button.SetCheckedTexture and not button.checked then
 		local checked = button:CreateTexture('frame', nil, self)
-		checked:SetTexture(path..'textureChecked')
-		checked:Point('TOPRIGHT', 1, 1)
-		checked:Point('BOTTOMLEFT', -1, -1)
+		checked:SetTexture(0,1,0,.3)
+		checked:Point('TOPLEFT', 1, -1)
+		checked:Point('BOTTOMRIGHT', -1, 1)
 		button.checked = checked
 		button:SetCheckedTexture(checked)
-	end
-	
-	if norm then
-		norm:SetAlpha(0)
 	end
 
 	local cooldown = button:GetName() and _G[button:GetName()..'Cooldown']
 	if cooldown then
 		cooldown:ClearAllPoints()
-		cooldown:Point('TOPRIGHT', 1, 1)
-		cooldown:Point('BOTTOMLEFT', -1, -1)
+		cooldown:Point('TOPLEFT', 1, -1)
+		cooldown:Point('BOTTOMRIGHT', -1, 1)
 	end
-	
-	button:SetTemplate()
-	button:SetBeautyBorderPadding(2)
-	
-	button.stylish = true
-	--ChatFrame1:AddMessage(button:GetName().. ' successfully skinned!')
 end
+F.StyleButton = StyleButton -- Compatibility, yo
 
 local function FontString(parent, name, fontName, fontHeight, fontStyle)
 	local fs = parent:CreateFontString(nil, 'OVERLAY')
@@ -382,9 +377,9 @@ local function HighlightUnit(f, r, g, b)
 	f:RegisterEvent('PLAYER_TARGET_CHANGED', HighlightTarget)
 end
 
-local function StripTextures(self, kill)
-	for i=1, self:GetNumRegions() do
-		local region = select(i, self:GetRegions())
+local function StripTextures(object, kill)
+	for i=1, object:GetNumRegions() do
+		local region = select(i, object:GetRegions())
 		if region:GetObjectType() == 'Texture' then
 			if kill then
 				region:Kill()
@@ -392,25 +387,138 @@ local function StripTextures(self, kill)
 				region:SetTexture(nil)
 			end
 		end
-	end		
+	end	
 end
 
 -- Let's skin this bitch!
 
 local function SetModifiedBackdrop(self)
 	local color = F.PlayerColor
-	self:SetBackdropColor(color.r*.15, color.g*.15, color.b*.15)
+	self:SetBackdropColor(bc.r*0.5, bc.g*0.5, bc.b*0.5, 0.8)
 	self:SetBackdropBorderColor(color.r, color.g, color.b)
 end
 
 local function SetOriginalBackdrop(self)
 	local color = F.PlayerColor
+	
 	if C.Media.ClassColor == true then
-		self:SetBackdropBorderColor(color.r, color.g, color.b)
+		self:SetBackdropColor(bc.r * .25, bc.g * .25, bc.b * .25, 0.5)
 	else
-		self:SetTemplate()
+		self:SetBackdropColor(unpack(C.Media.BackdropColor))
 	end
 end
+
+local function CreateBD(f, border)
+	if f.backdrop then return end
+	texture = C.Media.Backdrop
+
+	local b = CreateFrame('Frame', nil, f)
+	b:Point('TOPLEFT', -2, 2)
+	b:Point('BOTTOMRIGHT', 2, -2)
+	
+	if b.SetBackdrop then
+		b:SetBackdrop({
+			bgFile = texture, 
+		})
+		
+		b:SetBackdropColor(backdropr, backdropg, backdropb, backdropa)
+	end
+	
+	if border then
+		f:SetTemplate(true)
+	end
+
+	if f:GetFrameLevel() - 1 >= 0 then
+		b:SetFrameLevel(f:GetFrameLevel() - 1)
+	else
+		b:SetFrameLevel(0)
+	end
+	
+	
+	f.backdrop = b
+end
+F.CreateBD = CreateBD -- Compatibility, yo
+
+local function CreatePulse(frame, speed, mult, alpha) -- pulse function originally by nightcracker
+	frame.speed = speed or .05
+	frame.mult = mult or 1
+	frame.alpha = alpha or 1
+	frame.tslu = 0 -- time since last update
+	frame:SetScript('OnUpdate', function(self, elapsed)
+		self.tslu = self.tslu + elapsed
+		
+		if self.tslu > self.speed then
+			self.tslu = 0
+			self:SetAlpha(self.alpha)
+		end
+		
+		self.alpha = self.alpha - elapsed * self.mult
+		
+		if self.alpha < 0 and self.mult > 0 then
+			self.mult = self.mult * -1
+			self.alpha = 0
+		elseif self.alpha > 1 and self.mult < 0 then
+			self.mult = self.mult * -1
+		end
+	end)
+end
+F.CreatePulse = CreatePulse -- Compatibility, yo
+
+local function Reskin(f)
+	local glow = CreateFrame('Frame', nil, f)
+	
+	if f:GetName() then
+		local l = _G[f:GetName()..'Left']
+		local m = _G[f:GetName()..'Middle']
+		local r = _G[f:GetName()..'Right']
+
+
+		if l then l:SetAlpha(0) end
+		if m then m:SetAlpha(0) end
+		if r then r:SetAlpha(0) end
+	end
+
+	if f.Left then f.Left:SetAlpha(0) end
+	if f.Right then f.Right:SetAlpha(0) end	
+	if f.Middle then f.Middle:SetAlpha(0) end
+	if f.SetNormalTexture then f:SetNormalTexture('') end	
+	if f.SetHighlightTexture then f:SetHighlightTexture('') end
+	if f.SetPushedTexture then f:SetPushedTexture('') end	
+	if f.SetDisabledTexture then f:SetDisabledTexture('') end	
+	if strip then StripTextures(f) end
+	
+	glow:SetBackdrop({
+		edgeFile = C.Media.Glow,
+		edgeSize = 9,
+	})
+	
+	glow:SetPoint('TOPLEFT', f, -6, 6)
+	glow:SetPoint('BOTTOMRIGHT', f, 6, -6)
+	glow:SetBackdropBorderColor(bc.r, bc.g, bc.b)
+	glow:SetAlpha(0)
+	
+    f:SetTemplate()
+	f:SetBackdropColor(bc.r * .25, bc.g * .25, bc.b * .25, 0.5)
+	
+	f:SetNormalTexture('')
+	f:SetHighlightTexture('')
+	f:SetPushedTexture('')
+	f:SetDisabledTexture('')
+
+	f:HookScript('OnEnter', function(self)
+        self:SetBackdropBorderColor(bc.r, bc.g, bc.b)
+        self:SetBackdropColor(bc.r*0.5, bc.g*0.5, bc.b*0.5, 0.8)
+        glow:CreatePulse()
+    end)
+ 	
+    f:HookScript('OnLeave', function(self)
+        self:SetBackdropBorderColor(bc.r, bc.g, bc.b)
+        self:SetBackdropColor(bc.r * .25, bc.g * .25, bc.b * .25, 0.5)
+        glow:SetScript('OnUpdate', nil)
+        glow:SetAlpha(0)
+    end)
+end
+F.Reskin = Reskin -- Compatibility, yo
 
 local function SkinButton(f, strip)
 	if f:GetName() then
@@ -433,7 +541,8 @@ local function SkinButton(f, strip)
 	if f.SetDisabledTexture then f:SetDisabledTexture('') end	
 	if strip then StripTextures(f) end
 	
-	SetTemplate(f, 'Default')
+	SetTemplate(f)
+	f:SetBackdropColor(bc.r * .25, bc.g * .25, bc.b * .25, 0.5)
 	f:HookScript('OnEnter', SetModifiedBackdrop)
 	f:HookScript('OnLeave', SetOriginalBackdrop)
 end
@@ -443,7 +552,7 @@ local function SkinIconButton(b, shrinkIcon)
 	if b.isSkinned then return end
 
 	b:StripTextures()
-	b:CreateBackdrop('Default', true)
+	b:CreateBD()
 	b:StyleButton()
 
 	local icon = b.icon
@@ -487,45 +596,36 @@ local function SkinScrollBar(frame)
 
 	if _G[frame:GetName()..'ScrollUpButton'] and _G[frame:GetName()..'ScrollDownButton'] then
 		StripTextures(_G[frame:GetName()..'ScrollUpButton'])
-		SetTemplate(_G[frame:GetName()..'ScrollUpButton'], 'Default', true)
 		if not _G[frame:GetName()..'ScrollUpButton'].texture then
 			_G[frame:GetName()..'ScrollUpButton'].texture = _G[frame:GetName()..'ScrollUpButton']:CreateTexture(nil, 'OVERLAY')
 			Point(_G[frame:GetName()..'ScrollUpButton'].texture, 'TOPLEFT', 2, -2)
 			Point(_G[frame:GetName()..'ScrollUpButton'].texture, 'BOTTOMRIGHT', -2, 2)
 			_G[frame:GetName()..'ScrollUpButton'].texture:SetTexture([[Interface\AddOns\LanUI\Media\arrowup.tga]])
-			_G[frame:GetName()..'ScrollUpButton'].texture:SetVertexColor(unpack(C.Media.BorderColor))
+			_G[frame:GetName()..'ScrollUpButton'].texture:SetVertexColor(bc.r, bc.g, bc.b)
 		end	
 		
 		StripTextures(_G[frame:GetName()..'ScrollDownButton'])
-		SetTemplate(_G[frame:GetName()..'ScrollDownButton'], 'Default', true)
 	
 		if not _G[frame:GetName()..'ScrollDownButton'].texture then
 			_G[frame:GetName()..'ScrollDownButton'].texture = _G[frame:GetName()..'ScrollDownButton']:CreateTexture(nil, 'OVERLAY')
 			Point(_G[frame:GetName()..'ScrollDownButton'].texture, 'TOPLEFT', 2, -2)
 			Point(_G[frame:GetName()..'ScrollDownButton'].texture, 'BOTTOMRIGHT', -2, 2)
 			_G[frame:GetName()..'ScrollDownButton'].texture:SetTexture([[Interface\AddOns\LanUI\Media\arrowdown.tga]])
-			_G[frame:GetName()..'ScrollDownButton'].texture:SetVertexColor(unpack(C.Media.BorderColor))
+			_G[frame:GetName()..'ScrollDownButton'].texture:SetVertexColor(bc.r, bc.g, bc.b)
 		end				
 		
 		if not frame.trackbg then
 			frame.trackbg = CreateFrame('Frame', nil, frame)
 			Point(frame.trackbg, 'TOPLEFT', _G[frame:GetName()..'ScrollUpButton'], 'BOTTOMLEFT', 0, -1)
 			Point(frame.trackbg, 'BOTTOMRIGHT', _G[frame:GetName()..'ScrollDownButton'], 'TOPRIGHT', 0, 1)
-			SetTemplate(frame.trackbg, 'Transparent')
+			SetTemplate(frame.trackbg, true)
+			frame.trackbg:SetBeautyBorderPadding(2)
 		end
 		
 		if frame:GetThumbTexture() then
 			if not thumbTrim then thumbTrim = 3 end
-			frame:GetThumbTexture():SetTexture(nil)
-			if not frame.thumbbg then
-				frame.thumbbg = CreateFrame('Frame', nil, frame)
-				Point(frame.thumbbg, 'TOPLEFT', frame:GetThumbTexture(), 'TOPLEFT', 2, -thumbTrim)
-				Point(frame.thumbbg, 'BOTTOMRIGHT', frame:GetThumbTexture(), 'BOTTOMRIGHT', -2, thumbTrim)
-				SetTemplate(frame.thumbbg, 'Default', true)
-				if frame.trackbg then
-					frame.thumbbg:SetFrameLevel(frame.trackbg:GetFrameLevel())
-				end
-			end
+			frame:GetThumbTexture():SetTexture(bc.r, bc.g, bc.b)
+			frame:GetThumbTexture():SetPoint('TOP', frame, 0, -thumbTrim)
 		end	
 	end	
 end
@@ -557,22 +657,40 @@ local function SkinTab(tab)
 	end
 	
 	tab.backdrop = CreateFrame('Frame', nil, tab)
-	SetTemplate(tab.backdrop, 'Default')
+	tab.backdrop:SetTemplate()
 	tab.backdrop:SetFrameLevel(tab:GetFrameLevel() - 1)
     
     Point(tab.backdrop, 'TOPLEFT', 0, 0)
 	Point(tab.backdrop, 'BOTTOMRIGHT', 0, 0)
 
     local name = tab:GetName()
-    _G[name..'Text']:ClearAllPoints()
-    _G[name..'Text']:SetPoint('CENTER')
-    _G[name..'Text'].SetPoint = F.Dummy
+	
+	if not _G[name..'Text'] then
+		for i = 1, tab:GetNumRegions() do
+			local object = select(i, tab:GetRegions())
+			if object:GetObjectType() == 'FontString' then
+				object:ClearAllPoints()
+				object:SetPoint('CENTER')
+				object.SetPoint = F.Dummy
+			end
+		end
+	else
+		_G[name..'Text']:ClearAllPoints()
+		_G[name..'Text']:SetPoint('CENTER')
+		_G[name..'Text'].SetPoint = F.Dummy
+	end
+	
+	tab:SetFrameStrata('BACKGROUND')
+	
+	if tab:GetParent():GetFrameLevel() ~= 0 then
+		tab:SetFrameLevel(tab:GetParent():GetFrameLevel() - 1)
+	end
 end
 F.SkinTab = SkinTab -- Compatibility, yo
 
 local function SkinNextPrevButton(btn, horizonal)
-	SetTemplate(btn, 'Default')
-	Size(btn, btn:GetWidth() - 7, btn:GetHeight() - 7)	
+	--SetTemplate(btn)
+	Size(btn, btn:GetWidth() - 15, btn:GetHeight() - 15)
 	
 	if horizonal then
 		btn:GetNormalTexture():SetTexCoord(0.3, 0.29, 0.3, 0.72, 0.65, 0.29, 0.65, 0.72)
@@ -603,7 +721,7 @@ end
 F.SkinNextPrevButton = SkinNextPrevButton -- Compatibility, yo
 
 local function SkinRotateButton(btn)
-	SetTemplate(btn, 'Default')
+	SetTemplate(btn)
 	Size(btn, btn:GetWidth() - 14, btn:GetHeight() - 14)	
 	
 	btn:GetNormalTexture():SetTexCoord(0.3, 0.29, 0.3, 0.65, 0.69, 0.29, 0.69, 0.65)
@@ -624,7 +742,7 @@ local function SkinEditBox(frame)
 	if _G[frame:GetName()..'Middle'] then Kill(_G[frame:GetName()..'Middle']) end
 	if _G[frame:GetName()..'Right'] then Kill(_G[frame:GetName()..'Right']) end
 	if _G[frame:GetName()..'Mid'] then Kill(_G[frame:GetName()..'Mid']) end
-	CreateBackdrop(frame, 'Default')
+	CreateBD(frame)
 	
 	if frame:GetName() and frame:GetName():find('Silver') or frame:GetName():find('Copper') then
 		Point(frame.backdrop, 'BOTTOMRIGHT', -12, -2)
@@ -643,20 +761,20 @@ local function SkinDropDownBox(frame, width)
 	Point(_G[frame:GetName()..'Text'], 'RIGHT', button, 'LEFT', -2, 0)
 
 	button:ClearAllPoints()
-	Point(button, 'RIGHT', frame, 'RIGHT', -10, 3)
+	Point(button, 'RIGHT', frame, 'RIGHT', -10, 0)
 	button.SetPoint = F.Dummy
 	
-	SkinNextPrevButton(button, true)
+	-- SkinNextPrevButton(button, true)
 	
-	CreateBackdrop(frame, 'Default')
-	Point(frame.backdrop, 'TOPLEFT', 20, -2)
-	Point(frame.backdrop, 'BOTTOMRIGHT', button, 'BOTTOMRIGHT', 2, -2)
+	--[[frame:CreateBD()
+	frame.backdrop:Point('TOPLEFT', 20, -2)
+	frame.backdrop:Point('BOTTOMRIGHT', button, 'BOTTOMRIGHT', 2, -2)]]
 end
 F.SkinDropDownBox = SkinDropDownBox -- Compatibility, yo
 
 local function SkinCheckBox(frame)
 	StripTextures(frame)
-	CreateBackdrop(frame, 'Default')
+	CreateBD(frame)
 	Point(frame.backdrop, 'TOPLEFT', 4, -4)
 	Point(frame.backdrop, 'BOTTOMRIGHT', -4, 4)
 	
@@ -702,7 +820,7 @@ end
 F.SkinCloseButton = SkinCloseButton -- Compatibility, yo
 
 local function SkinSlideBar(frame, height, movetext)
-	frame:SetTemplate('Default')
+	--frame:SetTemplate()
 	frame:SetBackdropColor(0, 0, 0, .8)
 
 	if not height then
@@ -716,7 +834,7 @@ local function SkinSlideBar(frame, height, movetext)
 	end
 
 	_G[frame:GetName()]:SetThumbTexture(C.Media.Backdrop)
-	_G[frame:GetName()]:GetThumbTexture():SetVertexColor(unpack(C.Media.BorderColor))
+	_G[frame:GetName()]:GetThumbTexture():SetVertexColor(bc.r, bc.g, bc.b)
 	if( frame:GetWidth() < frame:GetHeight() ) then
 		frame:Width(height)
 		_G[frame:GetName()]:GetThumbTexture():Size(frame:GetWidth(), frame:GetWidth() + 4)
@@ -736,7 +854,6 @@ local function addapi(object)
 	if not object.SetTemplate then mt.SetTemplate = SetTemplate end
 	if not object.CreateBackdrop then mt.CreateBackdrop = CreateBackdrop end
 	if not object.StripTextures then mt.StripTextures = StripTextures end
-	if not object.CreateShadow then mt.CreateShadow = CreateShadow end
 	if not object.Kill then mt.Kill = Kill end
 	if not object.StyleButton then mt.StyleButton = StyleButton end
 	if not object.Width then mt.Width = Width end
@@ -755,6 +872,9 @@ local function addapi(object)
 	if not object.SkinCloseButton then mt.SkinCloseButton = SkinCloseButton end
 	if not object.SkinSlideBar then mt.SkinSlideBar = SkinSlideBar end
 	if not object.HideInsets then mt.HideInsets = HideInsets end
+	if not object.CreateBD then mt.CreateBD = CreateBD end
+	if not object.CreatePulse then mt.CreatePulse = CreatePulse end
+	if not object.Reskin then mt.Reskin = Reskin end
 end
 
 local handled = {['Frame'] = true}
@@ -773,81 +893,71 @@ while object do
 	object = EnumerateFrames(object)
 end
 
-function F.utf8sub(string, index, dots)
-    local bytes = string:len()
-    if bytes <= index then
-        return string
-    else
-        local length, currentIndex = 0, 1
+------------------------------------------------------------------------
+-- Add time before calling a function
+-- Usage: F.Delay(seconds, functionToCall, ...)
+------------------------------------------------------------------------
 
-        while currentIndex <= bytes do
-            length = length + 1
-            local char = string:byte(currentIndex)
-            if char > 240 then
-                currentIndex = currentIndex + 4
-            elseif char > 225 then
-                currentIndex = currentIndex + 3
-            elseif char > 192 then
-                currentIndex = currentIndex + 2
-            else
-                currentIndex = currentIndex + 1
-            end
-
-            if length == index then
-                break
-            end
-        end
-
-        if length == index and currentIndex <= bytes then
-            return string:sub(1, currentIndex - 1)..(dots and '...' or '')
-        else
-            return string
-        end
-    end
-end
-
-function F.RGBToHex(r, g, b)
-	r = r <= 1 and r >= 0 and r or 0
-	g = g <= 1 and g >= 0 and g or 0
-	b = b <= 1 and b >= 0 and b or 0
-	return string.format('|cff%02x%02x%02x', r*255, g*255, b*255)
-end
-
-function F.ShortValue(v)
-	if (v >= 1e6) then
-		return ('%.1fm'):format(v / 1e6):gsub('%.?0+([km])$', '%1')
-	elseif (v >= 1e3 or v <= -1e3) then
-		return ('%.1fk'):format(v / 1e3):gsub('%.?0+([km])$', '%1')
-	else
-		return v
+local waitTable = {}
+local waitFrame
+F.Delay = function(delay, func, ...)
+	if(type(delay)~="number" or type(func)~="function") then
+		return false
 	end
+	if(waitFrame == nil) then
+		waitFrame = CreateFrame("Frame","WaitFrame", UIParent)
+		waitFrame:SetScript("onUpdate",function (self,elapse)
+			local count = #waitTable
+			local i = 1
+			while(i<=count) do
+				local waitRecord = tremove(waitTable,i)
+				local d = tremove(waitRecord,1)
+				local f = tremove(waitRecord,1)
+				local p = tremove(waitRecord,1)
+				if(d>elapse) then
+				  tinsert(waitTable,i,{d-elapse,f,p})
+				  i = i + 1
+				else
+				  count = count - 1
+				  f(unpack(p))
+				end
+			end
+		end)
+	end
+	tinsert(waitTable,{delay,func,{...}})
+	return true
 end
 
-F.Round = function(number, decimals)
-	if not decimals then decimals = 0 end
-    return (('%%.%df'):format(decimals)):format(number)
-end
+------------------------------------------------------------------------
+-- Skinning
+------------------------------------------------------------------------
 
-function F.RevTable(curTab)
-    if not curTab then return end
-    local revTab = {}
+F.SkinFuncs = {}
+F.SkinFuncs['LanUI'] = {}
 
-    for _, v in pairs(curTab) do
-        revTab[v] = true
-    end
-
-    return revTab
-end
-
-function F.RemoveRegions(frame, regions)
-	if not frame then return end
-
-	regions = F.RevTable(regions)
-
-	for i = 1, frame:GetNumRegions() do
-		local reg = select(i, frame:GetRegions())
-		if not regions or regions and regions[i] then
-			reg:SetAlpha(0)
+local LoadBlizzardSkin = CreateFrame('Frame')
+LoadBlizzardSkin:RegisterEvent('ADDON_LOADED')
+LoadBlizzardSkin:SetScript('OnEvent', function(self, event, addon)
+	if IsAddOnLoaded('Skinner') or IsAddOnLoaded('Aurora') then
+		self:UnregisterEvent('ADDON_LOADED')
+		return 
+	end
+	
+	for _addon, skinfunc in pairs(F.SkinFuncs) do
+		if type(skinfunc) == 'function' then
+			if _addon == addon then
+				if skinfunc then
+					skinfunc()
+				end
+			end
+		elseif type(skinfunc) == 'table' then
+			if _addon == addon then
+				for _, skinfunc in pairs(F.SkinFuncs[_addon]) do
+					if skinfunc then
+						skinfunc()
+					end
+				end
+			end
 		end
-    end
-end
+	end
+end)

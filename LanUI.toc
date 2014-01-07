@@ -1,6 +1,6 @@
 ## Interface: 50400
 ## Title: |cff0099ffLan|rUI
-## Version: 0.8.5a
+## Version: 0.9b
 ## Author: Lanerra
 ## Notes: Lightweight UI Modification
 
@@ -49,6 +49,65 @@ Modules\LanTooltip.lua
 Modules\LanTweaks.lua
 Modules\LanWatch.lua
 Modules\LanWarning.lua
+
+# Modules - Skins
+Modules\Skins\Achievement.lua
+Modules\Skins\AchievementPopup.lua
+Modules\Skins\Archeology.lua
+Modules\Skins\Auction.lua
+Modules\Skins\Bags.lua
+Modules\Skins\Barbershop.lua
+Modules\Skins\BGScore.lua
+Modules\Skins\Binding.lua
+Modules\Skins\Calendar.lua
+Modules\Skins\Character.lua
+Modules\Skins\ColorPicker.lua
+Modules\Skins\DebugTools.lua
+Modules\Skins\DressUp.lua
+Modules\Skins\Friends.lua
+Modules\Skins\Glyph.lua
+Modules\Skins\Gossip.lua
+Modules\Skins\Greeting.lua
+Modules\Skins\Guild.lua
+Modules\Skins\GuildBank.lua
+Modules\Skins\GuildControl.lua
+Modules\Skins\GuildRegister.lua
+Modules\Skins\Help.lua
+Modules\Skins\Inspect.lua
+Modules\Skins\ItemText.lua
+Modules\Skins\ItemTransmogrify.lua
+Modules\Skins\ItemUpgrade.lua
+Modules\Skins\Journal.lua
+Modules\Skins\LFG.lua
+Modules\Skins\Loot.lua
+Modules\Skins\LossControl.lua
+Modules\Skins\MacOSX.lua
+Modules\Skins\Macro.lua
+Modules\Skins\Mail.lua
+Modules\Skins\Merchant.lua
+Modules\Skins\Opacity.lua
+Modules\Skins\Others.lua
+Modules\Skins\Petition.lua
+Modules\Skins\Pets.lua
+Modules\Skins\PVE.lua
+Modules\Skins\PVP.lua
+Modules\Skins\Quest.lua
+Modules\Skins\QuestLog.lua
+Modules\Skins\Raid.lua
+Modules\Skins\Reforging.lua
+Modules\Skins\Socket.lua
+Modules\Skins\SpellBook.lua
+Modules\Skins\Survey.lua
+Modules\Skins\Tabard.lua
+Modules\Skins\Talent.lua
+Modules\Skins\Taxi.lua
+Modules\Skins\TimeManager.lua
+Modules\Skins\Trade.lua
+Modules\Skins\TradeSkill.lua
+Modules\Skins\Trainer.lua
+Modules\Skins\Tutorial.lua
+Modules\Skins\VoidStorage.lua
+Modules\Skins\WorldMap.lua
 
 # Unitframes
 Modules\oUF_Lanerra\Modules\Smooth.lua

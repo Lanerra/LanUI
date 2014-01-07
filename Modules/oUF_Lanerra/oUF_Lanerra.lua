@@ -168,15 +168,15 @@ local function PostCastStart(Castbar, unit)
     
     if (unit == 'target') then
         if (self.Castbar.interrupt) then
-            self.Castbar.Border:SetBeautyBorderTexture(Interrupt)
-            self.Castbar.Border:SetBeautyBorderColor(1, 0, 1)
+            self.Castbar.Borders:SetBeautyBorderTexture(Interrupt)
+            self.Castbar.Borders:SetBeautyBorderColor(1, 0, 1)
         else
 			if C.Media.ClassColor then
-				self.Castbar.Border:SetBeautyBorderTexture('white')
-				self.Castbar.Border:SetBeautyBorderColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
+				self.Castbar.Borders:SetBeautyBorderTexture('white')
+				self.Castbar.Borders:SetBeautyBorderColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
 			else
-				self.Castbar.Border:SetBorderTexture('default')
-				self.Castbar.Border:SetBeautyBorderColor(C.Media.BorderColor)
+				self.Castbar.Borders:SetBorderTexture('default')
+				self.Castbar.Borders:SetBeautyBorderColor(C.Media.BorderColor)
 			end
         end
     end
@@ -190,15 +190,15 @@ local function PostChannelStart(Castbar, unit)
     
     if (unit == 'target') then
         if (self.interrupt) then
-			self.Castbar.Border:SetBeautyBorderTexture(Interrupt)
-            self.Castbar.Border:SetBeautyBorderColor(1, 0, 1)
+			self.Castbar.Borders:SetBeautyBorderTexture(Interrupt)
+            self.Castbar.Borders:SetBeautyBorderColor(1, 0, 1)
         else
 			if C.Media.ClassColor then
-				self.Castbar.Border:SetBeautyBorderTexture('white')
-				self.Castbar.Border:SetBeautyBorderColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
+				self.Castbar.Borders:SetBeautyBorderTexture('white')
+				self.Castbar.Borders:SetBeautyBorderColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
 			else
-				self.Castbar.Border:SetBorderTexture('default')
-				self.Castbar.Border:SetBeautyBorderColor(C.Media.BorderColor)
+				self.Castbar.Borders:SetBorderTexture('default')
+				self.Castbar.Borders:SetBeautyBorderColor(C.Media.BorderColor)
 			end
         end
     end
@@ -617,14 +617,14 @@ local Stylish = function(self, unit, isSingle)
 			self.Castbar:SetScale(C.UF.CastBars.Player.Scale)
 			self.Castbar:SetStatusBarColor(unpack(C.UF.CastBars.Player.Color))
             
-            self.Castbar.Border = CreateFrame('Frame', nil, self.Castbar)
-            self.Castbar.Border:SetPoint('TOPLEFT', 0, 1)
-			self.Castbar.Border:SetPoint('BOTTOMRIGHT', 1, 0)
-            self.Castbar.Border:SetFrameStrata('HIGH')
+            self.Castbar.Borders = CreateFrame('Frame', nil, self.Castbar)
+            self.Castbar.Borders:SetPoint('TOPLEFT', 0, 1)
+			self.Castbar.Borders:SetPoint('BOTTOMRIGHT', 1, 0)
+            self.Castbar.Borders:SetFrameStrata('HIGH')
             
-			self.Castbar.Border:SetTemplate()
-			self.Castbar.Border:SetBeautyBorderPadding(3)
-			self.Castbar.Border:SetBackdropColor(0, 0, 0, 0)
+			self.Castbar.Borders:SetTemplate()
+			self.Castbar.Borders:SetBeautyBorderPadding(3)
+			self.Castbar.Borders:SetBackdropColor(0, 0, 0, 0)
 			
 			self.Castbar:SetHeight(C.UF.CastBars.Player.Height)
 			self.Castbar:SetWidth(C.UF.CastBars.Player.Width)
@@ -670,14 +670,14 @@ local Stylish = function(self, unit, isSingle)
 			self.Castbar:SetWidth(C.UF.CastBars.Target.Width)
 			self.Castbar:SetScale(C.UF.CastBars.Target.Scale)
 			
-            self.Castbar.Border = CreateFrame('Frame', nil, self.Castbar)
-            self.Castbar.Border:SetPoint('TOPLEFT', 0, 1)
-			self.Castbar.Border:SetPoint('BOTTOMRIGHT', 1, 0)
-            self.Castbar.Border:SetFrameStrata('HIGH')
+            self.Castbar.Borders = CreateFrame('Frame', nil, self.Castbar)
+            self.Castbar.Borders:SetPoint('TOPLEFT', 0, 1)
+			self.Castbar.Borders:SetPoint('BOTTOMRIGHT', 1, 0)
+            self.Castbar.Borders:SetFrameStrata('HIGH')
             
-			self.Castbar.Border:SetTemplate()
-			self.Castbar.Border:SetBeautyBorderPadding(3)
-			self.Castbar.Border:SetBackdropColor(0, 0, 0, 0)
+			self.Castbar.Borders:SetTemplate()
+			self.Castbar.Borders:SetBeautyBorderPadding(3)
+			self.Castbar.Borders:SetBackdropColor(0, 0, 0, 0)
 			
 			self.Castbar:SetHeight(C.UF.CastBars.Target.Height)
 			self.Castbar:SetParent(self)
