@@ -19,4 +19,11 @@ local function ReforgenatorSkin()
 	ReforgenatorPanel_TargetLevelSelection:SkinDropDownBox()
 end	
 F.SkinFuncs['Reforgenator'] = ReforgenatorSkin
-	
+
+local function WoWProSkin()
+	WoWPro.MainFrame:CreateBD()
+	WoWPro.MainFrame.backdrop:Point('TOPLEFT', WoWPro.MainFrame, -2, 2)
+	WoWPro.MainFrame.backdrop:Point('BOTTOMRIGHT', WoWPro.MainFrame, 2, -2)
+	WoWPro.MainFrame.backdrop:SetTemplate(true)
+end
+F.SkinFuncs['WoWPro'] = WoWProSkin

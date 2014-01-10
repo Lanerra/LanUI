@@ -150,35 +150,37 @@ local function LoadSkin()
 		'SecondaryProfession4'
 	}
 
-	for _, header in pairs(professionheaders) do
-		_G[header..'Missing']:SetTextColor(1, 0.8, 0)
-		_G[header..'Missing']:SetShadowColor(0, 0, 0)
-		_G[header..'Missing']:SetShadowOffset(1, -1)
-		_G[header].missingText:SetTextColor(0.6, 0.6, 0.6)
-	end
-
-	for _, button in pairs(professionbuttons) do
-		local icon = _G[button..'IconTexture']
-		local rank = _G[button..'SubSpellName']
-		local button = _G[button]
-		button:StripTextures()
-
-		if rank then
-			rank:SetTextColor(1, 1, 1)
+	if not InCombatLockdown() then
+		for _, header in pairs(professionheaders) do
+			_G[header..'Missing']:SetTextColor(1, 0.8, 0)
+			_G[header..'Missing']:SetShadowColor(0, 0, 0)
+			_G[header..'Missing']:SetShadowOffset(1, -1)
+			_G[header].missingText:SetTextColor(0.6, 0.6, 0.6)
 		end
 
-		if icon then
-			icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-			icon:ClearAllPoints()
-			icon:Point('TOPLEFT', 4, -4)
-			icon:Point('BOTTOMRIGHT', -4, 4)
+		for _, button in pairs(professionbuttons) do
+			local icon = _G[button..'IconTexture']
+			local rank = _G[button..'SubSpellName']
+			local button = _G[button]
+			button:StripTextures()
 
-			button:SetFrameLevel(button:GetFrameLevel() + 2)
-			if not button.backdrop then
-				button:CreateBD()
-				button.backdrop:SetTemplate(true)
-				button.backdrop:Point('TOPLEFT', 2, -2)
-				button.backdrop:Point('BOTTOMRIGHT', -2, 2)
+			if rank then
+				rank:SetTextColor(1, 1, 1)
+			end
+
+			if icon then
+				icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+				icon:ClearAllPoints()
+				icon:Point('TOPLEFT', 4, -4)
+				icon:Point('BOTTOMRIGHT', -4, 4)
+
+				button:SetFrameLevel(button:GetFrameLevel() + 2)
+				if not button.backdrop then
+					button:CreateBD()
+					button.backdrop:SetTemplate(true)
+					button.backdrop:Point('TOPLEFT', 2, -2)
+					button.backdrop:Point('BOTTOMRIGHT', -2, 2)
+				end
 			end
 		end
 	end

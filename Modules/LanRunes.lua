@@ -1,4 +1,4 @@
-local F, C, G = unpack(select(2, ...))
+--[[local F, C, G = unpack(select(2, ...))
 
 if select(2, UnitClass('player')) ~= 'DEATHKNIGHT' then
     return
@@ -145,4 +145,4 @@ Rune:SetScript('OnUpdate', function(self, elapsed)
         
 		updateTimer   = 0
 	end
-end)
+end)]]

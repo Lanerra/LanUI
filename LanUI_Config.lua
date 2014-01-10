@@ -80,9 +80,10 @@ C['Tweaks'] = {
     ['LanNameplates'] = true, -- Personal settings for nameplate display
     ['Sticky'] = true, -- Sticky targetting
     ['RepairSell'] = true, -- Automatically sell grey items, repair damage
-    ['AutoDEGreed'] = false, -- Automatically disenchant or greed on Bind on Pickup items above a certain ilvl
+    ['AutoDEGreed'] = true, -- Automatically disenchant or greed on Bind on Pickup items above a certain ilvl
     ['StatsFrame'] = false, -- Show or hide StatsFrame
     ['UIScale'] = 0.625,
+    ['LevelOverride'] = true,
 }
 
 C['Chat'] = {

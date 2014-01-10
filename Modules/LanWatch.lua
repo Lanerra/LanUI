@@ -251,13 +251,20 @@ end)
 
 local bg = CreateFrame('Frame', 'WatchBG', WatchFrame)
 bg:SetFrameStrata('BACKGROUND')
-bg:SetPoint('TOPLEFT', WatchFrameLines, -5, 5)
+bg:SetPoint('TOPRIGHT', WatchFrameLines, 23, 5)
 bg:SetPoint('BOTTOM', _G['WatchFrameLinkButton'..#WATCHFRAME_LINKBUTTONS], 0, -30)
-bg:SetWidth(205)
+bg:SetWidth(WatchFrame:GetWidth() + 2)
 bg:SetTemplate()
 
 hooksecurefunc('WatchFrame_Update', function(self, event)
-	bg:SetPoint('BOTTOM', _G['WatchFrameLinkButton'..#WATCHFRAME_LINKBUTTONS], 0, -30)
+	if #WATCHFRAME_LINKBUTTONS < 1 then
+		bg:SetWidth(WatchFrame:GetWidth() + 2)
+		WatchFrame:Hide()
+	else
+		bg:SetPoint('BOTTOM', _G['WatchFrameLinkButton'..#WATCHFRAME_LINKBUTTONS], 0, -30)
+		bg:SetWidth(WatchFrame:GetWidth() + 2)
+		WatchFrame:Show()
+	end
 end)
 
 F.RegisterEvent('PLAYER_REGEN_DISABLED', function()

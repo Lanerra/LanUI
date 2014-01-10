@@ -1,6 +1,21 @@
 local F, C, G = unpack(select(2, ...))
-
+local bc = C.Media.BorderColor
 local oUF = oUF
+
+local settings = {
+	C.UF.Units.Player,
+	C.UF.Units.Pet,
+	C.UF.Units.Target,
+	C.UF.Units.ToT,
+	C.UF.Units.Focus,
+	C.UF.Units.Party,
+	C.UF.Units.Raid,
+}
+
+for _, setting in pairs(settings) do
+	setting.Width =  setting.Width * F.Mult
+	setting.Height = setting.Height * F.Mult
+end
 
 objects = {}
 -------------------------------------------------
@@ -386,6 +401,24 @@ local function UpdateDruidPower(self, event, unit)
     end
 end
 
+-- Runes, sucka!
+if F.MyClass == 'DEATHKNIGHT' then
+	-- Better unholy color:
+	oUF.colors.runes[2][1] = 0.3
+	oUF.colors.runes[2][2] = 0.9
+	oUF.colors.runes[2][3] = 0
+
+	-- Better frost color:
+	oUF.colors.runes[3][1] = 0
+	oUF.colors.runes[3][2] = 0.8
+	oUF.colors.runes[3][3] = 1
+
+	-- Better death color:
+	oUF.colors.runes[4][1] = 0.8
+	oUF.colors.runes[4][2] = 0.5
+	oUF.colors.runes[4][3] = 1
+end
+
 -- Aura Icons for our unit frames
 -- Aura Icon Show
 local AuraIconCD_OnShow = function(cd)
@@ -603,11 +636,9 @@ local Stylish = function(self, unit, isSingle)
 	end
 	
     self.Power.PostUpdate = UpdatePower
-    
-    -- Improve border drawing
-    self.Overlay = CreateFrame('Frame', nil, self)
-	self.Overlay:SetAllPoints(self)
-	self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
+	
+	-- Set this up now for our borders later
+	self.Overlay = CreateFrame('Frame', nil, self)
     
 	-- Now, to hammer out our castbars
 	if (C.UF.Show.CastBars) then
@@ -960,33 +991,31 @@ local Stylish = function(self, unit, isSingle)
 	end
 	
 	-- Various oUF plugins support
-	if (unit == 'player') then
-		-- oUF_RuneBar support
-		if (IsAddOnLoaded('oUF_RuneBar') and class == 'DEATHKNIGHT') then
-			self.RuneBar = {}
-			for i = 1, 6 do
-				self.RuneBar[i] = CreateFrame('StatusBar', '$parentRuneBar', self)
-				if(i == 1) then
-					self.RuneBar[i]:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -1)
-				else
-					self.RuneBar[i]:SetPoint('TOPLEFT', self.RuneBar[i-1], 'TOPRIGHT', 1, 0)
-				end
-				self.RuneBar[i]:SetStatusBarTexture(C.Media.StatusBar)
-				self.RuneBar[i]:SetHeight(5)
-				self.RuneBar[i]:SetWidth(200/6 - .85)
-				self.RuneBar[i]:SetBackdrop(backdrop)
-				self.RuneBar[i]:SetBackdropColor(unpack(C.Media.BackdropColor))
-				self.RuneBar[i]:SetMinMaxValues(0, 1)
-
-				self.RuneBar[i].bg = self.RuneBar[i]:CreateTexture('$parentRuneBackground', 'BORDER')
-				self.RuneBar[i].bg:SetAllPoints(self.RuneBar[i])
-				self.RuneBar[i].bg:SetTexture(.1, .1, .1)			
+	if (unit == 'player' and F.MyClass == 'DEATHKNIGHT') then
+		local Runes = {}
+		for index = 1, 6 do
+			-- Position and size of the rune bar indicators
+			local Rune = CreateFrame('StatusBar', nil, self)
+			Rune:SetStatusBarTexture(C.Media.StatusBar)
+			Rune:SetSize(C.UF.Units.Player.Width / (F.Mult * 6) - F.Mult + 0.35, 6)
+			Runes[index] = Rune
+			
+			if index == 1 then
+				Runes[index]:Point('BOTTOMLEFT', self, 'TOPLEFT', F.Mult * 2, F.Mult)
+				Runes[index]:CreateBD()
+			else
+				Runes[index]:Point('LEFT', Runes[index - 1], 'RIGHT', F.Mult, 0)
 			end
 		end
+		
+		Runes[1].backdrop:Point('TOPLEFT', Runes[1])
+		Runes[1].backdrop:Point('BOTTOMRIGHT', Runes[6])
+		-- Register with oUF
+		self.Runes = Runes
     end
 
     -- DruidPower Support
-    if (unit == 'player' and select(2, UnitClass('player')) == 'DRUID') then    
+    if (unit == 'player' and F.MyClass == 'DRUID') then    
         self.Druid = CreateFrame('Frame')
         self.Druid:SetParent(self) 
         self.Druid:SetFrameStrata('LOW')
@@ -1016,7 +1045,7 @@ local Stylish = function(self, unit, isSingle)
     end
     
     -- Eclipse Bar Support
-    if (select(2, UnitClass('player')) == 'DRUID') then
+    if (F.MyClass == 'DRUID') then
         local EclipseBar = CreateFrame('Frame', nil, self)
         EclipseBar:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
         EclipseBar:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT', 0, -10)
@@ -1053,7 +1082,7 @@ local Stylish = function(self, unit, isSingle)
     end
     
     -- Soul Shard Support
-	if (select(2, UnitClass('player')) == 'WARLOCK') then
+	if (F.MyClass == 'WARLOCK') then
         local Shards = self:CreateFontString(nil, 'OVERLAY')
         Shards:SetPoint('CENTER', self, 'RIGHT', 17, -2)
         Shards:SetFont(C.Media.Font, 24, 'OUTLINE')
@@ -1062,7 +1091,7 @@ local Stylish = function(self, unit, isSingle)
     end
 
     -- Holy Power Support
-    if (select(2, UnitClass('player')) == 'PALADIN') then
+    if (F.MyClass == 'PALADIN') then
         local HolyPower = self:CreateFontString(nil, 'OVERLAY')
         HolyPower:SetPoint('CENTER', self, 'RIGHT', 17, -2)
         HolyPower:SetFont(C.Media.Font, 24, 'OUTLINE')
@@ -1071,7 +1100,7 @@ local Stylish = function(self, unit, isSingle)
     end
     
     -- Combo points display
-	if (select(2, UnitClass('player')) == 'ROGUE') or (select(2, UnitClass('player')) == 'DRUID') then
+	if (F.MyClass == 'ROGUE') or (F.MyClass == 'DRUID') then
         local ComboPoints = self:CreateFontString(nil, 'OVERLAY')
         ComboPoints:SetPoint('CENTER', self, 'RIGHT', 17, -2)
         ComboPoints:SetFont(C.Media.Font, 24, 'OUTLINE')
@@ -1080,7 +1109,7 @@ local Stylish = function(self, unit, isSingle)
     end
     
     -- Chi display
-    if (select(2, UnitClass('player')) == 'MONK') then
+    if (F.MyClass == 'MONK') then
         local Chi = self:CreateFontString(nil, 'OVERLAY')
         Chi:SetPoint('CENTER', self, 'RIGHT', 17, 0)
         Chi:SetFont(C.Media.Font, 24, 'OUTLINE')
@@ -1120,10 +1149,17 @@ local Stylish = function(self, unit, isSingle)
         end
     end
 	
-    -- Hardcore border action!
-    self.Overlay:SetTemplate()
-	self.Overlay:SetBackdropColor(0, 0, 0, 0)
-	self.Overlay:SetBeautyBorderPadding(4)
+    -- Hardcore border action!	
+	if unit == 'player' and F.MyClass == 'DEATHKNIGHT' then
+		self.Overlay:Point('TOPLEFT', self.Runes[1], 0, -F.Mult)
+		self.Overlay:Point('BOTTOMRIGHT', self)
+	else
+		self.Overlay:SetAllPoints(self)
+	end
+	
+	self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
+    self.Overlay:SetTemplate(true)
+	self.Overlay:SetBeautyBorderPadding(F.Mult * 3)
     
     self.UpdateBorder = UpdateBorder
 
@@ -1201,6 +1237,8 @@ local function StylishGroup(self, unit)
     -- Improve border drawing
     self.Overlay = CreateFrame('Frame', nil, self)
 	self.Overlay:SetAllPoints(self)
+	self.Overlay:SetTemplate(true)
+	self.Overlay:SetBeautyBorderPadding(F.Mult * 3)
 	self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
 	
 	-- Display group names
@@ -1218,45 +1256,51 @@ local function StylishGroup(self, unit)
     
     if (C.UF.Show.HealerOverride == true) then
         local MHPB = CreateFrame('StatusBar', nil, self.Health)
-		MHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT', 0, 0)
+		MHPB:SetPoint('TOP')
+		MHPB:SetPoint('BOTTOM')
+		MHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
 		MHPB:SetStatusBarTexture(C.Media.StatusBar)
-		MHPB:SetWidth(self.Health:GetWidth())
-		MHPB:SetHeight(self.Health:GetHeight())
+		MHPB:SetWidth(C.UF.Units.Party.Width)
 		MHPB:SetStatusBarColor(0, 1, 0.5, 0.25)
 
 		local OHPB = CreateFrame('StatusBar', nil, self.Health)
-		OHPB:SetPoint('LEFT', MHPB:GetStatusBarTexture(), 'RIGHT', 0, 0)
+		OHPB:SetPoint('TOP')
+		OHPB:SetPoint('BOTTOM')
+		OHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
 		OHPB:SetStatusBarTexture(C.Media.StatusBar)
-		OHPB:SetWidth(self.Health:GetWidth())
-		OHPB:SetHeight(self.Health:GetHeight())
+		OHPB:SetWidth(C.UF.Units.Party.Width)
 		OHPB:SetStatusBarColor(0, 1, 0, 0.25)
 
 		self.HealPrediction = {
 			myBar = MHPB,
 			otherBar = OHPB,
-			maxOverflow = 1,
+			maxOverflow = 1.05,
+			frequentUpdates = true,
 		}
     else
         if (isHealer) then
             local MHPB = CreateFrame('StatusBar', nil, self.Health)
-            MHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT', 0, 0)
-            MHPB:SetStatusBarTexture(C.Media.StatusBar)
-            MHPB:SetWidth(self.Health:GetWidth())
-            MHPB:SetHeight(self.Health:GetHeight())
-            MHPB:SetStatusBarColor(0, 1, 0.5, 0.25)
+			MHPB:SetPoint('TOP')
+			MHPB:SetPoint('BOTTOM')
+			MHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+			MHPB:SetStatusBarTexture(C.Media.StatusBar)
+			MHPB:SetWidth(C.UF.Units.Party.Width)
+			MHPB:SetStatusBarColor(0, 1, 0.5, 0.25)
 
-            local OHPB = CreateFrame('StatusBar', nil, self.Health)
-            OHPB:SetPoint('LEFT', MHPB:GetStatusBarTexture(), 'RIGHT', 0, 0)
-            OHPB:SetStatusBarTexture(C.Media.StatusBar)
-            OHPB:SetWidth(self.Health:GetWidth())
-            OHPB:SetHeight(self.Health:GetHeight())
-            OHPB:SetStatusBarColor(0, 1, 0, 0.25)
+			local OHPB = CreateFrame('StatusBar', nil, self.Health)
+			OHPB:SetPoint('TOP')
+			OHPB:SetPoint('BOTTOM')
+			OHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+			OHPB:SetStatusBarTexture(C.Media.StatusBar)
+			OHPB:SetWidth(C.UF.Units.Party.Width)
+			OHPB:SetStatusBarColor(0, 1, 0, 0.25)
 
-            self.HealPrediction = {
-                myBar = MHPB,
-                otherBar = OHPB,
-                maxOverflow = 1,
-            }
+			self.HealPrediction = {
+				myBar = MHPB,
+				otherBar = OHPB,
+				maxOverflow = 1.05,
+				frequentUpdates = true,
+			}
         end
     end
 	
@@ -1422,6 +1466,8 @@ local function StylishRaid(self, unit)
     self.Overlay = CreateFrame('Frame', nil, self)
 	self.Overlay:SetPoint('TOPLEFT')
 	self.Overlay:SetPoint('BOTTOMRIGHT', -1, -0.5)
+	self.Overlay:SetTemplate(true)
+	self.Overlay:SetBeautyBorderPadding(F.Mult * 3)
 	self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
 		
 	-- Display group names
@@ -1445,45 +1491,51 @@ local function StylishRaid(self, unit)
     
     if (C.UF.Show.HealerOverride == true) then
         local MHPB = CreateFrame('StatusBar', nil, self.Health)
-		MHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT', 0, 0)
+		MHPB:SetPoint('TOP')
+		MHPB:SetPoint('BOTTOM')
+		MHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
 		MHPB:SetStatusBarTexture(C.Media.StatusBar)
 		MHPB:SetWidth(HealW)
-		MHPB:SetHeight(HealH)
 		MHPB:SetStatusBarColor(0, 1, 0.5, 0.25)
 
 		local OHPB = CreateFrame('StatusBar', nil, self.Health)
-		OHPB:SetPoint('LEFT', MHPB:GetStatusBarTexture(), 'RIGHT', 0, 0)
+		OHPB:SetPoint('TOP')
+		OHPB:SetPoint('BOTTOM')
+		OHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
 		OHPB:SetStatusBarTexture(C.Media.StatusBar)
 		OHPB:SetWidth(HealW)
-		OHPB:SetHeight(HealH)
 		OHPB:SetStatusBarColor(0, 1, 0, 0.25)
 
 		self.HealPrediction = {
 			myBar = MHPB,
 			otherBar = OHPB,
-			maxOverflow = 1,
+			maxOverflow = 1.05,
+			frequentUpdates = true,
 		}
     else
         if (isHealer) then
             local MHPB = CreateFrame('StatusBar', nil, self.Health)
-            MHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT', 0, 0)
-            MHPB:SetStatusBarTexture(C.Media.StatusBar)
-            MHPB:SetWidth(HealW)
-            MHPB:SetHeight(HealH)
-            MHPB:SetStatusBarColor(0, 1, 0.5, 0.25)
+			MHPB:SetPoint('TOP')
+			MHPB:SetPoint('BOTTOM')
+			MHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+			MHPB:SetStatusBarTexture(C.Media.StatusBar)
+			MHPB:SetWidth(HealW)
+			MHPB:SetStatusBarColor(0, 1, 0.5, 0.25)
 
-            local OHPB = CreateFrame('StatusBar', nil, self.Health)
-            OHPB:SetPoint('LEFT', MHPB:GetStatusBarTexture(), 'RIGHT', 0, 0)
-            OHPB:SetStatusBarTexture(C.Media.StatusBar)
-            OHPB:SetWidth(HealW)
-            OHPB:SetHeight(HealH)
-            OHPB:SetStatusBarColor(0, 1, 0, 0.25)
+			local OHPB = CreateFrame('StatusBar', nil, self.Health)
+			OHPB:SetPoint('TOP')
+			OHPB:SetPoint('BOTTOM')
+			OHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+			OHPB:SetStatusBarTexture(C.Media.StatusBar)
+			OHPB:SetWidth(HealW)
+			OHPB:SetStatusBarColor(0, 1, 0, 0.25)
 
-            self.HealPrediction = {
-                myBar = MHPB,
-                otherBar = OHPB,
-                maxOverflow = 1,
-            }
+			self.HealPrediction = {
+				myBar = MHPB,
+				otherBar = OHPB,
+				maxOverflow = 1.05,
+				frequentUpdates = true,
+			}
         end
     end
 	

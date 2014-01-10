@@ -341,10 +341,10 @@ local function StyleButton(button)
 end
 F.StyleButton = StyleButton -- Compatibility, yo
 
-local function FontString(parent, name, fontName, fontHeight, fontStyle)
+local function FontString(parent, name, fontName, fontHeight, fontStyle, justify)
 	local fs = parent:CreateFontString(nil, 'OVERLAY')
-	fs:SetFont(fontName, fontHeight, fontStyle)
-	fs:SetJustifyH('LEFT')
+	fs:SetFont(fontName or C.Media.Font, fontHeight or C.Media.FontSize, fontStyle or '')
+	fs:SetJustifyH(justify or 'LEFT')
 	
 	if not name then
 		parent.text = fs

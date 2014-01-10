@@ -49,16 +49,6 @@ local function LoadSkin()
 		_G['QuestInfoItem'..i..'IconTexture']:Point('TOPLEFT', 2, -2)
 		_G['QuestInfoItem'..i..'IconTexture']:Size(_G['QuestInfoItem'..i..'IconTexture']:GetWidth() - 2, _G['QuestInfoItem'..i..'IconTexture']:GetHeight() - 2)
 		F.SetTemplate(_G['QuestInfoItem'..i])
-		_G['QuestInfoItem'..i]:HookScript('OnClick', function(self)
-			local clicked
-			if not self.clicked then
-				self:SetBeautyBorderColor(1, 1, 0)
-				self.clicked = true
-			else
-				self:SetBeautyBorderColor(bc.r, bc.g, bc.b)
-				self.clicked = false
-			end
-		end)
 		_G['QuestInfoItem'..i..'Count']:SetDrawLayer('OVERLAY')
 	end
 

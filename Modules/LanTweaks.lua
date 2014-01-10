@@ -22,7 +22,7 @@ UIErrorsFrame:SetScript('OnEvent', function(self, event, msg, ...)
     return UIErrorsFrame_OldOnEvent(self, event, msg, ...)
 end)
 
-function MostValuable ()
+local MostValuable = function()
     local bestPrice, bestItem = 0
 
     for i = 1, GetNumQuestChoices() do
@@ -45,53 +45,32 @@ function MostValuable ()
     end
 end
 
+eventFrame:RegisterEvent('QUEST_OBJECTIVE_PROGRESS')
+eventFrame:RegisterEvent('QUEST_OBJECTIVE_COMPLETED')
 eventFrame:RegisterEvent('QUEST_DETAIL')
+eventFrame:RegisterEvent('QUEST_COMPLETED')
 eventFrame:RegisterEvent('QUEST_COMPLETE')
-eventFrame:RegisterEvent('QUEST_WATCH_UPDATE')
 eventFrame:RegisterEvent('QUEST_ACCEPT_CONFIRM')
-eventFrame:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
-eventFrame:SetScript('OnEvent', function(self, event, ...)
-    if event == 'QUEST_WATCH_UPDATE' then
-        questIndex = ...
-    end
-
-    if event == 'UNIT_QUEST_LOG_CHANGED' then
-        if questIndex then
-            local description, finished, completed = nil, nil, 0
-
-            for objective = 1, GetNumQuestLeaderBoards(questIndex) do
-                description, _, finished = GetQuestLogLeaderBoard(objective, questIndex)
-                copmpleted = completed + (finished or 0)
-            end
-
-            if completed == GetNumQuestLeaderBoards(questIndex) then
-                if description then
-                    RaidNotice_AddMessage(RaidWarningFrame, string.format('%s Complete', description), ChatTypeInfo['SYSTEM'])
-                    PlaySoundFile([[Sound\Creature\Peon\PeonBuildingComplete1.wav]])
-                end
-            else
-                local _, _, itemName, numCurrent, numTotal = strfind(description, '(.*):%s*([%d]+)%s*/%s*([%d]+)')
-
-                if numCurrent == numTotal then
-                    RaidNotice_AddMessage(RaidWarningFrame, string.format('%s: Objective Complete', itemName), ChatTypeInfo['SYSTEM'])
-                    PlaySoundFile([[Sound\Creature\Peon\PeonReady1.wav]])
-                else
-                    RaidNotice_AddMessage(RaidWarningFrame, string.format('%s: %s/%s', itemName, numCurrent, numTotal), ChatTypeInfo['SYSTEM'])
-                end
-            end
+eventFrame:SetScript('OnEvent', function(event, questIndex, objective, cur, goal)
+    if event == 'QUEST_OBJECTIVE_PROGRESS' then
+        if objective then
+            RaidNotice_AddMessage(RaidWarningFrame, string.format('%s: %s/%s', objective, cur, goal), ChatTypeInfo['SYSTEM'])
         end
-
-        questIndex = nil
-
+    elseif event == 'QUEST_OBJECTIVE_COMPLETED' then
+        RaidNotice_AddMessage(RaidWarningFrame, string.format('%s: Objective Complete'):format(objective), ChatTypeInfo['SYSTEM'])
+        --PlaySoundFile([[Sound\Creature\Peon\PeonReady1.wav]])
+    elseif event == 'QUEST_COMPLETED' then
+        RaidNotice_AddMessage(RaidWarningFrame, string.format('%s Complete', GetQuestLogTitle(questIndex)), ChatTypeInfo['SYSTEM'])
+        --PlaySoundFile([[Sound\Creature\Peon\PeonBuildingComplete1.wav]])
     end
 
-    if F.MyLevel ~= MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()] then
+    if F.Level == MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()] or C.Tweaks.LevelOverride then
         if event == 'QUEST_DETAIL' then
             AcceptQuest()
             CompleteQuest()
         elseif event == 'QUEST_COMPLETE' then
-            if GetNumQuestChoices() and GetNumQuestChoices() <= 1 then
-                GetQuestReward(1)
+            if GetNumQuestChoices() and GetNumQuestChoices() < 1 then
+                GetQuestReward()
             else
                 MostValuable()
             end
@@ -115,7 +94,7 @@ end)
 
 -- Get quest title info
 
-local questtags, tags = {}, {Elite = "+", Group = "G", Dungeon = "D", Raid = "R", PvP = "P", Daily = "*", Heroic = "H", Repeatable = "?", Legendary = "L"}
+local questtags, tags = {}, {Elite = '+', Group = 'G', Dungeon = 'D', Raid = 'R', PvP = 'P', Daily = '*', Heroic = 'H', Repeatable = '?', Legendary = 'L'}
 
 local function GetTaggedTitle(i)
     local name, level, tag, group, header, _, complete, daily = GetQuestLogTitle(i)
@@ -127,7 +106,7 @@ local function GetTaggedTitle(i)
         group = nil
     end
     
-    return string.format("[%s%s%s%s] %s", level, tag and tags[tag] or "", daily and tags.Daily or "",group or "", name), tag, daily, complete
+    return string.format('[%s%s%s%s] %s', level, tag and tags[tag] or '', daily and tags.Daily or '',group or '', name), tag, daily, complete
 end
 
 ------------------------------------------------------------------------
@@ -138,21 +117,21 @@ local function QuestLog_Update()
         local qi = butt:GetID()
         local title, tag, daily, complete = GetTaggedTitle(qi)
         if title then
-            butt:SetText("  "..title)
+            butt:SetText('  '..title)
         end
         
         if (tag or daily) and not complete then
-            butt.tag:SetText("")
+            butt.tag:SetText('')
         end
         
         QuestLogTitleButton_Resize(butt)
     end
 end
-hooksecurefunc("QuestLog_Update", QuestLog_Update)
-hooksecurefunc(QuestLogScrollFrame, "update", QuestLog_Update)
+hooksecurefunc('QuestLog_Update', QuestLog_Update)
+hooksecurefunc(QuestLogScrollFrame, 'update', QuestLog_Update)
 
 -- Add tags to the quest watcher
-hooksecurefunc("WatchFrame_Update", function()
+hooksecurefunc('WatchFrame_Update', function()
     local questWatchMaxWidth, watchTextIndex = 0, 1
 
     for i=1,GetNumQuestWatches() do
@@ -173,15 +152,15 @@ end)
 -- Add tags to quest links in chat
 local function filter(self, event, msg, ...)
     if msg then
-        return false, msg:gsub("(|c%x+|Hquest:%d+:(%d+))", "(%2) %1"), ...
+        return false, msg:gsub('(|c%x+|Hquest:%d+:(%d+))', '(%2) %1'), ...
     end
 end
-for _,event in pairs{"SAY", "GUILD", "GUILD_OFFICER", "WHISPER", "WHISPER_INFORM", "PARTY", "RAID", "RAID_LEADER", "BATTLEGROUND", "BATTLEGROUND_LEADER"} do ChatFrame_AddMessageEventFilter("CHAT_MSG_"..event, filter) end
+for _,event in pairs{'SAY', 'GUILD', 'GUILD_OFFICER', 'WHISPER', 'WHISPER_INFORM', 'PARTY', 'RAID', 'RAID_LEADER', 'BATTLEGROUND', 'BATTLEGROUND_LEADER'} do ChatFrame_AddMessageEventFilter('CHAT_MSG_'..event, filter) end
 
 
 -- Add tags to gossip frame
 local i
-local TRIVIAL, NORMAL = "|cff%02x%02x%02x[%d%s%s]|r "..TRIVIAL_QUEST_DISPLAY, "|cff%02x%02x%02x[%d%s%s]|r ".. NORMAL_QUEST_DISPLAY
+local TRIVIAL, NORMAL = '|cff%02x%02x%02x[%d%s%s]|r '..TRIVIAL_QUEST_DISPLAY, '|cff%02x%02x%02x[%d%s%s]|r '.. NORMAL_QUEST_DISPLAY
 local function helper(isActive, ...)
     local num = select('#', ...)
     if num == 0 then return end
@@ -193,7 +172,7 @@ local function helper(isActive, ...)
         if isActive then daily, repeatable = nil end
         if title and level and level ~= -1 then
             local color = GetQuestDifficultyColor(level)
-            _G["GossipTitleButton"..i]:SetFormattedText(isActive and isTrivial and TRIVIAL or NORMAL, color.r*255, color.g*255, color.b*255, level, repeatable and tags.Repeatable or "", daily and tags.Daily or "", title)
+            _G['GossipTitleButton'..i]:SetFormattedText(isActive and isTrivial and TRIVIAL or NORMAL, color.r*255, color.g*255, color.b*255, level, repeatable and tags.Repeatable or '', daily and tags.Daily or '', title)
         end
         i = i + 1
     end
@@ -205,16 +184,16 @@ local function GossipUpdate()
     helper(false, GetGossipAvailableQuests()) -- name, level, trivial, daily, repeatable
     helper(true, GetGossipActiveQuests()) -- name, level, trivial, complete
 end
-hooksecurefunc("GossipFrameUpdate", GossipUpdate)
+hooksecurefunc('GossipFrameUpdate', GossipUpdate)
 if GossipFrame:IsShown() then GossipUpdate() end
 
 -- Auto-DE/Greed
 if C.Tweaks.AutoDEGreed == true then
     if F.Level ~= MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()] then return end
     
-    local greed = CreateFrame("Frame")
-    greed:RegisterEvent("START_LOOT_ROLL")
-    greed:SetScript("OnEvent", function(self, event, id)
+    local greed = CreateFrame('Frame')
+    greed:RegisterEvent('START_LOOT_ROLL')
+    greed:SetScript('OnEvent', function(self, event, id)
         local _, name, _, quality, BoP = GetLootRollItemInfo(id)
         if id and quality == 2 and not BoP then
             if RollOnLoot(id, 3) then
@@ -225,16 +204,23 @@ if C.Tweaks.AutoDEGreed == true then
         end
     end)
     
-    local de = CreateFrame("Frame")
-    de:RegisterEvent("CONFIRM_DISENCHANT_ROLL")
-    de:RegisterEvent("CONFIRM_LOOT_ROLL")
-    de:RegisterEvent("LOOT_BIND_CONFIRM")
-    de:SetScript("OnEvent", function(self, event, id)
+    local de = CreateFrame('Frame')
+    de:RegisterEvent('CONFIRM_DISENCHANT_ROLL')
+    de:RegisterEvent('CONFIRM_LOOT_ROLL')
+    de:RegisterEvent('LOOT_BIND_CONFIRM')
+    de:SetScript('OnEvent', function(self, event, id)
         for i = 1, STATICPOPUP_NUMDIALOGS do
-            local frame = _G["StaticPopup"..i]
-            if (frame.which == "CONFIRM_LOOT_ROLL" or frame.which == "LOOT_BIND") and frame:IsVisible() then StaticPopup_OnClick(frame, 1) end
+            local frame = _G['StaticPopup'..i]
+            if (frame.which == 'CONFIRM_LOOT_ROLL' or frame.which == 'LOOT_BIND') and frame:IsVisible() then StaticPopup_OnClick(frame, 1) end
         end
     end)
+end
+
+-- We automatically confirm loot if we are not in a party or raid.
+StaticPopupDialogs['LOOT_BIND'].OnCancel = function(_, slot)
+    if GetNumPartyMembers() == 0 and GetNumRaidMembers() == 0 then
+        ConfirmLootSlot(slot)
+    end
 end
 
 -- Auto repair/Sell greys

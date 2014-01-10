@@ -11,11 +11,11 @@ MultiBarRight:SetAlpha(1)
 MultiBarRight:SetScale(1)
 
 -- Kill Blizzard options for ActionBars
-InterfaceOptionsActionBarsPanelBottomLeft:Kill()
+--[[InterfaceOptionsActionBarsPanelBottomLeft:Kill()
 InterfaceOptionsActionBarsPanelBottomRight:Kill()
 InterfaceOptionsActionBarsPanelRight:Kill()
 InterfaceOptionsActionBarsPanelRightTwo:Kill()
-InterfaceOptionsActionBarsPanelAlwaysShowActionBars:Kill()
+InterfaceOptionsActionBarsPanelAlwaysShowActionBars:Kill()]]
 
 local _G, pairs, unpack = _G, pairs, unpack
 local path = 'Interface\\AddOns\\LanUI\\Media\\'
@@ -30,15 +30,17 @@ local function IsSpecificButton(self, name)
 end
 
 local function UpdateVehicleButton()
-    for i = 1, NUM_OVERRIDE_BUTTONS do
-        local hotkey = _G['OverrideActionBarButton'..i..'HotKey']
-        if (C.ActionBars.Hotkey) then
-            hotkey:SetFont(C.Media.Font, 21, 'OUTLINE')
-        else
-            hotkey:Hide()
+    if not InCombatLockdown() then
+        for i = 1, NUM_OVERRIDE_BUTTONS do
+            local hotkey = _G['OverrideActionBarButton'..i..'HotKey']
+            if (C.ActionBars.Hotkey) then
+                hotkey:SetFont(C.Media.Font, 21, 'OUTLINE')
+            else
+                hotkey:Hide()
+            end
+            
+            _G['OverrideActionBarButton'..i]:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
         end
-        
-        _G['OverrideActionBarButton'..i]:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
     end
 end
 
@@ -411,6 +413,7 @@ end
 
 MainMenuExpBar:SetTemplate()
 MainMenuExpBar:SetHeight(13)
+select(6, MainMenuExpBar:GetRegions()):SetTexture(C.Media.StatusBar)
 
 -- Remove XP divider
 
@@ -448,7 +451,7 @@ MultiBarBottomRightButton1:ClearAllPoints()
 
 if C.Panels.ABPanel then
     MultiBarBottomRight:SetPoint('TOP', ABPanel, 'BOTTOM', 0, -6)
-    MainMenuExpBar:SetPoint('TOP', ABPanel, 'BOTTOM')
+    MainMenuExpBar:SetPoint('TOP', ABPanel, 'BOTTOM', 0, -2)
     
     OverrideActionBar:SetAllPoints(ABPanel)
     
