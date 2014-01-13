@@ -62,8 +62,8 @@ end
 
 
 -- Font Settings
-LanScroll.font_face                       = C.Media.Font
-LanScroll.font_face_sticky                = C.Media.Font
+LanScroll.font_face                       = C.Media.SCTFont
+LanScroll.font_face_sticky                = C.Media.SCTFont
 LanScroll.font_flags                      = 'OUTLINE'    -- Some text can be hard to read without it.
 LanScroll.font_flags_sticky               = 'OUTLINE'
 LanScroll.font_size                       = 11
