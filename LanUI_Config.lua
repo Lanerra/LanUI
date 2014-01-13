@@ -83,7 +83,7 @@ C['Tweaks'] = {
     ['AutoDEGreed'] = true, -- Automatically disenchant or greed on Bind on Pickup items above a certain ilvl
     ['StatsFrame'] = false, -- Show or hide StatsFrame
     ['UIScale'] = 0.625,
-    ['LevelOverride'] = true,
+    ['PowerLevel'] = true,
 }
 
 C['Chat'] = {

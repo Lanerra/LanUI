@@ -252,7 +252,7 @@ end)
 local bg = CreateFrame('Frame', 'WatchBG', WatchFrame)
 bg:SetFrameStrata('BACKGROUND')
 bg:SetPoint('TOPRIGHT', WatchFrameLines, 23, 5)
-bg:SetPoint('BOTTOM', _G['WatchFrameLinkButton'..#WATCHFRAME_LINKBUTTONS], 0, -30)
+--bg:SetPoint('BOTTOM', _G['WatchFrameLinkButton'..#WATCHFRAME_LINKBUTTONS], 0, -(totalObjectives + 24))
 bg:SetWidth(WatchFrame:GetWidth() + 2)
 bg:SetTemplate()
 
@@ -261,7 +261,23 @@ hooksecurefunc('WatchFrame_Update', function(self, event)
 		bg:SetWidth(WatchFrame:GetWidth() + 2)
 		WatchFrame:Hide()
 	else
-		bg:SetPoint('BOTTOM', _G['WatchFrameLinkButton'..#WATCHFRAME_LINKBUTTONS], 0, -30)
+		local size = 0
+		local newsize
+		local adjust
+		for i = 1, #WATCHFRAME_QUESTLINES do
+			local line = WATCHFRAME_QUESTLINES[i]
+
+			linesize = line.text:GetHeight()
+			size = size + linesize
+		end
+		
+		if GetNumQuestWatches() > 4 then
+			adjust = 8
+		else
+			adjust = 0
+		end
+		
+		bg:SetHeight(F.Scale(size + ((GetNumQuestWatches() / 2) * 29) + adjust))
 		bg:SetWidth(WatchFrame:GetWidth() + 2)
 		WatchFrame:Show()
 	end

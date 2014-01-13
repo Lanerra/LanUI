@@ -1,13 +1,16 @@
 ﻿local F, C, G = unpack(select(2, ...))
+local Media = C.Media
 
 -- New combat log
-local LanCombat = {}
+local _, LanCombat = ...
 
-LanCombat.frame = CreateFrame('Frame', 'LanCombat', UIParent)
+LanCombat.frame = CreateFrame('Frame', 'LanCombatFrame', UIParent)
 
-LanCombat.frame:SetWidth(311.5)
-LanCombat.frame:SetHeight(104.5)
-LanCombat.frame:SetPoint('TOP', UIParent, 'TOP', -401, -15)
+LanCombat.frame:ClearAllPoints()
+LanCombat.frame:SetWidth(F.Scale(311.5))
+LanCombat.frame:SetHeight(F.Scale(104.5))
+LanCombat.frame:Point('TOPLEFT', UIParent, F.Scale(33), F.Scale(-24))
+LanCombat.frame:EnableMouse(false)
 LanCombat.frame:Hide()
 
 local function ScrollFrame(self, delta)
@@ -49,6 +52,7 @@ local function OnHyperlinkClick(self, data, link)
         local chatType = ChatFrame1EditBox:GetAttribute('chatType')
         local tellTarget = ChatFrame1EditBox:GetAttribute('tellTarget')
         local channelTarget = ChatFrame1EditBox:GetAttribute('channelTarget')
+        --        ChatFrame1EditBox:Show()
         local from, to, pos
         for i = 1, 5 do
             from, to = string.find(contents, '\n', pos or 1)
@@ -56,6 +60,7 @@ local function OnHyperlinkClick(self, data, link)
             if not from then return end
             pos = (to or 0) + 1
         end
+        --    ChatFrame1EditBox:Insert(contents:gsub('\n', ' | '))
     end
 end
 
@@ -69,7 +74,7 @@ LanCombat.frame.columns = {}
 for i = 1, 3 do
     local smf = CreateFrame('ScrollingMessageFrame', nil, LanCombat.frame)
     smf:SetMaxLines(1000)
-    smf:SetFont(C.Media.Font, 11)
+    smf:SetFont(Media.Font, 9)
     smf:SetSpacing(2)
     smf:SetFading(true)
     smf:SetFadeDuration(5)
@@ -100,27 +105,32 @@ LanCombat.frame.columns[1]:SetJustifyH('LEFT')
 LanCombat.frame.columns[2]:SetJustifyH('CENTER')
 LanCombat.frame.columns[3]:SetJustifyH('RIGHT')
 
+--local icon = 'Interface\\LFGFrame\\LFGRole'
 local icon = [=[Interface\LFGFrame\UI-LFG-ICON-PORTRAITROLES]=]
 
 local tex1 = LanCombat.frame:CreateTexture(nil, 'ARTWORK')
-tex1:SetSize(14, 14)
+tex1:SetSize(F.Scale(14), F.Scale(14))
 tex1:SetTexture(icon)
+--tex1:SetTexCoord(1/2, 0, 1/2, 1, 3/4, 0, 3/4, 1)
 tex1:SetTexCoord(0, 19/64, 22/64, 41/64)
-tex1:SetPoint('TOPLEFT', LanCombat.frame, 'BOTTOMLEFT', 0, -5)
+tex1:SetPoint('TOPLEFT', LanCombat.frame, 'BOTTOMLEFT', 0, F.Scale(-2))
 
 local tex2 = LanCombat.frame:CreateTexture(nil, 'ARTWORK')
-tex2:SetSize(14, 14)
+tex2:SetSize(F.Scale(14), F.Scale(14))
 tex2:SetTexture(icon)
+--tex2:SetTexCoord(3/4, 0, 3/4, 1, 1, 0, 1, 1)
 tex2:SetTexCoord(20/64, 39/64, 1/64, 20/64)
-tex2:SetPoint('TOP', LanCombat.frame, 'BOTTOM', 0, -5)
+tex2:SetPoint('TOP', LanCombat.frame, 'BOTTOM', 0, F.Scale(-2))
 
 local tex3 = LanCombat.frame:CreateTexture(nil, 'ARTWORK')
-tex3:SetSize(14, 14)
+tex3:SetSize(F.Scale(14), F.Scale(14))
 tex3:SetTexture(icon)
+--tex3:SetTexCoord(1/4, 0, 1/4, 1, 1/2, 0, 1/2, 1)
 tex3:SetTexCoord(20/64, 39/64, 22/64, 41/64)
-tex3:SetPoint('TOPRIGHT', LanCombat.frame, 'BOTTOMRIGHT', 0, -5)
+tex3:SetPoint('TOPRIGHT', LanCombat.frame, 'BOTTOMRIGHT', 0, F.Scale(-2))
 
--- Scrolling goodies
+
+-- Parsing stuff
 local cCL, columns = LanCombat.frame, LanCombat.frame.columns
 
 local holdTime = 5
@@ -157,12 +167,12 @@ local powerColors = {
     [1]    = '|cffAF5050',    -- Rage -- |cffFF0000 -- 175, 80, 80
     [2]    = '|cffB46E46',    -- Focus -- |cff643219 -- 180, 110, 70
     [3]    = '|cffA5A05A',    -- Energy -- |cffFFFF00 -- 165, 160, 90
+    [4]    = '|cff329696',    -- Happiness -- cff00FFFF -- 50, 150, 150
     [5]    = '|cff8C919B',    -- Runes -- |cff323232 -- 140, 145, 155
     [6]    = '|cff005264',    -- Runic Power
     [7]    = '|cffD4A017', -- Soul Shards(Needs color correction)
     [8]    = '|cffD4A017', -- Eclipse (Needs color correction)
     [9]    = '|cffD4A017', -- Holy Power (Needs color correction)
-    [10]   = '|cffD4A017', -- Chi
 }
 
 setmetatable(powerColors, {__index = function(t, k) return '|cffD7BEA5' end})
@@ -177,7 +187,6 @@ local powerStrings = {
     [SPELL_POWER_SOUL_SHARDS] = SOUL_SHARDS, -- 7
     [SPELL_POWER_ECLIPSE] = ECLIPSE, -- 8
     [SPELL_POWER_HOLY_POWER] = HOLY_POWER, -- 9
-    [SPELL_POWER_CHI] = CHI, -- 10
 }
 
 local eventTable = {
@@ -206,7 +215,6 @@ local formatStrings = {
     ['SPELL_PERIODIC_DAMAGE'] = '%s + %d%s',
     ['SPELL_PERIODIC_DRAIN'] = sourceGUID == player and '« %s + %d%s' or '» %s - %d%s',
     ['SPELL_PERIODIC_LEECH'] = sourceGUID == player and '« %s + %d%s' or '» %s - %d%s',
-    ['Volley'] = '%s %d%s',
 }
 
 local excludedSpells = {}
@@ -220,13 +228,7 @@ local throttledEvents = {
     ['SPELL_PERIODIC_LEECH'] = {petIn = {}, petOut = {}, playerIn = {}, playerOut = {}},
 }
 
-local throttledSpells = {
-    ['Volley'] = {
-        playerIn = {amount = 0, isHit = 0, isCrit = 0, reportOnFade = true, format = formatStrings['Volley']},
-        playerOut = {amount = 0, isHit = 0, isCrit = 0, reportOnFade = true, format = formatStrings['Volley']},
-        petIn = {amount = 0, isHit = 0, isCrit = 0, reportOnFade = true, format = formatStrings['Volley']},
-    },
-}
+local throttledSpells = {}
 
 local tooltipStrings = {
     [1] = '%s %s %s %s %s for %d %s',
@@ -277,7 +279,7 @@ end)
 local FormatMissType = function(event, missType, amountMissed)
     local resultStr
     if (missType == 'RESIST' or missType == 'BLOCK' or missType == 'ABSORB') then
-        if amountMissed == 0 then
+        if amountMissed == 0 or not amountMissed then
             resultStr = ''
         else
             resultStr = format(_G['TEXT_MODE_A_STRING_RESULT_'..missType], amountMissed)
@@ -299,7 +301,7 @@ end
 
 local report = {}
 cCL:RegisterEvent('COMBAT_LOG_EVENT_UNFILTERED')
-cCL:HookScript('OnEvent', function(self, event, timestamp, subEvent, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags, ...)
+cCL:HookScript('OnEvent', function(self, event, timestamp, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, ...)
     if event == 'COMBAT_LOG_EVENT_UNFILTERED' then
         local pet = UnitGUID('pet')
 
@@ -539,6 +541,22 @@ cCL:HookScript('OnEvent', function(self, event, timestamp, subEvent, sourceGUID,
     end
 end)
 
+--        Output(scrollFrame, rsaFrame, color, text, rsaText, crit, isPet, prefix, suffix, tooltipMsg, throttle, noccl)
+--[[
+local oldstate = nil
+cCL:RegisterEvent('UNIT_AURA')
+cCL:HookScript('OnEvent', function(self, event)
+if event == 'UNIT_AURA' then
+local newstate = UnitAura('player', 'Lock and Load')
+if newstate and not oldstate then
+Output(nil, 'Notification', red, '++ Lock and Load ++', nil, true)
+elseif oldstate and not newstate then
+Output(nil, 'Notification', red, '-- Lock and Load --', nil, true)
+end
+oldstate = newstate
+end
+end)
+--]]
 local UpdateThrottle = function(v, unit, spellName, elapsed)
     if v.elapsed then
         v.elapsed = v.elapsed + elapsed
@@ -590,16 +608,6 @@ cCL:HookScript('OnEvent', function(self, event)
     end
 end)
 
-local ShortValue = function(value)
-    if value >= 1e6 then
-        return ('%.1fm'):format(value / 1e6):gsub('%.?0+([km])$', '%1')
-    elseif value >= 1e3 or value <= -1e3 then
-        return ('%.1fk'):format(value / 1e3):gsub('%.?0+([km])$', '%1')
-    else
-        return value
-    end
-end
-
 local t = {}
 cCL:RegisterEvent('PLAYER_REGEN_ENABLED')
 cCL:HookScript('OnEvent', function(self, event)
@@ -608,10 +616,10 @@ cCL:HookScript('OnEvent', function(self, event)
 
         for k,_ in pairs(t) do t[k] = nil end
 
-        t[#t+1] = (data.damageOut) > 0 and red..ShortValue(data.damageOut)..'|r'  or nil
-        t[#t+1] = (data.damageIn) > 0 and red..ShortValue(data.damageIn)..'|r' or nil
-        t[#t+1] = (data.healingOut) > 0 and green..ShortValue(data.healingOut)..'|r' or nil
-        t[#t+1] = (data.healingIn) > 0 and green..ShortValue(data.healingIn)..'|r' or nil
+        t[#t+1] = (data.damageOut) > 0 and red..F.ShortValue(data.damageOut)..'|r'  or nil
+        t[#t+1] = (data.damageIn) > 0 and red..F.ShortValue(data.damageIn)..'|r' or nil
+        t[#t+1] = (data.healingOut) > 0 and green..F.ShortValue(data.healingOut)..'|r' or nil
+        t[#t+1] = (data.healingIn) > 0 and green..F.ShortValue(data.healingIn)..'|r' or nil
 
         Output(2, 'Information', green, '-- Combat --', nil, true)
 
@@ -619,9 +627,9 @@ cCL:HookScript('OnEvent', function(self, event)
             local tooltipMsg = format('%s%s%s%s%s',
             (floor(duration / 60) > 0) and (floor(duration / 60)..'m '..(floor(duration) % 60)..'s') or (floor(duration)..'s')..' in combat\n',
             data.damageOut > 0 and 'Damage done: '..(data.damageOut)..'\n' or '',
-            data.damageIn > 0 and 'Damage recieved: '..(data.damageIn)..'\n' or '',
+            data.damageIn > 0 and 'Damage received: '..(data.damageIn)..'\n' or '',
             data.healingOut > 0 and 'Healing done: '..data.healingOut..'\n' or '',
-            data.healingIn > 0 and 'Healing recieved: '..data.healingIn..'\n' or ''
+            data.healingIn > 0 and 'Healing received: '..data.healingIn..'\n' or ''
             )
             Output(2, 'Notification', nil, table.concat(t, beige..' ¦ '), nil, true, nil, nil, nil, tooltipMsg)
         end

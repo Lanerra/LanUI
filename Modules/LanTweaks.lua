@@ -45,26 +45,47 @@ local MostValuable = function()
     end
 end
 
-eventFrame:RegisterEvent('QUEST_OBJECTIVE_PROGRESS')
-eventFrame:RegisterEvent('QUEST_OBJECTIVE_COMPLETED')
 eventFrame:RegisterEvent('QUEST_DETAIL')
-eventFrame:RegisterEvent('QUEST_COMPLETED')
 eventFrame:RegisterEvent('QUEST_COMPLETE')
+eventFrame:RegisterEvent('QUEST_WATCH_UPDATE')
 eventFrame:RegisterEvent('QUEST_ACCEPT_CONFIRM')
-eventFrame:SetScript('OnEvent', function(event, questIndex, objective, cur, goal)
-    if event == 'QUEST_OBJECTIVE_PROGRESS' then
-        if objective then
-            RaidNotice_AddMessage(RaidWarningFrame, string.format('%s: %s/%s', objective, cur, goal), ChatTypeInfo['SYSTEM'])
-        end
-    elseif event == 'QUEST_OBJECTIVE_COMPLETED' then
-        RaidNotice_AddMessage(RaidWarningFrame, string.format('%s: Objective Complete'):format(objective), ChatTypeInfo['SYSTEM'])
-        --PlaySoundFile([[Sound\Creature\Peon\PeonReady1.wav]])
-    elseif event == 'QUEST_COMPLETED' then
-        RaidNotice_AddMessage(RaidWarningFrame, string.format('%s Complete', GetQuestLogTitle(questIndex)), ChatTypeInfo['SYSTEM'])
-        --PlaySoundFile([[Sound\Creature\Peon\PeonBuildingComplete1.wav]])
+eventFrame:RegisterEvent('UNIT_QUEST_LOG_CHANGED')
+eventFrame:SetScript('OnEvent', function(self, event, ...)
+    if event == 'QUEST_WATCH_UPDATE' then
+        questIndex = ...
     end
 
-    if F.Level == MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()] or C.Tweaks.LevelOverride then
+    if event == 'UNIT_QUEST_LOG_CHANGED' then
+        if questIndex then
+            local description, finished, completed = nil, nil, 0
+
+            for objective = 1, GetNumQuestLeaderBoards(questIndex) do
+                description, _, finished = GetQuestLogLeaderBoard(objective, questIndex)
+                copmpleted = completed + (finished or 0)
+            end
+
+            if completed == GetNumQuestLeaderBoards(questIndex) then
+                if description then
+                    RaidNotice_AddMessage(RaidWarningFrame, string.format('%s: Objective Complete'):format(description), ChatTypeInfo['SYSTEM'])
+                    PlaySoundFile([[Sound\Creature\Peon\PeonBuildingComplete1.wav]])
+                end
+            else
+                local _, _, itemName, numCurrent, numTotal = strfind(description, '(.*):%s*([%d]+)%s*/%s*([%d]+)')
+
+                if numCurrent == numTotal then
+                    RaidNotice_AddMessage(RaidWarningFrame, string.format('%s: Objective Complete', itemName), ChatTypeInfo['SYSTEM'])
+                    PlaySoundFile([[Sound\Creature\Peon\PeonReady1.wav]])
+                else
+                    RaidNotice_AddMessage(RaidWarningFrame, string.format('%s: %s/%s', itemName, numCurrent, numTotal), ChatTypeInfo['SYSTEM'])
+                end
+            end
+        end
+
+        questIndex = nil
+
+    end
+
+    if C.Tweaks.PowerLevel then
         if event == 'QUEST_DETAIL' then
             AcceptQuest()
             CompleteQuest()
@@ -188,9 +209,7 @@ hooksecurefunc('GossipFrameUpdate', GossipUpdate)
 if GossipFrame:IsShown() then GossipUpdate() end
 
 -- Auto-DE/Greed
-if C.Tweaks.AutoDEGreed == true then
-    if F.Level ~= MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()] then return end
-    
+if C.Tweaks.AutoDEGreed and F.Level == MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()] then
     local greed = CreateFrame('Frame')
     greed:RegisterEvent('START_LOOT_ROLL')
     greed:SetScript('OnEvent', function(self, event, id)

@@ -153,6 +153,14 @@ F.StylePet = function()
 	end
 end
 
+function topattern(str)
+   str = gsub(str, "%%%d?$?c", ".+")
+   str = gsub(str, "%%%d?$?s", ".+")
+   str = gsub(str, "%%%d?$?d", "%%d+")
+   str = gsub(str, "([%(%)])", "%%%1")
+   return str
+end
+
 function F.RGBToHex(r, g, b)
 	r = r <= 1 and r >= 0 and r or 0
 	g = g <= 1 and g >= 0 and g or 0

@@ -66,9 +66,8 @@ local function LoadSkin()
 	QuestInfoSkillPointFramePoints:Point('BOTTOMRIGHT', QuestInfoSkillPointFrameIconTexture, 'BOTTOMRIGHT')
 
 	QuestInfoItemHighlight:StripTextures()
-	QuestInfoItemHighlight:SetTemplate()
-	QuestInfoItemHighlight:SetBackdropBorderColor(1, 1, 0)
-	QuestInfoItemHighlight:SetBackdropColor(0, 0, 0, 0)
+	QuestInfoItemHighlight:SetTemplate(true)
+	QuestInfoItemHighlight:SetBeautyBorderColor(1, 1, 0)
 	QuestInfoItemHighlight:Size(142, 40)
 
 	hooksecurefunc('QuestInfoItem_OnClick', function(self)
