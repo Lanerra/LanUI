@@ -33,46 +33,48 @@ local function LoadSkin()
 
 	-- Skin SpellButtons
 	local function SpellButtons(self, first)
-		for i = 1, SPELLS_PER_PAGE do
-			local button = _G['SpellButton'..i]
-			local icon = _G['SpellButton'..i..'IconTexture']
+		if not InCombatLockdown() then
+			for i = 1, SPELLS_PER_PAGE do
+				local button = _G['SpellButton'..i]
+				local icon = _G['SpellButton'..i..'IconTexture']
 
-			if first then
-				for i = 1, button:GetNumRegions() do
-					local region = select(i, button:GetRegions())
-					if region:GetObjectType() == 'Texture' then
-						if region:GetTexture() ~= 'Interface\\Buttons\\ActionBarFlyoutButton' then
-							region:SetTexture(nil)
+				if first then
+					for i = 1, button:GetNumRegions() do
+						local region = select(i, button:GetRegions())
+						if region:GetObjectType() == 'Texture' then
+							if region:GetTexture() ~= 'Interface\\Buttons\\ActionBarFlyoutButton' then
+								region:SetTexture(nil)
+							end
 						end
 					end
 				end
-			end
 
-			if _G['SpellButton'..i..'Highlight'] then
-				_G['SpellButton'..i..'Highlight']:SetTexture(1, 1, 1, 0.3)
-				_G['SpellButton'..i..'Highlight']:ClearAllPoints()
-				_G['SpellButton'..i..'Highlight']:SetAllPoints(icon)
-			end
-
-			if icon then
-				icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-				icon:ClearAllPoints()
-				icon:SetAllPoints()
-
-				if not button.backdrop then
-					button:SetFrameLevel(button:GetFrameLevel() + 1)
-					button:CreateBD()
-					button.backdrop:SetTemplate(true)
+				if _G['SpellButton'..i..'Highlight'] then
+					_G['SpellButton'..i..'Highlight']:SetTexture(1, 1, 1, 0.3)
+					_G['SpellButton'..i..'Highlight']:ClearAllPoints()
+					_G['SpellButton'..i..'Highlight']:SetAllPoints(icon)
 				end
-			end
 
-			local r, g, b = _G['SpellButton'..i..'SpellName']:GetTextColor()
+				if icon then
+					icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+					icon:ClearAllPoints()
+					icon:SetAllPoints()
 
-			if r < 0.8 then
-				_G['SpellButton'..i..'SpellName']:SetTextColor(0.6, 0.6, 0.6)
+					if not button.backdrop then
+						button:SetFrameLevel(button:GetFrameLevel() + 1)
+						button:CreateBD()
+						button.backdrop:SetTemplate(true)
+					end
+				end
+
+				local r, g, b = _G['SpellButton'..i..'SpellName']:GetTextColor()
+
+				if r < 0.8 then
+					_G['SpellButton'..i..'SpellName']:SetTextColor(0.6, 0.6, 0.6)
+				end
+				_G['SpellButton'..i..'SubSpellName']:SetTextColor(0.6, 0.6, 0.6)
+				_G['SpellButton'..i..'RequiredLevelString']:SetTextColor(0.6, 0.6, 0.6)
 			end
-			_G['SpellButton'..i..'SubSpellName']:SetTextColor(0.6, 0.6, 0.6)
-			_G['SpellButton'..i..'RequiredLevelString']:SetTextColor(0.6, 0.6, 0.6)
 		end
 	end
 	SpellButtons(nil, true)
