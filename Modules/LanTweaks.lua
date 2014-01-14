@@ -73,7 +73,11 @@ eventFrame:SetScript('OnEvent', function(self, event, ...)
                 local _, _, itemName, numCurrent, numTotal = strfind(description, '(.*):%s*([%d]+)%s*/%s*([%d]+)')
 
                 if numCurrent == numTotal then
-                    RaidNotice_AddMessage(RaidWarningFrame, string.format('%s: Objective Complete', itemName), ChatTypeInfo['SYSTEM'])
+                    if itemName then
+                        RaidNotice_AddMessage(RaidWarningFrame, string.format('%s: Objective Complete', itemName), ChatTypeInfo['SYSTEM'])
+                    else
+                        RaidNotice_AddMessage(RaidWarningFrame, 'Objective Complete', ChatTypeInfo['SYSTEM'])
+                    end
                     PlaySoundFile([[Sound\Creature\Peon\PeonReady1.wav]])
                 else
                     RaidNotice_AddMessage(RaidWarningFrame, string.format('%s: %s/%s', itemName, numCurrent, numTotal), ChatTypeInfo['SYSTEM'])

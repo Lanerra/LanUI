@@ -40,6 +40,7 @@ local function UpdateVehicleButton()
             end
             
             _G['OverrideActionBarButton'..i]:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
+            _G['OverrideActionBarButton'..i]:SetNormalTexture(nil)
         end
     end
 end

@@ -339,9 +339,9 @@ cCL:HookScript('OnEvent', function(self, event, timestamp, subEvent, hideCaster,
         elseif subEvent == 'ENVIRONMENTAL_DAMAGE' then
 
             enviromentalType, amount, overkill, school, resisted, blocked, absorbed, critical, glancing, crushing = ...
-            text, rsaText, color = amount, format('%s %s', _G['ACTION_ENVIRONMENTAL_DAMAGE_'..enviromentalType], amount), schoolColors[school <= 1 and 0 or school]
+            text, rsaText, color = amount, format('%s %s', _G['ACTION_ENVIRONMENTAL_DAMAGE_'..string.upper(enviromentalType)], amount), schoolColors[school <= 1 and 0 or school]
 
-            tooltipMsg = format(tooltipStrings[2], timeStamp, (meTarget and 'You' or destName), amount, _G['ACTION_ENVIRONMENTAL_DAMAGE_'..enviromentalType])
+            tooltipMsg = format(tooltipStrings[2], timeStamp, (meTarget and 'You' or destName), amount, _G['ACTION_ENVIRONMENTAL_DAMAGE_'..string.upper(enviromentalType)])
 
         elseif subEvent == 'SPELL_HEAL' or subEvent == 'SPELL_PERIODIC_HEAL' then
 
