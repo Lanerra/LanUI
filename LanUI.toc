@@ -1,8 +1,8 @@
 ## Interface: 50400
 ## Title: |cff0099ffLan|rUI
-## Version: 0.9b
+## Version: 0.9.1b
 ## Author: Lanerra
-## Notes: Lightweight UI Modification
+## Notes: Lightweight UI Modification by |cff0099ffLanerra|r
 
 # Libraries
 lib\LibStub\LibStub.lua
