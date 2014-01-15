@@ -13,8 +13,8 @@ local settings = {
 }
 
 for _, setting in pairs(settings) do
-	setting.Width =  setting.Width * F.Mult
-	setting.Height = setting.Height * F.Mult
+	setting.Width =  F.Scale(setting.Width)
+	setting.Height = F.Scale(setting.Height)
 end
 
 objects = {}
@@ -997,11 +997,11 @@ local Stylish = function(self, unit, isSingle)
 			-- Position and size of the rune bar indicators
 			local Rune = CreateFrame('StatusBar', nil, self)
 			Rune:SetStatusBarTexture(C.Media.StatusBar)
-			Rune:SetSize(C.UF.Units.Player.Width / (F.Mult * 6) - F.Mult + 0.35, 6)
+			Rune:SetSize(C.UF.Units.Player.Width / F.Scale(6) - F.Mult + 0.35, 6)
 			Runes[index] = Rune
 			
 			if index == 1 then
-				Runes[index]:Point('BOTTOMLEFT', self, 'TOPLEFT', F.Mult * 2, F.Mult)
+				Runes[index]:Point('BOTTOMLEFT', self, 'TOPLEFT', F.Scale(2), F.Mult)
 				Runes[index]:CreateBD()
 			else
 				Runes[index]:Point('LEFT', Runes[index - 1], 'RIGHT', F.Mult, 0)

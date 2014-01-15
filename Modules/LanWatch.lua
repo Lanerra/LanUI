@@ -252,7 +252,6 @@ end)
 local bg = CreateFrame('Frame', 'WatchBG', WatchFrame)
 bg:SetFrameStrata('BACKGROUND')
 bg:SetPoint('TOPRIGHT', WatchFrameLines, 23, 5)
---bg:SetPoint('BOTTOM', _G['WatchFrameLinkButton'..#WATCHFRAME_LINKBUTTONS], 0, -(totalObjectives + 24))
 bg:SetWidth(WatchFrame:GetWidth() + 2)
 bg:SetTemplate()
 

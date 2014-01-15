@@ -51,6 +51,12 @@ F.Scales = {
     ['2560'] = { ['1600'] = 0.64},
 }
 
+local TrueScale
+if 768/string.match(({GetScreenResolutions()})[GetCurrentResolution()], "%d+x(%d+)") < .64 then
+   TrueScale = (768/string.match(({GetScreenResolutions()})[GetCurrentResolution()], "%d+x(%d+)"))
+end
+F.TrueScale = TrueScale
+
     -- Tables
 C.ActionBars = {}  
 C.Minimap = {}

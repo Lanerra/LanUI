@@ -83,6 +83,7 @@ C['Tweaks'] = {
     ['RepairSell'] = true, -- Automatically sell grey items, repair damage
     ['AutoDEGreed'] = true, -- Automatically disenchant or greed on Bind on Pickup items above a certain ilvl
     ['StatsFrame'] = false, -- Show or hide StatsFrame
+    ['AutoScale'] = true,
     ['UIScale'] = 0.625,
     ['PowerLevel'] = true,
 }

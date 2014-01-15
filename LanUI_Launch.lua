@@ -10,9 +10,15 @@ f:SetScript('OnEvent', function(_, event, ...)
 		    print('|cff0099ffFor UI usage info type in /UIHelp|r')
 		    print('|cff0099ffEnjoy!|r')
         end
-        
-        SetCVar('useUiScale', 1) -- Use custom UI scale
-	    SetCVar('uiScale', 0.625) -- DO NOT MODIFY UNLESS YOU UNDERSTAND THE EFFECT THIS WILL HAVE ON THE UI
+
+		SetCVar('useUiScale', 1) -- Use custom UI scale
+
+		if C.Tweaks.AutoScale then
+			C.Tweaks.UIScale = 768/string.match(F.Resolution, "%d+x(%d+)")
+		end
+
+		SetCVar('uiScale', C.Tweaks.UIScale) -- DO NOT MODIFY UNLESS YOU UNDERSTAND THE EFFECT THIS WILL HAVE ON THE UI
+		
         SetCVar('chatStyle', 'classic') -- No IM Style
 
         SetCVar('ScreenshotQuality', 10)
@@ -26,7 +32,7 @@ f:SetScript('OnEvent', function(_, event, ...)
         16 core/8 core with hyperthreading = 65535 (Untested)
         ]]
 
-        SetCVar('ProcessAffinityMask', 255)
+        SetCVar('ProcessAffinityMask', 85)
 
 		SetCVar('consolidateBuffs', 0) -- Disable Consolidated Buffs
 

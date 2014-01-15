@@ -666,6 +666,7 @@ local function SkinTab(tab)
 	
 	tab.backdrop = CreateFrame('Frame', nil, tab)
 	tab.backdrop:SetTemplate()
+	tab.backdrop:SetBeautyBorderPadding(0)
 	tab.backdrop:SetFrameLevel(tab:GetFrameLevel() - 1)
     
     Point(tab.backdrop, 'TOPLEFT', 0, 0)
