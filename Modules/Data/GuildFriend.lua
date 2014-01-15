@@ -441,16 +441,8 @@ local function GuildUpdate(self, event, ...)
 	end
 	
 	if IsInGuild() then
-		totalGuildOnline = 0
-		local name, rank, level, zone, note, officernote, connected, status, class
-		
-        for i = 1, GetNumGuildMembers() do
-			local connected = select(9, GetGuildRosterInfo(i))
-            
-			if connected then
-                totalGuildOnline = totalGuildOnline + 1
-            end
-		end
+		GuildRoster() -- 5.4 Fix
+		totalGuildOnline = select(3, GetNumGuildMembers())
         
 		f.Left.Text:SetFormattedText(format('%s|cffffffff%d|r ', guildIcon, (totalGuildOnline == 1 and 0) or totalGuildOnline))
 	else
@@ -571,7 +563,7 @@ f.Left:SetScript("OnEnter", function(self)
 			end
 
 			name, rank, level, zone, note, officernote, connected, status, class, isMobile = unpack(guildTable[i])
-			if connected and name ~= F.MyName then
+			if connected then
 				if GetRealZoneText() == zone then zonec = activezone else zonec = inactivezone end
 				classc, levelc = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class], GetQuestDifficultyColor(level)
 				

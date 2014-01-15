@@ -276,7 +276,7 @@ hooksecurefunc('WatchFrame_Update', function(self, event)
 			adjust = 0
 		end
 		
-		bg:SetHeight(F.Scale(size + ((GetNumQuestWatches() / 2) * 29) + adjust))
+		bg:SetHeight(F.Scale(size + ((GetNumQuestWatches() / 2) * 29) + adjust) * F.Mult)
 		bg:SetWidth(WatchFrame:GetWidth() + 2)
 		WatchFrame:Show()
 	end
