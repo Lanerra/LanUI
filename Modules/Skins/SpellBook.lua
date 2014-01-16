@@ -77,7 +77,7 @@ local function LoadSkin()
 			end
 		end
 	end
-	SpellButtons(nil, true)
+	if not InCombatLockdown() then SpellButtons(nil, true) end
 	hooksecurefunc('SpellButton_UpdateButton', SpellButtons)
 
 	SpellBookPageText:SetTextColor(0.6, 0.6, 0.6)

@@ -262,7 +262,6 @@ hooksecurefunc('WatchFrame_Update', function(self, event)
 	else
 		local size = 0
 		local newsize
-		local adjust
 		for i = 1, #WATCHFRAME_QUESTLINES do
 			local line = WATCHFRAME_QUESTLINES[i]
 
@@ -270,13 +269,7 @@ hooksecurefunc('WatchFrame_Update', function(self, event)
 			size = size + linesize
 		end
 		
-		if GetNumQuestWatches() > 4 then
-			adjust = 8
-		else
-			adjust = 0
-		end
-		
-		bg:SetHeight(F.Scale(size + ((GetNumQuestWatches() / 2) * 29) + adjust) * F.Mult)
+		bg:SetHeight(F.Scale(size + ((GetNumQuestWatches() / 2) * 29)) * F.Mult)
 		bg:SetWidth(WatchFrame:GetWidth() + 2)
 		WatchFrame:Show()
 	end
