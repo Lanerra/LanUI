@@ -2,6 +2,7 @@ local F, C, G = unpack(select(2, ...))
 local bc = C.Media.BorderColor
 
 local function LoadSkin()
+	if InCombatLockdown() then return end
 	local StripAllTextures = {
 		'SpellBookFrame',
 		'SpellBookFrameInset',

@@ -275,10 +275,10 @@ hooksecurefunc('WatchFrame_Update', function(self, event)
 	end
 end)
 
-F.RegisterEvent('PLAYER_REGEN_DISABLED', function()
+--[[F.RegisterEvent('PLAYER_REGEN_DISABLED', function()
 	WatchFrame:Hide()
 end)
 
 F.RegisterEvent('PLAYER_REGEN_ENABLED', function()
 	WatchFrame:Show()
-end)
+end)]]
