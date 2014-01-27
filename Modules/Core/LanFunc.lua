@@ -282,18 +282,19 @@ local function SetTemplate(f, nobd)
 		f.backdropTexture = backdropTexture
 	end
 	
-	if f.backdropTexture then 
-		f:SetBackdropColor(unpack(C.Media.BackdropColor))
+	if f.backdropTexture then
 		f.backdropTexture:SetVertexColor(0, 0, 0)
 		
 		if not nobd then
 			f.backdropTexture:SetAlpha(0.5)
+			f:SetBackdropColor(backdropr, backdropg, backdropb, backdropa)
 		else
+			f:SetBackdropColor(0, 0, 0, 0)
 			f.backdropTexture:SetAlpha(0)
 		end
 		f.backdropTexture:SetTexture(texture)
 		
-		f.backdropTexture:SetInside(f)
+		f.backdropTexture:SetOutside(f)
 	end
 	
 	f:SetBackdropBorderColor(bc.r, bc.g, bc.b)]]
@@ -455,8 +456,10 @@ local function CreateBD(f, border)
 	texture = C.Media.Backdrop
 
 	local b = CreateFrame('Frame', nil, f)
-	b:Point('TOPLEFT', -2, 2)
-	b:Point('BOTTOMRIGHT', 2, -2)
+	b:SetOutside()
+	
+	--b:Point('TOPLEFT', -2, 2)
+	--b:Point('BOTTOMRIGHT', 2, -2)
 	
 	if b.SetBackdrop then
 		b:SetBackdrop({
@@ -478,6 +481,7 @@ local function CreateBD(f, border)
 	
 	
 	f.backdrop = b
+	
 	--[[local b = CreateFrame("Frame", nil, f)
 	b:SetOutside()
 	b:SetTemplate()

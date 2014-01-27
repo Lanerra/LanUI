@@ -1,4 +1,5 @@
 local F, C, G = unpack(select(2, ...))
+local bc = C.Media.BorderColor
 
 function CreateBorderLight(self, borderSize, R, G, B, ...)
     local uL1, uL2, uR1, uR2, bL1, bL2, bR1, bR2 = ...
@@ -62,6 +63,12 @@ function CreateBorderLight(self, borderSize, R, G, B, ...)
 end
 
 function SetBorderLayer(self, layer, sub)
+    if not self.HasBorder then
+        if not sub then sub = 0 end
+        self.backdropTexture:SetDrawLayer(layer, sub)
+        return
+    end
+    
     if (self.Borders) then
 	    for i = 1, 8 do
             if not sub then sub = 0 end
@@ -71,6 +78,8 @@ function SetBorderLayer(self, layer, sub)
 end
 
 function SetTexture(self, texture)
+    if not self.HasBorder then return end
+    
     if texture == 'white' then
         x = 'Interface\\AddOns\\LanUI\\Media\\textureNormalWhite'
     elseif texture == 'default' then
@@ -87,6 +96,8 @@ function SetTexture(self, texture)
 end
 
 function SetColorShadow(self, R, G, B, A)
+    if not self.HasBorder then return end
+    
 	if (self.Borders) then
         for i = 1, 8 do
             self.Shadow[i]:SetVertexColor(R, G, B, A)
@@ -95,6 +106,11 @@ function SetColorShadow(self, R, G, B, A)
 end
 	
 function ColorBorder(self, R, G, B)
+    if not self.HasBorder then
+        self:SetBackdropBorderColor(R, G, B)
+        return
+    end
+    
     if (self.Borders) then
         for i = 1, 8 do
             self.Borders[i]:SetVertexColor(R, G, B)
@@ -103,6 +119,8 @@ function ColorBorder(self, R, G, B)
 end
 
 local function GetBeautyBorderInfo(self)
+    if not self.HasBorder then return end
+    
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
     elseif (self.Borders) then
@@ -117,6 +135,8 @@ local function GetBeautyBorderInfo(self)
 end
 
 local function SetBeautyBorderPadding(self, uL1, ...)
+    if not self.HasBorder then return end
+    
     if (not self) then
         print(formatName..' error:|r This frame does not exist!') 
         return
