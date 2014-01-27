@@ -208,8 +208,8 @@ local function Point(obj, arg1, arg2, arg3, arg4, arg5)
 end
 
 local function SetOutside(obj, anchor, xOffset, yOffset)
-	xOffset = xOffset or 2
-	yOffset = yOffset or 2
+	xOffset = xOffset or F.Mult
+	yOffset = yOffset or F.Mult
 	anchor = anchor or obj:GetParent()
 
 	if obj:GetPoint() then obj:ClearAllPoints() end
@@ -219,8 +219,8 @@ local function SetOutside(obj, anchor, xOffset, yOffset)
 end
 
 local function SetInside(obj, anchor, xOffset, yOffset)
-	xOffset = xOffset or 2
-	yOffset = yOffset or 2
+	xOffset = xOffset or F.Mult
+	yOffset = yOffset or F.Mult
 	anchor = anchor or obj:GetParent()
 
 	if obj:GetPoint() then obj:ClearAllPoints() end
@@ -263,6 +263,40 @@ local function SetTemplate(f, nobd)
 	
 	f:SetBeautyBorderPadding(1)
 	f.skinned = true
+	--[[texture = C.Media.Backdrop
+	
+	f.template = t
+	f.glossTex = glossTex
+	f.ignoreUpdates = ignoreUpdates
+	
+	f:SetBackdrop({
+		bgFile = texture, 
+		edgeFile = texture, 
+		tile = false, tileSize = 0, edgeSize = F.Mult, 
+		insets = { left = 0, right = 0, top = 0, bottom = 0}
+	})
+
+	if not f.backdropTexture then
+		local backdropTexture = f:CreateTexture(nil, "BORDER")
+		backdropTexture:SetDrawLayer("BACKGROUND", 1)
+		f.backdropTexture = backdropTexture
+	end
+	
+	if f.backdropTexture then 
+		f:SetBackdropColor(unpack(C.Media.BackdropColor))
+		f.backdropTexture:SetVertexColor(0, 0, 0)
+		
+		if not nobd then
+			f.backdropTexture:SetAlpha(0.5)
+		else
+			f.backdropTexture:SetAlpha(0)
+		end
+		f.backdropTexture:SetTexture(texture)
+		
+		f.backdropTexture:SetInside(f)
+	end
+	
+	f:SetBackdropBorderColor(bc.r, bc.g, bc.b)]]
 end
 F.SetTemplate = SetTemplate -- Compatibility, yo
 
@@ -444,6 +478,17 @@ local function CreateBD(f, border)
 	
 	
 	f.backdrop = b
+	--[[local b = CreateFrame("Frame", nil, f)
+	b:SetOutside()
+	b:SetTemplate()
+
+	if f:GetFrameLevel() - 1 >= 0 then
+		b:SetFrameLevel(f:GetFrameLevel() - 1)
+	else
+		b:SetFrameLevel(0)
+	end
+	
+	f.backdrop = b]]
 end
 F.CreateBD = CreateBD -- Compatibility, yo
 
@@ -884,6 +929,7 @@ local function addapi(object)
 	if not object.CreateBD then mt.CreateBD = CreateBD end
 	if not object.CreatePulse then mt.CreatePulse = CreatePulse end
 	if not object.Reskin then mt.Reskin = Reskin end
+	if not object.CreateBackdrop then mt.CreateBackdrop = CreateBD end
 end
 
 local handled = {['Frame'] = true}

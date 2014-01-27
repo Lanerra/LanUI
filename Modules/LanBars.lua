@@ -127,7 +127,7 @@ hooksecurefunc('ActionButton_Update', function(self)
             
             if (not button.Shadow) then
                 local icon = _G[self:GetName()..'Icon']
-                icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+                icon:SetTexCoord(.08, .92, .08, .92)
 
                 button.Shadow = button:CreateTexture(nil, 'BACKGROUND')
                 button.Shadow:SetParent(button)  
@@ -141,7 +141,7 @@ hooksecurefunc('ActionButton_Update', function(self)
         
         if (not button.Background) then
             local icon = _G[self:GetName()..'Icon']
-            icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+            icon:SetTexCoord(.08, .92, .08, .92)
 
             local count = _G[self:GetName()..'Count']
             if (count) then
@@ -545,7 +545,7 @@ local disableTexture = function(style, texture)
 end
 
 button.style:SetTexture(nil)
-ExtraActionButton1Icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+ExtraActionButton1Icon:SetTexCoord(.08, .92, .08, .92)
 
 local normal = ExtraActionButton1NormalTexture2 or ExtraActionButton1NormalTexture
 normal:SetVertexColor(0, 0, 0, 0)

@@ -128,6 +128,16 @@ local function UpdateBorder(self)
 			self.Overlay:SetBeautyBorderColor(unpack(C.Media.BorderColor))
 		end
 	end
+	
+	--[[if color then
+		self.Overlay:SetBackdropBorderColor(color[1], color[2], color[3])
+	else
+		if C.Media.ClassColor then
+			self.Overlay:SetBackdropBorderColor(cc.r, cc.g, cc.b)
+		else
+			self.Overlay:SetBackdropBorderColor(unpack(C.Media.BorderColor))
+		end
+	end]]
 end
 
 ------------------------------------------
@@ -190,7 +200,7 @@ local function PostCastStart(Castbar, unit)
 				self.Castbar.Borders:SetBeautyBorderTexture('white')
 				self.Castbar.Borders:SetBeautyBorderColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
 			else
-				self.Castbar.Borders:SetBorderTexture('default')
+				self.Castbar.Borders:SetBeautyBorderTexture('default')
 				self.Castbar.Borders:SetBeautyBorderColor(C.Media.BorderColor)
 			end
         end
@@ -212,7 +222,7 @@ local function PostChannelStart(Castbar, unit)
 				self.Castbar.Borders:SetBeautyBorderTexture('white')
 				self.Castbar.Borders:SetBeautyBorderColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
 			else
-				self.Castbar.Borders:SetBorderTexture('default')
+				self.Castbar.Borders:SetBeautyBorderTexture('default')
 				self.Castbar.Borders:SetBeautyBorderColor(C.Media.BorderColor)
 			end
         end
@@ -451,7 +461,7 @@ local function PostCreateAuraIcon(iconframe, button)
 	local border = CreateFrame('Frame', nil, button)
 	border:SetAllPoints(button)
 	border:SetTemplate()
-	border:SetBeautyBorderPadding(2)
+	border:SetBeautyBorderPadding(F.Scale(2))
 	border:SetBackdropColor(0, 0, 0, 0)
 	button.border = border
 
@@ -654,7 +664,7 @@ local Stylish = function(self, unit, isSingle)
             self.Castbar.Borders:SetFrameStrata('HIGH')
             
 			self.Castbar.Borders:SetTemplate()
-			self.Castbar.Borders:SetBeautyBorderPadding(3)
+			self.Castbar.Borders:SetBeautyBorderPadding(F.Scale(3))
 			self.Castbar.Borders:SetBackdropColor(0, 0, 0, 0)
 			
 			self.Castbar:SetHeight(C.UF.CastBars.Player.Height)
@@ -707,7 +717,7 @@ local Stylish = function(self, unit, isSingle)
             self.Castbar.Borders:SetFrameStrata('HIGH')
             
 			self.Castbar.Borders:SetTemplate()
-			self.Castbar.Borders:SetBeautyBorderPadding(3)
+			self.Castbar.Borders:SetBeautyBorderPadding(F.Scale(3))
 			self.Castbar.Borders:SetBackdropColor(0, 0, 0, 0)
 			
 			self.Castbar:SetHeight(C.UF.CastBars.Target.Height)
@@ -759,7 +769,7 @@ local Stylish = function(self, unit, isSingle)
         MirrorBorder:SetAllPoints(_G[bar])
         MirrorBorder:SetFrameLevel(_G[bar]:GetFrameLevel() + 2)
 		MirrorBorder:SetTemplate()
-		--MirrorBorder:SetBeautyBorderPadding(4)
+		MirrorBorder:SetBeautyBorderPadding(F.Scale(2))
 		MirrorBorder:SetBackdropColor(0, 0, 0, 0)
 		
 		_G[bar..'Border']:Hide()
@@ -776,9 +786,10 @@ local Stylish = function(self, unit, isSingle)
 		
 		_G[bar..'Text']:SetFont(CastingBarFrameText:GetFont(), 13)
 		_G[bar..'Text']:ClearAllPoints()
-		_G[bar..'Text']:SetPoint('CENTER', MirrorTimer1StatusBar, 0, 1)
+		_G[bar..'Text']:SetPoint('CENTER', MirrorTimer1StatusBar)
 		
 		_G[bar..'StatusBar']:SetAllPoints(_G[bar])
+		_G[bar..'StatusBar']:SetStatusBarTexture(C.Media.StatusBar)
 	end
 	
 	-- Display the names
@@ -1056,7 +1067,7 @@ local Stylish = function(self, unit, isSingle)
         local EclipseBarBorder = CreateFrame('Frame', nil, EclipseBar)
         EclipseBarBorder:SetAllPoints(EclipseBar)
         EclipseBarBorder:SetTemplate()
-		--EclipseBarBorder:SetBeautyBorderPadding(4)
+		EclipseBarBorder:SetBeautyBorderPadding(F.Scale(4))
 		EclipseBarBorder:SetBackdropColor(0, 0, 0, 0)
 
         local LunarBar = CreateFrame('StatusBar', nil, EclipseBar)
@@ -1159,7 +1170,7 @@ local Stylish = function(self, unit, isSingle)
 	
 	self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
     self.Overlay:SetTemplate(true)
-	self.Overlay:SetBeautyBorderPadding(F.Mult * 3)
+	self.Overlay:SetBeautyBorderPadding(F.Scale(3))
     
     self.UpdateBorder = UpdateBorder
 
@@ -1238,7 +1249,7 @@ local function StylishGroup(self, unit)
     self.Overlay = CreateFrame('Frame', nil, self)
 	self.Overlay:SetAllPoints(self)
 	self.Overlay:SetTemplate(true)
-	self.Overlay:SetBeautyBorderPadding(F.Mult * 3)
+	self.Overlay:SetBeautyBorderPadding(F.Scale(3))
 	self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
 	
 	-- Display group names
@@ -1383,7 +1394,7 @@ local function StylishGroup(self, unit)
     -- Hardcore border action!
     self.Overlay:SetTemplate()
 	self.Overlay:SetBackdropColor(0, 0, 0, 0)
-	self.Overlay:SetBeautyBorderPadding(4)
+	self.Overlay:SetBeautyBorderPadding(F.Scale(4))
     
     self.UpdateBorder = UpdateBorder
 
@@ -1467,7 +1478,7 @@ local function StylishRaid(self, unit)
 	self.Overlay:SetPoint('TOPLEFT')
 	self.Overlay:SetPoint('BOTTOMRIGHT', -1, -0.5)
 	self.Overlay:SetTemplate(true)
-	self.Overlay:SetBeautyBorderPadding(F.Mult * 3)
+	self.Overlay:SetBeautyBorderPadding(F.Scale(3))
 	self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
 		
 	-- Display group names
@@ -1565,7 +1576,7 @@ local function StylishRaid(self, unit)
     -- Hardcore border action!
     self.Overlay:SetTemplate()
 	self.Overlay:SetBackdropColor(0, 0, 0, 0)
-	self.Overlay:SetBeautyBorderPadding(4)
+	self.Overlay:SetBeautyBorderPadding(F.Scale(4))
     
     self.UpdateBorder = UpdateBorder
 
