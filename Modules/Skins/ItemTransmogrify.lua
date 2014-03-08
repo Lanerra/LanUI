@@ -51,6 +51,11 @@ local function LoadSkin()
 			icon:Point('BOTTOMRIGHT', -2, 2)
 		end
 	end
+	
+	TransmogrifyConfirmationPopup:StripTextures()
+	TransmogrifyConfirmationPopup:SetTemplate()
+	TransmogrifyConfirmationPopup.Button1:SkinButton()
+	TransmogrifyConfirmationPopup.Button2:SkinButton()
 end
 
 F.SkinFuncs['Blizzard_ItemAlterationUI'] = LoadSkin

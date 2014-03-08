@@ -291,6 +291,7 @@ local function LoadSkin()
 		'ControlsPanelAutoLootCorpse',
 		'ControlsPanelAutoOpenLootHistory',
 		'ControlsPanelInteractOnLeftClick',
+		'ControlsPanelBlockChatChannelInvites',
 		-- Combat
 		'CombatPanelAttackOnAssist',
 		'CombatPanelStopAutoAttack',

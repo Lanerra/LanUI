@@ -110,6 +110,11 @@ local function LoadSkin()
 	end
 	SkinDungeons()
 	hooksecurefunc('EncounterJournal_ListInstances', SkinDungeons)
+	
+	EncounterJournalEncounterFrameInfoLootScrollFrameScrollBar:SkinScrollBar()
+	EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollBar:SkinScrollBar()
+	EncounterJournalEncounterFrameInstanceFrameLoreScrollFrameScrollBar:SkinScrollBar()
+	EncounterJournalEncounterFrameInfoBossesScrollFrameScrollBar:SkinScrollBar()
 end
 
 F.SkinFuncs['Blizzard_EncounterJournal'] = LoadSkin
