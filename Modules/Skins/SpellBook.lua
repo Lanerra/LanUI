@@ -153,14 +153,16 @@ local function LoadSkin()
 		'SecondaryProfession4'
 	}
 
-	if not InCombatLockdown() then
-		for _, header in pairs(professionheaders) do
-			_G[header..'Missing']:SetTextColor(1, 0.8, 0)
-			_G[header..'Missing']:SetShadowColor(0, 0, 0)
-			_G[header..'Missing']:SetShadowOffset(1, -1)
-			_G[header].missingText:SetTextColor(0.6, 0.6, 0.6)
-		end
-
+	for _, header in pairs(professionheaders) do
+		_G[header..'Missing']:SetTextColor(1, 0.8, 0)
+		_G[header..'Missing']:SetShadowColor(0, 0, 0)
+		_G[header..'Missing']:SetShadowOffset(1, -1)
+		_G[header].missingText:SetTextColor(0.6, 0.6, 0.6)
+	end
+	
+	if InCombatLockdown() then
+		return
+	else
 		for _, button in pairs(professionbuttons) do
 			local icon = _G[button..'IconTexture']
 			local rank = _G[button..'SubSpellName']
