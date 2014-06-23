@@ -1185,7 +1185,8 @@ local Stylish = function(self, unit, isSingle)
 	self.ThreatHighlight = {
 		Override = UpdateThreatHighlight,
 	}
-       
+	
+	self:CreateBD()
     return self
 end
 
@@ -1410,6 +1411,7 @@ local function StylishGroup(self, unit)
 		Override = UpdateThreatHighlight,
 	}
     
+	self:CreateBD()
     return self
 end
 
@@ -1592,6 +1594,7 @@ local function StylishRaid(self, unit)
 		Override = UpdateThreatHighlight,
 	}
     
+	self:CreateBD()
     return self
 end
 

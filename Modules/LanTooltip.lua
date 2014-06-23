@@ -500,7 +500,7 @@ hooksecurefunc('GameTooltip_SetDefaultAnchor', function(self, parent)
         if (not ChatFrame3:IsShown()) then
             self:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -5.35, 27.35)
         else
-            self:SetPoint('BOTTOMRIGHT', ChatFrame3, 'TOPRIGHT', 4, 5)
+            self:SetPoint('BOTTOMRIGHT', ChatFrame3, 'TOPRIGHT', 4, 7)
         end
     end
 end)
