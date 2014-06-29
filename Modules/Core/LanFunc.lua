@@ -263,41 +263,6 @@ local function SetTemplate(f, nobd)
 	
 	f:SetBeautyBorderPadding(1)
 	f.skinned = true
-	--[[texture = C.Media.Backdrop
-	
-	f.template = t
-	f.glossTex = glossTex
-	f.ignoreUpdates = ignoreUpdates
-	
-	f:SetBackdrop({
-		bgFile = texture, 
-		edgeFile = texture, 
-		tile = false, tileSize = 0, edgeSize = F.Mult, 
-		insets = { left = 0, right = 0, top = 0, bottom = 0}
-	})
-
-	if not f.backdropTexture then
-		local backdropTexture = f:CreateTexture(nil, "BORDER")
-		backdropTexture:SetDrawLayer("BACKGROUND", 1)
-		f.backdropTexture = backdropTexture
-	end
-	
-	if f.backdropTexture then
-		f.backdropTexture:SetVertexColor(0, 0, 0)
-		
-		if not nobd then
-			f.backdropTexture:SetAlpha(0.5)
-			f:SetBackdropColor(backdropr, backdropg, backdropb, backdropa)
-		else
-			f:SetBackdropColor(0, 0, 0, 0)
-			f.backdropTexture:SetAlpha(0)
-		end
-		f.backdropTexture:SetTexture(texture)
-		
-		f.backdropTexture:SetOutside(f)
-	end
-	
-	f:SetBackdropBorderColor(bc.r, bc.g, bc.b)]]
 end
 F.SetTemplate = SetTemplate -- Compatibility, yo
 
@@ -338,16 +303,6 @@ local function Kill(object)
 end
 
 local function StyleButton(button)
-	--[[local norm
-	
-	if button:GetNormalTexture() then
-		norm = _G[button:GetName()..'NormalTexture']
-	end
-	
-	if norm then
-		norm:SetAlpha(0)
-	end]]
-	
 	if button.SetHighlightTexture and not button.hover then
 		local hover = button:CreateTexture('frame', nil, self)
 		hover:SetTexture(1, 1, 1, 0.3)
@@ -458,9 +413,6 @@ local function CreateBD(f, border)
 	local b = CreateFrame('Frame', nil, f)
 	b:SetOutside()
 	
-	--b:Point('TOPLEFT', -2, 2)
-	--b:Point('BOTTOMRIGHT', 2, -2)
-	
 	if b.SetBackdrop then
 		b:SetBackdrop({
 			bgFile = texture, 
@@ -481,18 +433,6 @@ local function CreateBD(f, border)
 	
 	
 	f.backdrop = b
-	
-	--[[local b = CreateFrame("Frame", nil, f)
-	b:SetOutside()
-	b:SetTemplate()
-
-	if f:GetFrameLevel() - 1 >= 0 then
-		b:SetFrameLevel(f:GetFrameLevel() - 1)
-	else
-		b:SetFrameLevel(0)
-	end
-	
-	f.backdrop = b]]
 end
 F.CreateBD = CreateBD -- Compatibility, yo
 
@@ -821,12 +761,6 @@ local function SkinDropDownBox(frame, width)
 	button:ClearAllPoints()
 	Point(button, 'RIGHT', frame, 'RIGHT', -10, 0)
 	button.SetPoint = F.Dummy
-	
-	-- SkinNextPrevButton(button, true)
-	
-	--[[frame:CreateBD()
-	frame.backdrop:Point('TOPLEFT', 20, -2)
-	frame.backdrop:Point('BOTTOMRIGHT', button, 'BOTTOMRIGHT', 2, -2)]]
 end
 F.SkinDropDownBox = SkinDropDownBox -- Compatibility, yo
 
