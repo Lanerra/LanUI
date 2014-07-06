@@ -112,10 +112,20 @@ F.StylePet = function()
 		for i = 1, 12 do
 			local button = _G[name..i]
 			local cast = _G[name..i..'AutoCastable']
+			
 			if (button) then
 				if cast then
 					cast:SetAlpha(0)
 					cast.SetAlpha = F.Dummy
+				end
+				
+				if button.SetCheckedTexture and not button.checked then
+					local checked = button:CreateTexture('frame', nil, self)
+					checked:SetTexture(0,1,0,.3)
+					checked:Point('TOPLEFT', 1, -1)
+					checked:Point('BOTTOMRIGHT', -1, 1)
+					button.checked = checked
+					button:SetCheckedTexture(checked)
 				end
 
 				if (not button.Shadow) then
@@ -303,6 +313,18 @@ local function Kill(object)
 end
 
 local function StyleButton(button)
+	if button.isSkinned then return end
+	
+	local name = button:GetName()
+	local normal = _G[name..'NormalTexture2'] or _G[name..'NormalTexture']
+	
+	if normal then
+		normal:ClearAllPoints()
+		normal:SetPoint('TOPRIGHT', button, 1, 1)
+		normal:SetPoint('BOTTOMLEFT', button, -1, -1)
+		normal:SetVertexColor(0, 0, 0, 0)
+	end
+	
 	if button.SetHighlightTexture and not button.hover then
 		local hover = button:CreateTexture('frame', nil, self)
 		hover:SetTexture(1, 1, 1, 0.3)
@@ -336,6 +358,8 @@ local function StyleButton(button)
 		cooldown:Point('TOPLEFT', 1, -1)
 		cooldown:Point('BOTTOMRIGHT', -1, 1)
 	end
+	
+	button.isSkinned = true
 end
 F.StyleButton = StyleButton -- Compatibility, yo
 
