@@ -2,7 +2,7 @@ local parent, ns = ...
 local global = GetAddOnMetadata(parent, 'X-oUF')
 local _VERSION = GetAddOnMetadata(parent, 'version')
 
-oUF = ns.oUF
+local oUF = ns.oUF
 local Private = oUF.Private
 
 local argcheck = Private.argcheck
