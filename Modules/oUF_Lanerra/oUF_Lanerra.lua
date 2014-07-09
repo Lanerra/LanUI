@@ -1,6 +1,7 @@
 local F, C, G = unpack(select(2, ...))
 local bc = C.Media.BorderColor
-local oUF = oUF
+local _, ns = ...
+local oUF = ns.oUF
 
 local settings = {
 	C.UF.Units.Player,
@@ -1724,7 +1725,7 @@ oUF:Factory(function(self)
             else
                 raid[i]:SetPoint('TOP', raid[i-1], 'BOTTOM', 0, -10)
             end
-            raid[i]:Show()
+            --raid[i]:Show()
         end
     end
 end)

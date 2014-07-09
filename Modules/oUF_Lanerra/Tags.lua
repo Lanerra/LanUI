@@ -1,6 +1,7 @@
 local F, C, G = unpack(select(2, ...))
 
-local oUF = oUF
+local _, ns = ...
+local oUF = ns.oUF
 
 -- Define some custom oUF tags
 oUF.Tags.Methods['LanPvPTime'] = function(unit)

@@ -23,14 +23,19 @@ local function LoadSkin()
 	for _, texture in pairs(KillTextures) do
 		_G[texture]:Kill()
 	end
+	
+	local pagebackdrop = CreateFrame("Frame", nil, SpellBookFrame)
+	pagebackdrop:SetTemplate()
+	pagebackdrop:Point("TOPLEFT", SpellBookPage1, "TOPLEFT", -2, 2)
+	pagebackdrop:Point("BOTTOMRIGHT", SpellBookFrame, "BOTTOMRIGHT", -8, 4)
+	
+	for i=1, 2 do
+		_G['SpellBookPage'..i]:SetParent(pagebackdrop)
+		_G['SpellBookPage'..i]:SetDrawLayer('BACKGROUND', 3)
+	end
 
 	SpellBookPrevPageButton:SkinNextPrevButton()
 	SpellBookNextPageButton:SkinNextPrevButton()
-	SpellBookNextPageButton:Point('BOTTOMRIGHT', SpellBookFrame, 'BOTTOMRIGHT', -15, 10)
-	SpellBookPrevPageButton:Point('BOTTOMRIGHT', SpellBookNextPageButton, 'BOTTOMLEFT', -6, 0)
-
-	--SpellBookFrameTutorialButton.Ring:Hide()
-	--SpellBookFrameTutorialButton:SetPoint('TOPLEFT', SpellBookFrame, 'TOPLEFT', -5, 10)
 
 	-- Skin SpellButtons
 	local function SpellButtons(self, first)
@@ -67,13 +72,11 @@ local function LoadSkin()
 
 			if icon then
 				icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-				icon:SetInside()
-				--[[icon:ClearAllPoints()
-				icon:SetAllPoints()]]
+				icon:ClearAllPoints()
+				icon:SetAllPoints()
 
-				if not button.isSkinned then
-					button:SetTemplate()
-					button.isSkinned = true
+				if not button.backdrop then
+					button:CreateBD(true)
 				end
 			end
 
@@ -103,7 +106,7 @@ local function LoadSkin()
 			button:SetFrameLevel(button.properFrameLevel)
 		end
 		
-		if not button.skinned then
+		if not button.isSkinned then
 			for i=1, button:GetNumRegions() do
 				local region = select(i, button:GetRegions())
 				if region:GetObjectType() == 'Texture' then
@@ -119,7 +122,7 @@ local function LoadSkin()
 					end
 				end)		
 			end
-			button.skinned = true
+			button.isSkinned = true
 		end
 		
 		if icon then
@@ -132,7 +135,7 @@ local function LoadSkin()
 			end
 		end		
 			
-		button.skinned = true;
+		button.isSkinned = true;
 	end
 	hooksecurefunc('SpellBook_GetCoreAbilityButton', CoreAbilities)
 	
@@ -144,7 +147,7 @@ local function LoadSkin()
 		tab.pushed = true;
 		tab:CreateBD(true)
 		tab.backdrop:SetAllPoints()
-		tab:StyleButton(true)	
+		--tab:StyleButton(true)
 		hooksecurefunc(tab:GetHighlightTexture(), 'SetTexture', function(self, texPath)
 			if texPath ~= nil then
 				self:SetPushedTexture(nil);
@@ -175,15 +178,31 @@ local function LoadSkin()
 		SkinTab(button)
 		
 		if index > 1 then
-			local point, attachTo, anchorPoint, _, y = button:GetPoint()
+			local point, attachTo, anchorPoint, _, _ = button:GetPoint()
 			button:ClearAllPoints()
-			button:SetPoint(point, attachTo, anchorPoint, 0, y)
+			button:SetPoint(point, attachTo, anchorPoint, 0, -10)
+		else
+			button:ClearAllPoints()
+			button:SetPoint('TOPLEFT', SpellBookFrame, 'TOPRIGHT', -8, -32)
 		end
 	end
 	
 	hooksecurefunc('SpellBook_GetCoreAbilitySpecTab', SkinCoreTabs)
 
-	SpellBookSkillLineTab1:SetPoint('TOPLEFT', SpellBookSideTabsFrame, 'TOPRIGHT', 14, -10)
+	for i = 1, 4 do
+		local tab = _G['SpellBookSkillLineTab'..i]
+		local prev =_G['SpellBookSkillLineTab'..i-1]
+
+		tab:ClearAllPoints()
+		tab.ClearAllPoints = function() return end
+		if i == 1 then
+			tab:SetPoint('TOPLEFT', SpellBookFrame, 'TOPRIGHT', -8, -32)
+		else
+			tab:SetPoint('TOP', prev, 'BOTTOM', 0, -10)
+		end
+
+		tab.SetPoint = function() return end
+	end
 	
 	local function SkinSkillLine()
 		for i = 1, MAX_SKILLLINE_TABS do
@@ -199,12 +218,9 @@ local function LoadSkin()
 	end
 	hooksecurefunc('SpellBookFrame_UpdateSkillLineTabs', SkinSkillLine)
 
-	SpellBookFrame:CreateBD()
-	SpellBookFrame.backdrop:SetTemplate(true)
-	SpellBookFrame.backdrop:Point('TOPLEFT', 5, -1)
-	SpellBookFrame.backdrop:Point('BOTTOMRIGHT', 15, -1)
-
-	SpellBookFrameCloseButton:SkinCloseButton(SpellBookFrame.backdrop)
+	SpellBookFrameCloseButton:SkinCloseButton()
+	SpellBookFrameCloseButton:SetPoint('TOPRIGHT', SpellBookFrame, -5, -20)
+	SpellBookFrameTitleText:Kill()
 
 	-- Profession Tab
 	local professionbuttons = {
@@ -285,7 +301,7 @@ local function LoadSkin()
 		end
 	end
 	_G['SpellBookFrameTabButton1']:ClearAllPoints()
-	_G['SpellBookFrameTabButton1']:Point('TOPLEFT', _G['SpellBookFrame'], 'BOTTOMLEFT', 10, 1)
+	_G['SpellBookFrameTabButton1']:Point('TOPLEFT', _G['SpellBookFrame'], 'BOTTOMLEFT', 10, 7)
 end
 
 tinsert(F.SkinFuncs['LanUI'], LoadSkin)

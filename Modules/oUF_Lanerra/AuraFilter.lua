@@ -1,4 +1,6 @@
 local F, C, G = unpack(select(2, ...))
+local _, ns = ...
+local oUF = ns.oUF
 
 --[[--------------------------------------------------------------------
 	Credits and thanks to Phanx for this filter configuration.
