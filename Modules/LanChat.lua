@@ -436,18 +436,20 @@ f:SetScript('OnEvent', function(_, event)
     end
 end)
 
-local CombatChat = CreateFrame('Frame')
-CombatChat:RegisterEvent('PLAYER_REGEN_ENABLED')
-CombatChat:RegisterEvent('PLAYER_REGEN_DISABLED')
-CombatChat:SetScript('OnEvent', function(self, event)
-    if event == 'PLAYER_REGEN_DISABLED' then
-        ChatFrame1:SetHeight(50)
-        ChatFrame3:SetHeight(50)
-    elseif event == 'PLAYER_REGEN_ENABLED' then
-        ChatFrame1:SetHeight(200)
-        ChatFrame3:SetHeight(200)
-    end
-end)
+if C.Chat.CombatMinimize then
+    local CombatChat = CreateFrame('Frame')
+    CombatChat:RegisterEvent('PLAYER_REGEN_ENABLED')
+    CombatChat:RegisterEvent('PLAYER_REGEN_DISABLED')
+    CombatChat:SetScript('OnEvent', function(self, event)
+        if event == 'PLAYER_REGEN_DISABLED' then
+            ChatFrame1:SetHeight(50)
+            ChatFrame3:SetHeight(50)
+        elseif event == 'PLAYER_REGEN_ENABLED' then
+            ChatFrame1:SetHeight(C.Chat.Chat1Height)
+            ChatFrame3:SetHeight(C.Chat.Chat3Height)
+        end
+    end)
+end
 
 local function RemoveCurrentRealmName(self, event, msg, author, ...)
 	local realmName = GetRealmName()
