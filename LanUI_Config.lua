@@ -91,8 +91,7 @@ C['Tweaks'] = {
 }
 
 C['Chat'] = {
-    ['Chat1Height'] = 200, -- ChatFrame1 Height
-    ['Chat3Height'] = 200, -- Chatframe3 Height
+    ['ChatHeight'] = 200, -- ChatFrame Height
     ['ChatSetup'] = true, -- Automatically configure chat frames
     ['CombatMinimize'] = true, -- Reduce ChatFrame height when in comabt
     ['NoChatFade'] = true, -- Prevent chat frame/tabs from fading

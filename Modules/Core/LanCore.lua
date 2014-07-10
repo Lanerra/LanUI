@@ -21,7 +21,7 @@ local LanJanitor = CreateFrame("Frame")
 LanJanitor:RegisterAllEvents()
 LanJanitor:SetScript("OnEvent", function(self, event)
     eventcount = eventcount + 1
-    if InCombatLockdown() then return end
+    --if InCombatLockdown() then return end
 
     if (InCombatLockdown() and eventcount > 25000) or (not InCombatLockdown() and eventcount > 10000) or event == "PLAYER_ENTERING_WORLD" then
         collectgarbage("collect")

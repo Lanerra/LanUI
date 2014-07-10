@@ -39,6 +39,9 @@ SpamCheck:SetScript('OnEvent', function()
             break
         end
     end
+    
+    ChatFrame1:SetHeight(C.Chat.ChatHeight)
+    ChatFrame3:SetHeight(C.Chat.ChatHeight)
 
     ChatFrame1:RemoveMessagesByAccessID(0)
     ChatFrame1:AddMessage(keeper, nil, nil, nil, lineID, nil, accessID, extraData)
@@ -338,7 +341,7 @@ for i = 1, NUM_CHAT_WINDOWS do
     local x = CreateFrame('Frame', _G['ChatHolder'..i], chat)
     x:SetPoint('TOPLEFT', chat, -5, 5)
     x:SetPoint('BOTTOMRIGHT', chat, 5, -7)
-    x:SetSize(425, 200)
+    x:SetSize(425, C.Chat.ChatHeight)
     x:SetFrameStrata('BACKGROUND')
     x:SetTemplate()
 end
@@ -445,8 +448,8 @@ if C.Chat.CombatMinimize then
             ChatFrame1:SetHeight(50)
             ChatFrame3:SetHeight(50)
         elseif event == 'PLAYER_REGEN_ENABLED' then
-            ChatFrame1:SetHeight(C.Chat.Chat1Height)
-            ChatFrame3:SetHeight(C.Chat.Chat3Height)
+            ChatFrame1:SetHeight(C.Chat.ChatHeight)
+            ChatFrame3:SetHeight(C.Chat.ChatHeight)
         end
     end)
 end

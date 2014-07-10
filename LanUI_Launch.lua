@@ -90,11 +90,11 @@ f:SetScript('OnEvent', function(_, event, ...)
 		if C.Tweaks.ChatSetup == true then -- Auto configure chat frames when you make a new character/make sure chat frames don't get messed up
 		    ChatFrame1:ClearAllPoints()
 	        ChatFrame1:SetPoint('BOTTOMLEFT', UIParent, 33, 59)
-	        ChatFrame1:SetHeight(C.Chat.Chat1Height)
+	        ChatFrame1:SetHeight(C.Chat.ChatHeight)
             ChatFrame1:SetWidth(425)
 	        ChatFrame1:SetUserPlaced(true)
             ChatFrame3:SetPoint('BOTTOMRIGHT', UIParent, -33, 59)
-            ChatFrame3:SetHeight(C.Chat.Chat3Height)
+            ChatFrame3:SetHeight(C.Chat.ChatHeight)
             ChatFrame3:SetWidth(425)
             ChatFrame3:SetUserPlaced(true)
             
