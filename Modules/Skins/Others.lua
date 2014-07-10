@@ -115,8 +115,15 @@ local function LoadSkin()
 		GameMenuButtonOptions:Point('TOP', GameMenuButtonStore, 'BOTTOM', 0, -2)
 		GameMenuButtonUIOptions:Point('TOP', GameMenuButtonOptions, 'BOTTOM', 0, -2)
 		GameMenuButtonKeybindings:Point('TOP', GameMenuButtonUIOptions, 'BOTTOM', 0, -2)
-		GameMenuButtonAddOns:Point('TOP', GameMenuButtonKeybindings, 'BOTTOM', 0, -2)
-		GameMenuButtonMacros:Point('TOP', GameMenuButtonAddOns, 'BOTTOM', 0, -2)
+		
+		if GameMenuButtonAddOns then
+			GameMenuButtonAddOns:Point('TOP', GameMenuButtonKeybindings, 'BOTTOM', 0, -2)
+			GameMenuButtonMacros:Point('TOP', GameMenuButtonAddOns, 'BOTTOM', 0, -2)
+			GameMenuButtonLogout:Point('TOP', GameMenuButtonMacros, 'BOTTOM', 0, -2)
+		else
+			GameMenuButtonMacros:Point('TOP', GameMenuButtonKeybindings, 'BOTTOM', 0, -2)
+		end
+		
 		GameMenuButtonLogout:Point('TOP', GameMenuButtonMacros, 'BOTTOM', 0, -2)
 		
 		if button then

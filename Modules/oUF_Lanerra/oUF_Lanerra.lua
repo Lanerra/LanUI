@@ -1645,6 +1645,7 @@ end)
 
 -- And finally, the raid stuff
 oUF:Factory(function(self)
+	local raid
 	self:SetActiveStyle('oUF_Lanerra_Raid')
 
 	CompactUnitFrameProfiles:UnregisterAllEvents()	
@@ -1701,32 +1702,15 @@ oUF:Factory(function(self)
             end
         end
     else
-        raid = {}
-        for i = 1, 5 do
-            raid[i] = oUF:SpawnHeader(
-				'oUF_Lanerra_Raid'..i,
-				nil,
-				'raid',
-				'groupFilter', '1,2,3,4,5',
-				'showRaid', true,
-				'showPlayer', true,
-				--'showSolo', true,
-				'yOffset', -10,
-				'oUF-initialConfigFunction', [[
-					self:SetAttribute('initial-width', C.UF.Units.Raid.Width)
-					self:SetAttribute('initial-height', C.UF.Units.Raid.Height)
-					self:SetWidth(C.UF.Units.Raid.Width)
-					self:SetHeight(C.UF.Units.Raid.Height)
-				]]
-			)
-            table.insert(raid, raid[i])
-            if (i == 1) then
-                raid[i]:SetPoint(unpack(C.UF.Units.Raid.Position))
-            else
-                raid[i]:SetPoint('TOP', raid[i-1], 'BOTTOM', 0, -10)
-            end
-            --raid[i]:Show()
-        end
+        raid = oUF:SpawnHeader(
+			'oUF_Lanerra_Raid',
+			nil,
+			'raid',
+			'showRaid', true,
+			'showPlayer', true,
+			'yOffset', -10
+		)
+		raid:SetPoint(unpack(C.UF.Units.Raid.Position))
     end
 end)
 
