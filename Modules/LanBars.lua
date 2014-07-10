@@ -17,6 +17,21 @@ InterfaceOptionsActionBarsPanelRight:Kill()
 InterfaceOptionsActionBarsPanelRightTwo:Kill()
 InterfaceOptionsActionBarsPanelAlwaysShowActionBars:Kill()
 
+if C.ActionBars.Bar3 then
+    SHOW_MULTI_ACTIONBAR_1 = 1
+    SHOW_MULTI_ACTIONBAR_2 = 1
+    InterfaceOptions_UpdateMultiActionBars()
+elseif C.ActionBars.Bar2 then
+    if C.ActionBars.Bar3 then return end
+    SHOW_MULTI_ACTIONBAR_1 = 1
+    SHOW_MULTI_ACTIONBAR_2 = 0
+    InterfaceOptions_UpdateMultiActionBars()
+else
+    SHOW_MULTI_ACTIONBAR_1 = 0
+    SHOW_MULTI_ACTIONBAR_2 = 0
+    InterfaceOptions_UpdateMultiActionBars()
+end    
+
 --kill micromenu (or rather just make it too small to see then set the button to non interactive (just in case)
 CharacterMicroButton:SetScale(0.0001)
 CharacterMicroButton:EnableMouse(false)
@@ -625,6 +640,8 @@ f:SetScript('OnEvent', function()
             end
         end
     end
+    
+    InterfaceOptions_UpdateMultiActionBars()
 end)
 
 -- Experience bar mouseover text

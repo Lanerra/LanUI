@@ -4,7 +4,7 @@ Engine[1] = {} -- F, functions, constants, variables
 Engine[2] = {} -- C, config
 Engine[3] = {} -- G, globals (Optionnal)
 
-LanUI = Engine -- Allow other addons to use Engine
+_G[Addon] = Engine -- Allow other addons to use Engine
 
 --[[ Add this to the top to import settings. Also lets other addons
      use our stuff.
