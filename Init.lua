@@ -33,10 +33,7 @@ F.Build = tonumber(F.BuildText)
 F.Level = UnitLevel('player')
 F.MyRealm = GetRealmName()
 
-local TrueScale
-if 768/string.match(({GetScreenResolutions()})[GetCurrentResolution()], "%d+x(%d+)") < .64 then
-   TrueScale = (768/string.match(({GetScreenResolutions()})[GetCurrentResolution()], "%d+x(%d+)"))
-end
+local TrueScale = (768/string.match(({GetScreenResolutions()})[GetCurrentResolution()], "%d+x(%d+)"))
 F.TrueScale = TrueScale
 
     -- Tables

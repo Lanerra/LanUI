@@ -14,7 +14,7 @@ f:SetScript('OnEvent', function(_, event, ...)
 		SetCVar('useUiScale', 1) -- Use custom UI scale
 
 		if C.Tweaks.AutoScale then
-			C.Tweaks.UIScale = 768/string.match(F.Resolution, "%d+x(%d+)")
+			C.Tweaks.UIScale = F.TrueScale
 		end
 
 		SetCVar('uiScale', C.Tweaks.UIScale) -- DO NOT MODIFY UNLESS YOU UNDERSTAND THE EFFECT THIS WILL HAVE ON THE UI
