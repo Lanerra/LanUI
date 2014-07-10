@@ -1,9 +1,13 @@
 local F, C, G = unpack(select(2, ...))
 
+local Mult = 768/string.match(F.Resolution, '%d+x(%d+)')/F.TrueScale
+local Scale = function(x)
+	return Mult*math.floor(x/Mult+.5)
+end
+
 C['FirstTime'] = false -- How sweet! Fresh meat!
 
 C['ActionBars'] = {
-    ['Enabled'] = true, -- Option to enable or disable our own action bar implementation
     ['Hotkey'] = false, -- Show button hotkeys
     ['Macro'] = false, -- Show name of macros
     ['HideShapeshift'] = false, -- Hide shapeshift/totembar
@@ -15,8 +19,6 @@ C['ActionBars'] = {
     ['OwnStance'] = false, -- Use separate bar for each Warrior Stance (Warrior Only)
     ['Bar2'] = true, -- Need a second bar?
     ['Bar3'] = false, -- How about a third?
-    ['Bar4'] = false, -- A fourth?
-    ['Bar5'] = false, -- I think you get the picture by now
 }
 
 C['Bags'] = {
@@ -85,11 +87,14 @@ C['Tweaks'] = {
     ['StatsFrame'] = false, -- Show or hide StatsFrame
     ['AutoScale'] = true,
     ['UIScale'] = 0.625,
-    ['PowerLevel'] = true,
+    ['PowerLevel'] = false,
 }
 
 C['Chat'] = {
+    ['Chat1Height'] = 200, -- ChatFrame1 Height
+    ['Chat3Height'] = 200, -- Chatframe3 Height
     ['ChatSetup'] = true, -- Automatically configure chat frames
+    ['CombatMinimize'] = true, -- Reduce ChatFrame height when in comabt
     ['NoChatFade'] = true, -- Prevent chat frame/tabs from fading
 }
 
@@ -111,7 +116,7 @@ C['UF'] = {
         ToT = true,
         Party = true,
         Raid = true,
-        HealerOverride = true
+        HealerOverride = true -- Forces display of predictive healing (incoming heals)
     },
     Media = {
         FontSize = 15,
@@ -122,9 +127,9 @@ C['UF'] = {
     },
     Units = {
         Player = {
-            Height = 30,
-            Width = 200,
-            Position = {'CENTER', UIParent, -325, -175},
+            Height = Scale(30),
+            Width = Scale(200),
+            Position = {'CENTER', UIParent, Scale(-325), Scale(-175)},
             Health = {
                 Percent = false,
                 Deficit = false,
@@ -134,9 +139,9 @@ C['UF'] = {
             ShowBuffs = false,
         },
         Pet = {
-            Height = 30,
-            Width = 80,
-            Position = {'CENTER', UIParent, -485, -175},
+            Height = Scale(30),
+            Width = Scale(80),
+            Position = {'CENTER', UIParent, Scale(-485), Scale(-175)},
             Health = {
                 Percent = false,
                 Deficit = false,
@@ -144,9 +149,9 @@ C['UF'] = {
             },
         },
         Target = {
-            Height = 30,
-            Width = 200,
-            Position = {'CENTER', UIParent, 325, -175},
+            Height = Scale(30),
+            Width = Scale(200),
+            Position = {'CENTER', UIParent, Scale(325), Scale(-175)},
             Health = {
                 Percent = true,
                 Deficit = false,
@@ -157,9 +162,9 @@ C['UF'] = {
             ShowBuffs = true,
         },
         ToT = {
-            Height = 30,
-            Width = 80,
-            Position = {'CENTER', UIParent, 485, -175},
+            Height = Scale(30),
+            Width = Scale(80),
+            Position = {'CENTER', UIParent, Scale(485), Scale(-175)},
             Health = {
                 Percent = false,
                 Deficit = false,
@@ -167,9 +172,9 @@ C['UF'] = {
             },
         },
         Focus = {
-            Height = 30,
-            Width = 30,
-            Position = {'CENTER', UIParent, 0, -175},
+            Height = Scale(30),
+            Width = Scale(30),
+            Position = {'CENTER', UIParent, 0, Scale(-175)},
             Health = {
                 Percent = false,
                 Deficit = false,
@@ -178,10 +183,9 @@ C['UF'] = {
             VerticalHealth = true,
         },
         Party = {
-            Height = 20,
-            Width = 100,
-            TinyPosition = {'TOPLEFT', UIParent, 25, -210},
-            Position = {'TOPLEFT', UIParent, 25, -25},
+            Height = Scale(20),
+            Width = Scale(100),
+            Position = {'TOPLEFT', UIParent, Scale(25), Scale(-25)},
             Health = {
                 Percent = true,
                 Deficit = false,
@@ -189,14 +193,13 @@ C['UF'] = {
                 ClassColor = true,
             },
             HidePower = true, -- Reserved for future use
-            Healer = true,
+            Healer = false, -- Center frames in the UI and adjust size for better visibility?
             ShowBuffs = true,
         },
         Raid = {
-            Height = 18,
-            Width = 100,
-            TinyPosition = {'TOPLEFT', UIParent, 25, -210},
-            Position = {'TOPLEFT', UIParent, 25, -25},
+            Height = Scale(18),
+            Width = Scale(100),
+            Position = {'TOPLEFT', UIParent, Scale(25), Scale(-25)},
             Health = {
                 Percent = false,
                 Deficit = true,
@@ -204,16 +207,16 @@ C['UF'] = {
                 ClassColor = true,
             },
             HidePower = true, -- Reserved for future use
-            Healer = true, -- If true, overrides height and width in this section and gets set to a static amount
+            Healer = false, -- Center frames in the UI and adjust size for better visibility?
         },
     },
     CastBars = {
         Player = {
             Show = true,
-            Height = 25,
-            Width = 200,
+            Height = Scale(25),
+            Width = Scale(200),
             Scale = 1,
-            Position = {'CENTER', UIParent, -325, -232},
+            Position = {'CENTER', UIParent, Scale(-325), Scale(-232)},
             ClassColor = false,
             SafeZone = true,
             Latency = false,
@@ -221,10 +224,10 @@ C['UF'] = {
         },
         Target = {
             Show = true,
-            Height = 25,
-            Width = 200,
+            Height = Scale(25),
+            Width = Scale(200),
             Scale = 1,
-            Position = {'CENTER', UIParent, 325, -232},
+            Position = {'CENTER', UIParent, Scale(325), Scale(-232)},
             ClassColor = false,
             Color = {.25, .25, .25},
             InterruptHighlight = true,
