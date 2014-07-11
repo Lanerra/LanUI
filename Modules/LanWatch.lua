@@ -243,7 +243,7 @@ F.RegisterEvent('PLAYER_LOGIN', function(self, event)
 
 	SkinScenarioLine()
 
-	WatchFrame_SetSorting(nil, 1)
+	--WatchFrame_SetSorting(nil, 1)
 
 	WorldMapPlayerUpper:EnableMouse(false)
 	WorldMapPlayerLower:EnableMouse(false)

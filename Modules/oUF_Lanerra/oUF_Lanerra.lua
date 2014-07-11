@@ -3,22 +3,7 @@ local bc = C.Media.BorderColor
 local _, ns = ...
 local oUF = ns.oUF
 
-local settings = {
-	C.UF.Units.Player,
-	C.UF.Units.Pet,
-	C.UF.Units.Target,
-	C.UF.Units.ToT,
-	C.UF.Units.Focus,
-	C.UF.Units.Party,
-	C.UF.Units.Raid,
-}
-
-for _, setting in pairs(settings) do
-	setting.Width =  F.Scale(setting.Width)
-	setting.Height = F.Scale(setting.Height)
-end
-
-objects = {}
+local objects = {}
 -------------------------------------------------
 -- Kill some unneeded settings
 -------------------------------------------------
@@ -50,6 +35,10 @@ do
             if (i == 'SET_FOCUS' or i == 'CLEAR_FOCUS') then
                 table.remove(UnitPopupMenus[k],x)
             end
+			
+			if (i == 'PET_DISMISS') then
+				table.remove(UnitPopupMenus[k],x)
+			end
         end
     end
 end
@@ -85,7 +74,7 @@ local PlayerUnits = { player = true, pet = true, vehicle = true }
 -- Dummy function
 local noop = F.Dummy
 
-fontstrings = { }
+local fontstrings = {}
 
 -- Custom power colors
 local PowerBarColor = PowerBarColor
@@ -847,7 +836,7 @@ local Stylish = function(self, unit, isSingle)
         self.Health.Value:SetPoint('RIGHT', self.Health, -2, -1)
     end
     
-    if (C.UF.Show.HealerOverride == true) then
+    if C.UF.Show.HealerOverride or isHealer then
         if (unit == 'target') then
             local MHPB = CreateFrame('StatusBar', nil, self.Health)
             MHPB:SetOrientation('HORIZONTAL')
@@ -870,32 +859,6 @@ local Stylish = function(self, unit, isSingle)
                 otherBar = OHPB,
                 maxOverflow = 1,
             }
-        end
-    else
-        if (isHealer) then
-            if (unit == 'target') then
-                local MHPB = CreateFrame('StatusBar', nil, self.Health)
-                MHPB:SetOrientation('HORIZONTAL')
-                MHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT', 0, 0)
-                MHPB:SetStatusBarTexture(C.Media.StatusBar)
-                MHPB:SetWidth(self.Health:GetWidth())
-                MHPB:SetHeight(self.Health:GetHeight())
-                MHPB:SetStatusBarColor(0, 1, 0.5, 0.25)
-
-                local OHPB = CreateFrame('StatusBar', nil, self.Health)
-                OHPB:SetOrientation('HORIZONTAL')
-                OHPB:SetPoint('LEFT', MHPB:GetStatusBarTexture(), 'RIGHT', 0, 0)
-                OHPB:SetStatusBarTexture(C.Media.StatusBar)
-                OHPB:SetWidth(self.Health:GetWidth())
-                OHPB:SetHeight(self.Health:GetHeight())
-                OHPB:SetStatusBarColor(0, 1, 0, 0.25)
-
-                self.HealPrediction = {
-                    myBar = MHPB,
-                    otherBar = OHPB,
-                    maxOverflow = 1,
-                }
-            end
         end
     end
     
@@ -1178,7 +1141,7 @@ local Stylish = function(self, unit, isSingle)
     -- Dispel highlight support
     self.DispelHighlight = {
 		Override = UpdateDispelHighlight,
-		filter = false,
+		filter = true,
 	}
     
     -- Threat highlight support
@@ -1267,7 +1230,7 @@ local function StylishGroup(self, unit)
 		self.Name:SetPoint('CENTER', self.Health)
 	end
     
-    if (C.UF.Show.HealerOverride == true) then
+    if C.UF.Show.HealerOverride or isHealer then
         local MHPB = CreateFrame('StatusBar', nil, self.Health)
 		MHPB:SetPoint('TOP')
 		MHPB:SetPoint('BOTTOM')
@@ -1290,32 +1253,7 @@ local function StylishGroup(self, unit)
 			maxOverflow = 1.05,
 			frequentUpdates = true,
 		}
-    else
-        if (isHealer) then
-            local MHPB = CreateFrame('StatusBar', nil, self.Health)
-			MHPB:SetPoint('TOP')
-			MHPB:SetPoint('BOTTOM')
-			MHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-			MHPB:SetStatusBarTexture(C.Media.StatusBar)
-			MHPB:SetWidth(C.UF.Units.Party.Width)
-			MHPB:SetStatusBarColor(0, 1, 0.5, 0.25)
-
-			local OHPB = CreateFrame('StatusBar', nil, self.Health)
-			OHPB:SetPoint('TOP')
-			OHPB:SetPoint('BOTTOM')
-			OHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-			OHPB:SetStatusBarTexture(C.Media.StatusBar)
-			OHPB:SetWidth(C.UF.Units.Party.Width)
-			OHPB:SetStatusBarColor(0, 1, 0, 0.25)
-
-			self.HealPrediction = {
-				myBar = MHPB,
-				otherBar = OHPB,
-				maxOverflow = 1.05,
-				frequentUpdates = true,
-			}
-        end
-    end
+	end
 	
 	if unit == 'party' or unit == 'target' then
 		self.Status = self.Overlay:CreateFontString(nil, 'OVERLAY')
@@ -1403,7 +1341,7 @@ local function StylishGroup(self, unit)
     -- Dispel highlight support
     self.DispelHighlight = {
 		Override = UpdateDispelHighlight,
-		filter = false,
+		filter = true,
 	}
     
     -- Threat highlight support
@@ -1503,7 +1441,7 @@ local function StylishRaid(self, unit)
     
     self.Name.frequentUpdates = 0.3
     
-    if (C.UF.Show.HealerOverride == true) then
+    if C.UF.Show.HealerOverride or isHealer then
         local MHPB = CreateFrame('StatusBar', nil, self.Health)
 		MHPB:SetPoint('TOP')
 		MHPB:SetPoint('BOTTOM')
@@ -1526,32 +1464,7 @@ local function StylishRaid(self, unit)
 			maxOverflow = 1.05,
 			frequentUpdates = true,
 		}
-    else
-        if (isHealer) then
-            local MHPB = CreateFrame('StatusBar', nil, self.Health)
-			MHPB:SetPoint('TOP')
-			MHPB:SetPoint('BOTTOM')
-			MHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-			MHPB:SetStatusBarTexture(C.Media.StatusBar)
-			MHPB:SetWidth(HealW)
-			MHPB:SetStatusBarColor(0, 1, 0.5, 0.25)
-
-			local OHPB = CreateFrame('StatusBar', nil, self.Health)
-			OHPB:SetPoint('TOP')
-			OHPB:SetPoint('BOTTOM')
-			OHPB:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-			OHPB:SetStatusBarTexture(C.Media.StatusBar)
-			OHPB:SetWidth(HealW)
-			OHPB:SetStatusBarColor(0, 1, 0, 0.25)
-
-			self.HealPrediction = {
-				myBar = MHPB,
-				otherBar = OHPB,
-				maxOverflow = 1.05,
-				frequentUpdates = true,
-			}
-        end
-    end
+	end
 	
 	-- Status Icons Display
     self.Status = self.Overlay:CreateFontString(nil, 'OVERLAY')
@@ -1586,7 +1499,7 @@ local function StylishRaid(self, unit)
     -- Dispel highlight support
     self.DispelHighlight = {
 		Override = UpdateDispelHighlight,
-		filter = false,
+		filter = true,
 	}
     
     -- Threat highlight support

@@ -17,21 +17,6 @@ InterfaceOptionsActionBarsPanelRight:Kill()
 InterfaceOptionsActionBarsPanelRightTwo:Kill()
 InterfaceOptionsActionBarsPanelAlwaysShowActionBars:Kill()
 
-if C.ActionBars.Bar3 then
-    SHOW_MULTI_ACTIONBAR_1 = 1
-    SHOW_MULTI_ACTIONBAR_2 = 1
-    InterfaceOptions_UpdateMultiActionBars()
-elseif C.ActionBars.Bar2 then
-    if C.ActionBars.Bar3 then return end
-    SHOW_MULTI_ACTIONBAR_1 = 1
-    SHOW_MULTI_ACTIONBAR_2 = 0
-    InterfaceOptions_UpdateMultiActionBars()
-else
-    SHOW_MULTI_ACTIONBAR_1 = 0
-    SHOW_MULTI_ACTIONBAR_2 = 0
-    InterfaceOptions_UpdateMultiActionBars()
-end    
-
 --kill micromenu (or rather just make it too small to see then set the button to non interactive (just in case)
 CharacterMicroButton:SetScale(0.0001)
 CharacterMicroButton:EnableMouse(false)
@@ -571,7 +556,7 @@ hooksecurefunc('ActionButton_UpdateUsable', function(self)
     end
 end)
 
-function ActionButton_OnUpdate(self, elapsed)
+local function ActionButton_OnUpdate(self, elapsed)
     if (IsAddOnLoaded('RedRange') or IsAddOnLoaded('GreenRange') or IsAddOnLoaded('tullaRange') or IsAddOnLoaded('RangeColors')) then
         return
     end     
@@ -620,6 +605,7 @@ function ActionButton_OnUpdate(self, elapsed)
         self.rangeTimer = rangeTimer
     end
 end
+hooksecurefunc('ActionButton_OnUpdate', ActionButton_OnUpdate)
 
 local f = CreateFrame('Frame', MainMenuBar)
 f:RegisterEvent('ADDON_LOADED')
@@ -641,7 +627,36 @@ f:SetScript('OnEvent', function()
         end
     end
     
-    InterfaceOptions_UpdateMultiActionBars()
+    if C.ActionBars.Bar3 then
+        SetActionBarToggles(1, 1, 0, 0, 1)
+        SHOW_MULTI_ACTIONBAR_1 = 1
+        SHOW_MULTI_ACTIONBAR_2 = 1
+        InterfaceOptionsActionBarsPanelBottomLeft:SetChecked(1)
+        InterfaceOptionsActionBarsPanelBottomRight:SetChecked(1)
+        
+        MultiActionBar_Update()
+        InterfaceOptions_UpdateMultiActionBars()
+    elseif C.ActionBars.Bar2 then
+        if C.ActionBars.Bar3 then return end
+        
+        SetActionBarToggles(1, 0, 0, 0, 1)
+        SHOW_MULTI_ACTIONBAR_1 = 1
+        SHOW_MULTI_ACTIONBAR_2 = 0
+        InterfaceOptionsActionBarsPanelBottomLeft:SetChecked(1)
+        InterfaceOptionsActionBarsPanelBottomRight:SetChecked(0)
+        
+        MultiActionBar_Update()
+        InterfaceOptions_UpdateMultiActionBars()
+    else
+        SetActionBarToggles(0, 0, 0, 0, 1)
+        SHOW_MULTI_ACTIONBAR_1 = 0
+        SHOW_MULTI_ACTIONBAR_2 = 0
+        InterfaceOptionsActionBarsPanelBottomLeft:SetChecked(0)
+        InterfaceOptionsActionBarsPanelBottomRight:SetChecked(0)
+        
+        MultiActionBar_Update()
+        InterfaceOptions_UpdateMultiActionBars()
+    end
 end)
 
 -- Experience bar mouseover text

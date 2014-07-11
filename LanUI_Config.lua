@@ -193,7 +193,7 @@ C['UF'] = {
             },
             HidePower = true, -- Reserved for future use
             Healer = false, -- Center frames in the UI and adjust size for better visibility?
-            ShowBuffs = true,
+            ShowBuffs = false,
         },
         Raid = {
             Height = Scale(18),

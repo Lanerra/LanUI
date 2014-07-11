@@ -261,7 +261,7 @@ F.RegisterEvent = function(event, method)
 	end
 end
 
-function init()
+local function Initialize()
 	for type, func in pairs(G.Initialize) do
 		func()
 	end
@@ -269,4 +269,4 @@ function init()
 	print('|cff0099ffLan|rUI '..GetAddOnMetadata('LanUI', 'Version')..' successfully initiliazed.')
 end
 
-init()
+Initialize()
