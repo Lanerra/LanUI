@@ -58,12 +58,17 @@ C['Media'] = {
     ['ClassColor'] = true, -- Class color our borders?
 }
 
--- NO TOUCHY!
+-- NO TOUCHY! -----------------------------------------------------------
+if C.ActionBars.Bar3 then
+    C.ActionBars.Bar2 = true
+end
+
 if C.Media.ClassColor then
     C.Media.BorderColor = F.PlayerColor
 else
     C.Media.BorderColor.r, C.Media.BorderColor.g, C.Media.BorderColor.b = C.Media.BorderColor[1], C.Media.BorderColor[2], C.Media.BorderColor[3]
 end
+-------------------------------------------------------------------------
 
 C['Panels'] = {
     ['ABPanel'] = true, -- Panel for action bars
