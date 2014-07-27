@@ -11,8 +11,7 @@ local function LoadSkin()
 				frame.SetAlpha = F.Dummy
 
 				if not frame.backdrop then
-					frame:CreateBD()
-					frame.backdrop:SetTemplate(true)
+					frame:CreateBD(true)
 					frame.backdrop:Point('TOPLEFT', frame, 'TOPLEFT', -2, -6)
 					frame.backdrop:Point('BOTTOMRIGHT', frame, 'BOTTOMRIGHT', -2, 6)
 				end
@@ -58,8 +57,7 @@ local function LoadSkin()
 				frame.heroicIcon:Hide()
 
 				if not frame.backdrop then
-					frame:CreateBD()
-					frame.backdrop:SetTemplate(true)
+					frame:CreateBD(true)
 					frame.backdrop:Point('TOPLEFT', frame, 'TOPLEFT', 16, -6)
 					frame.backdrop:Point('BOTTOMRIGHT', frame, 'BOTTOMRIGHT', -20, 6)
 				end
@@ -112,8 +110,7 @@ local function LoadSkin()
 			frame.SetAlpha = F.Dummy
 
 			if not frame.backdrop then
-				frame:CreateBD()
-				frame.backdrop:SetTemplate(true)
+				frame:CreateBD(true)
 				frame.backdrop:Point('TOPLEFT', frame, 'TOPLEFT', -2, -6)
 				frame.backdrop:Point('BOTTOMRIGHT', frame, 'BOTTOMRIGHT', -2, 6)
 			end
@@ -150,8 +147,7 @@ local function LoadSkin()
 			frame.SetAlpha = F.Dummy
 
 			if not frame.backdrop then
-				frame:CreateBD()
-				frame.backdrop:SetTemplate(true)
+				frame:CreateBD(true)
 				frame.backdrop:Point('TOPLEFT', frame, 'TOPLEFT', 19, -6)
 				frame.backdrop:Point('BOTTOMRIGHT', frame, 'BOTTOMRIGHT', -22, 6)
 			end
@@ -196,8 +192,7 @@ local function LoadSkin()
 			frame.SetAlpha = F.Dummy
 
 			if not frame.backdrop then
-				frame:CreateBD()
-				frame.backdrop:SetTemplate(true)
+				frame:CreateBD(true)
 				frame.backdrop:Point('TOPLEFT', frame, 'TOPLEFT', 4, 4)
 				frame.backdrop:Point('BOTTOMRIGHT', frame, 'BOTTOMRIGHT', -7, 6)
 			end
@@ -241,8 +236,7 @@ local function LoadSkin()
 				frame.SetAlpha = F.Dummy
 
 				if not frame.backdrop then
-					frame:CreateBD()
-					frame.backdrop:SetTemplate(true)
+					frame:CreateBD(true)
 					frame.backdrop:Point('TOPLEFT', frame, 'TOPLEFT', -2, -6)
 					frame.backdrop:Point('BOTTOMRIGHT', frame, 'BOTTOMRIGHT', -2, 6)
 				end
@@ -293,8 +287,7 @@ local function LoadSkin()
 				end
 
 				if not frame.backdrop then
-					frame:CreateBD()
-					frame.backdrop:SetTemplate(true)
+					frame:CreateBD(true)
 					frame.backdrop:SetPoint('TOPLEFT', frame.Icon.b, 'TOPLEFT', -4, 4)
 					frame.backdrop:SetPoint('BOTTOMRIGHT', frame.Icon.b, 'BOTTOMRIGHT', 180, -4)
 				end
@@ -324,8 +317,7 @@ local function LoadSkin()
 				end
 
 				if not frame.backdrop then
-					frame:CreateBD()
-					frame.backdrop:SetTemplate(true)
+					frame:CreateBD(true)
 					frame.backdrop:SetPoint('TOPLEFT', frame.Icon.b, 'TOPLEFT', -4, 4)
 					frame.backdrop:SetPoint('BOTTOMRIGHT', frame.Icon.b, 'BOTTOMRIGHT', 180, -4)
 				end

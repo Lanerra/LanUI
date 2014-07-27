@@ -3,8 +3,7 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	-- Glyph Tab
-	GlyphFrame:CreateBD()
-	GlyphFrame.backdrop:SetTemplate(true)
+	GlyphFrame:CreateBD(true)
 	GlyphFrame.backdrop:Point('TOPLEFT', GlyphFrame, 'TOPLEFT', 3, 2)
 	GlyphFrame.backdrop:Point('BOTTOMRIGHT', GlyphFrame, 'BOTTOMRIGHT', -3, 0)
 	GlyphFrameSearchBox:SkinEditBox()

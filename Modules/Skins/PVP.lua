@@ -14,6 +14,9 @@ local function LoadSkin()
 	HonorFrame.RoleInset.DPSIcon.checkButton:SkinCheckBox(true)
 	HonorFrame.RoleInset.TankIcon.checkButton:SkinCheckBox(true)
 	HonorFrame.RoleInset.HealerIcon.checkButton:SkinCheckBox(true)
+	HonorFrame.RoleInset.DPSIcon.checkButton:SetFrameStrata('HIGH')
+	HonorFrame.RoleInset.TankIcon.checkButton:SetFrameStrata('HIGH')
+	HonorFrame.RoleInset.HealerIcon.checkButton:SetFrameStrata('HIGH')
 
 	for i=1, 3 do
 		local button = _G['PVPQueueFrameCategoryButton'..i]
@@ -22,10 +25,16 @@ local function LoadSkin()
 		button.Icon:Size(45)
 		button.Icon:SetTexCoord(.15, .85, .15, .85)
 		button:CreateBD()
-		button.backdrop:SetTemplate(true)
-		button.backdrop:SetOutside(button.Icon)
+		button.backdrop:SetOutside(button.Icon, 3)
 		button.backdrop:SetFrameLevel(button:GetFrameLevel())
 		button.Icon:SetParent(button.backdrop)
+		button:SetBackdrop({
+			bgFile = C.Media.Backdrop,
+			edgeFile = C.Media.Backdrop,
+			edgeSize = F.Mult,
+		})
+		button:SetBackdropColor(unpack(C.Media.BackdropColor))
+		button:SetBackdropBorderColor(C.Media.BorderColor.r, C.Media.BorderColor.g, C.Media.BorderColor.b)
 		button:StyleButton()
 	end
 	
@@ -68,8 +77,7 @@ local function LoadSkin()
 	ConquestPointsBarBG:Kill()
 	ConquestPointsBarShadow:Kill()
 	ConquestPointsBar.progress:SetTexture(C.Media.StatusBar)
-	ConquestPointsBar:CreateBD()
-	ConquestPointsBar.backdrop:SetTemplate(true)
+	ConquestPointsBar:CreateBD(true)
 	ConquestPointsBar.backdrop:SetOutside(ConquestPointsBar, nil, -F.Mult)
 	ConquestFrame:StripTextures()
 	ConquestFrame.ShadowOverlay:StripTextures()

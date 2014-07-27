@@ -22,9 +22,7 @@ local function LoadSkin()
 	-- skin main frames
 	for i = 1, #frames do
 		_G[frames[i]]:StripTextures(true)
-		_G[frames[i]]:CreateBD()
-		
-		_G[frames[i]].backdrop:SetTemplate(true)
+		_G[frames[i]]:CreateBD(true)
 	end
 	
 	HelpFrameKnowledgebase:StripTextures(true)
@@ -35,7 +33,7 @@ local function LoadSkin()
 	HelpFrameKnowledgebaseErrorFrame:SetFrameLevel(HelpFrameKnowledgebaseErrorFrame:GetFrameLevel() + 2)
 
 	HelpFrameTicketScrollFrame:StripTextures()
-	HelpFrameTicketScrollFrame:CreateBD()
+	HelpFrameTicketScrollFrame:CreateBD(true)
 	HelpFrameTicketScrollFrame.backdrop:Point('TOPLEFT', -4, 4)
 	HelpFrameTicketScrollFrame.backdrop:Point('BOTTOMRIGHT', 6, -4)
 	for i=1, HelpFrameTicket:GetNumChildren() do
@@ -98,8 +96,7 @@ local function LoadSkin()
 	HelpFrameKnowledgebaseNavBar:StripTextures()
 
 	HelpFrame:StripTextures(true)
-	HelpFrame:CreateBD()
-	HelpFrame.backdrop:SetTemplate(true)
+	HelpFrame:CreateBD(true)
 	HelpFrameKnowledgebaseSearchBox:SkinEditBox()
 	HelpFrameKnowledgebaseScrollFrameScrollBar:SkinScrollBar()
 	HelpFrameTicketScrollFrameScrollBar:SkinScrollBar()

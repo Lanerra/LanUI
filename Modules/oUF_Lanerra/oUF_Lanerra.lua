@@ -2,8 +2,14 @@ local F, C, G = unpack(select(2, ...))
 local bc = C.Media.BorderColor
 local _, ns = ...
 local oUF = ns.oUF
-
+local Interrupt = 'Interface\\Addons\\LanUI\\Media\\BorderInterrupt'
 local objects = {}
+local colors = oUF.colors
+local isHealer = (F.MyClass == 'DRUID' or F.MyClass == 'PALADIN' or F.MyClass == 'PRIEST' or F.MyClass == 'SHAMAN')
+local PlayerUnits = { player = true, pet = true, vehicle = true }
+local fontstrings = {}
+local PowerBarColor = PowerBarColor
+
 -------------------------------------------------
 -- Kill some unneeded settings
 -------------------------------------------------
@@ -47,11 +53,6 @@ end
 -- Variables for defining colors and appearance
 -------------------------------------------------
 
-local colors = oUF.colors
-
-local playerClass = F.MyClass
-local isHealer = (playerClass == 'DRUID' or playerClass == 'PALADIN' or playerClass == 'PRIEST' or playerClass == 'SHAMAN')
-
 local Loader = CreateFrame("Frame")
 Loader:RegisterEvent("ADDON_LOADED")
 Loader:SetScript("OnEvent", function(self, event, addon)
@@ -61,23 +62,13 @@ Loader:SetScript("OnEvent", function(self, event, addon)
 	F.UpdateAuraList()
 end)
 
-local cc = F.PlayerColor
-
 -- A little backdrop local to save us some typing...because I'm lazy
 local backdrop = {
 	bgFile = C.Media.Backdrop,
 	insets = {top = -1, left = -1, bottom = -1, right = -1},
 }
 
-local PlayerUnits = { player = true, pet = true, vehicle = true }
-
--- Dummy function
-local noop = F.Dummy
-
-local fontstrings = {}
-
 -- Custom power colors
-local PowerBarColor = PowerBarColor
 
 PowerBarColor['MANA'] = { r = 0/255, g = 0.55, b = 1 }
 PowerBarColor['RAGE'] = { r = 240/255, g = 45/255, b = 75/255 }
@@ -103,7 +94,7 @@ local function UpdateBorder(self)
 		color = colors.debuff[debuff]
 	elseif threat and threat > 1 then
 		color = colors.threat[threat]
-	elseif debuff and not ns.config.dispelFilter then
+	elseif debuff then
 		color = colors.debuff[debuff]
 	elseif threat and threat > 0 then
 		color = colors.threat[threat]
@@ -111,29 +102,16 @@ local function UpdateBorder(self)
 
 	if color then
 		self.Overlay:SetBeautyBorderColor(color[1], color[2], color[3])
-	else
-		if C.Media.ClassColor then
-			self.Overlay:SetBeautyBorderColor(cc.r, cc.g, cc.b)
-		else
-			self.Overlay:SetBeautyBorderColor(unpack(C.Media.BorderColor))
-		end
-	end
-	
-	--[[if color then
 		self.Overlay:SetBackdropBorderColor(color[1], color[2], color[3])
 	else
-		if C.Media.ClassColor then
-			self.Overlay:SetBackdropBorderColor(cc.r, cc.g, cc.b)
-		else
-			self.Overlay:SetBackdropBorderColor(unpack(C.Media.BorderColor))
-		end
-	end]]
+		self.Overlay:SetBeautyBorderColor(bc.r, bc.g, bc.b)
+		self.Overlay:SetBackdropBorderColor(bc.r, bc.g, bc.b)
+	end
 end
 
 ------------------------------------------
 -- Functions used to build Unit Frames
 ------------------------------------------
-
 
 -- Build dropdown menus
 local dropdown = CreateFrame('Frame', 'oUF_LanerraDropDown', UIParent, 'UIDropDownMenuTemplate')
@@ -173,8 +151,6 @@ local function CreateDropDown(self)
     ToggleDropDownMenu(1, nil, dropdown, 'cursor', 15, -15)
 end
 
-local Interrupt = 'Interface\\Addons\\LanUI\\Media\\BorderInterrupt'
-
 local function PostCastStart(Castbar, unit)
     self.Castbar.SafeZone:SetDrawLayer('BORDER')
     self.Castbar.SafeZone:ClearAllPoints()
@@ -184,7 +160,7 @@ local function PostCastStart(Castbar, unit)
     if (unit == 'target') then
         if (self.Castbar.interrupt) then
             self.Castbar.Borders:SetBeautyBorderTexture(Interrupt)
-            self.Castbar.Borders:SetBeautyBorderColor(1, 0, 1)
+            self.Castbar.Borders:SetBeautyBorderColor(colors.uninterruptible[1], colors.uninterruptible[2], colors.uninterruptible[3])
         else
 			if C.Media.ClassColor then
 				self.Castbar.Borders:SetBeautyBorderTexture('white')
@@ -206,7 +182,7 @@ local function PostChannelStart(Castbar, unit)
     if (unit == 'target') then
         if (self.interrupt) then
 			self.Castbar.Borders:SetBeautyBorderTexture(Interrupt)
-            self.Castbar.Borders:SetBeautyBorderColor(1, 0, 1)
+            self.Castbar.Borders:SetBeautyBorderColor(colors.uninterruptible[1], colors.uninterruptible[2], colors.uninterruptible[3])
         else
 			if C.Media.ClassColor then
 				self.Castbar.Borders:SetBeautyBorderTexture('white')
@@ -220,7 +196,7 @@ local function PostChannelStart(Castbar, unit)
 end
 
 -- Health update function of doom!
-local UpdateHealth = function(Health, unit, min, max)
+local function UpdateHealth(Health, unit, min, max)
     if (Health:GetParent().unit ~= unit) then
         return
 	end
@@ -286,8 +262,13 @@ local UpdateHealth = function(Health, unit, min, max)
 		end
 	end
 	
-	-- Bar Color Stuff
-	Health:SetStatusBarColor(.25, .25, .25)
+	-- Bar Color Stuff	
+	local color = RAID_CLASS_COLORS[select(2, UnitClass(unit))]
+    if (C.UF.Show.ClassColorHealth) then
+        Health.colorClass = true
+    else
+        Health:SetStatusBarColor(.25, .25, .25)
+    end
 end
 
 -- Group update health function
@@ -467,7 +448,7 @@ local function PostCreateAuraIcon(iconframe, button)
 	button.overlay:Hide()
 	button.overlay.Hide = AuraIconOverlay_SetBorderColor
 	button.overlay.SetVertexColor = AuraIconOverlay_SetBorderColor
-	button.overlay.Show = noop
+	button.overlay.Show = F.Dummy
 end
 
 -- Aura Icon Update Function
@@ -487,19 +468,19 @@ local function PostUpdateAuraIcon(iconframe, unit, button, index, offset)
 			local child = select(i, button:GetChildren())
 			if child.text and (child.icon == button.icon or child.cooldown == button.cd) then
 				-- found it!
-				child.SetAlpha = noop
-				child.SetScale = noop
+				child.SetAlpha = F.Dummy
+				child.SetScale = F.Dummy
 
 				child.text:ClearAllPoints()
 				child.text:SetPoint('CENTER', button, 'TOP', 0, 2)
 
 				child.text:SetFont(C.Media.Font, unit:match('^party') and 14 or 18)
-				child.text.SetFont = noop
+				child.text.SetFont = F.Dummy
 
 				child.text:SetTextColor(1, 0.8, 0)
                 child.text:SetShadowOffset(1, -1)
-				child.text.SetTextColor = noop
-				child.text.SetVertexColor = noop
+				child.text.SetTextColor = F.Dummy
+				child.text.SetVertexColor = F.Dummy
 
 				tinsert(fontstrings, child.text)
 
@@ -555,7 +536,7 @@ local Stylish = function(self, unit, isSingle)
 	
     -- Health Bar-specific stylings
 	self.Health = CreateFrame('StatusBar', '$parentHealthBar', self)
-	self.Health:SetHeight(C.UF.Units.Player.Height * .75)
+	self.Health:SetHeight(C.UF.Units.Player.Height * .87)
 	self.Health:SetStatusBarTexture(C.Media.StatusBar)
 	
 	-- Turn on the smoothness
@@ -590,7 +571,7 @@ local Stylish = function(self, unit, isSingle)
 	
 	-- And now for the power bar and text stuff
 	self.Power = CreateFrame('StatusBar', '$parentPowerBar', self)
-	self.Power:SetHeight(C.UF.Units.Player.Height * .22)
+	self.Power:SetHeight(C.UF.Units.Player.Height * .11)
 	self.Power:SetStatusBarTexture(C.Media.StatusBar)
     
 	self.Power.colorClass = true
@@ -653,7 +634,7 @@ local Stylish = function(self, unit, isSingle)
 			self.Castbar.Borders:SetPoint('BOTTOMRIGHT', 1, 0)
             self.Castbar.Borders:SetFrameStrata('HIGH')
             
-			self.Castbar.Borders:SetTemplate()
+			self.Castbar.Borders:SetTemplate(true)
 			self.Castbar.Borders:SetBeautyBorderPadding(3)
 			self.Castbar.Borders:SetBackdropColor(0, 0, 0, 0)
 			
@@ -706,7 +687,7 @@ local Stylish = function(self, unit, isSingle)
 			self.Castbar.Borders:SetPoint('BOTTOMRIGHT', 1, 0)
             self.Castbar.Borders:SetFrameStrata('HIGH')
             
-			self.Castbar.Borders:SetTemplate()
+			self.Castbar.Borders:SetTemplate(true)
 			self.Castbar.Borders:SetBeautyBorderPadding(3)
 			self.Castbar.Borders:SetBackdropColor(0, 0, 0, 0)
 			
@@ -758,9 +739,9 @@ local Stylish = function(self, unit, isSingle)
         MirrorBorder = CreateFrame('Frame', nil, _G[bar])
         MirrorBorder:SetAllPoints(_G[bar])
         MirrorBorder:SetFrameLevel(_G[bar]:GetFrameLevel() + 2)
-		MirrorBorder:SetTemplate()
+		MirrorBorder:SetTemplate(true)
 		MirrorBorder:SetBeautyBorderPadding(2)
-		MirrorBorder:SetBackdropColor(0, 0, 0, 0)
+		--MirrorBorder:SetBackdropColor(0, 0, 0, 0)
 		
 		_G[bar..'Border']:Hide()
 		
@@ -1129,12 +1110,14 @@ local Stylish = function(self, unit, isSingle)
 		self.Overlay:Point('TOPLEFT', self.Runes[1])
 		self.Overlay:Point('BOTTOMRIGHT', self)
 	else
-		self.Overlay:SetAllPoints(self)
+		self.Overlay:ClearAllPoints()
+		self.Overlay:Point('TOPLEFT', self, 'TOPLEFT', -(F.Mult * 2), F.Mult * 2)
+		self.Overlay:Point('BOTTOMRIGHT', self, 'BOTTOMRIGHT', F.Mult * 2, -(F.Mult * 2))
 	end
 	
-	self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
+	--self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
     self.Overlay:SetTemplate(true)
-	self.Overlay:SetBeautyBorderPadding(3)
+	self.Overlay:SetBeautyBorderPadding(2)
     
     self.UpdateBorder = UpdateBorder
 
@@ -1151,6 +1134,9 @@ local Stylish = function(self, unit, isSingle)
 	}
 	
 	self:CreateBD()
+	self.backdrop:ClearAllPoints()
+	self.backdrop:Point('TOPLEFT', self, 'TOPLEFT', -(F.Mult * 2), F.Mult * 2)
+	self.backdrop:Point('BOTTOMRIGHT', self, 'BOTTOMRIGHT', F.Mult * 2, -(F.Mult * 2))
     return self
 end
 
@@ -1332,8 +1318,8 @@ local function StylishGroup(self, unit)
 	self.SpellRange = true
     
     -- Hardcore border action!
+	--self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
     self.Overlay:SetTemplate()
-	self.Overlay:SetBackdropColor(0, 0, 0, 0)
 	self.Overlay:SetBeautyBorderPadding(4)
     
     self.UpdateBorder = UpdateBorder
@@ -1350,7 +1336,7 @@ local function StylishGroup(self, unit)
 		Override = UpdateThreatHighlight,
 	}
     
-	self:CreateBD()
+	--self:CreateBD()
     return self
 end
 
@@ -1491,7 +1477,7 @@ local function StylishRaid(self, unit)
 	
     -- Hardcore border action!
     self.Overlay:SetTemplate()
-	self.Overlay:SetBackdropColor(0, 0, 0, 0)
+	--self.Overlay:SetBackdropColor(0, 0, 0, 0)
 	self.Overlay:SetBeautyBorderPadding(4)
     
     self.UpdateBorder = UpdateBorder
@@ -1508,7 +1494,7 @@ local function StylishRaid(self, unit)
 		Override = UpdateThreatHighlight,
 	}
     
-	self:CreateBD()
+	--self:CreateBD()
     return self
 end
 
@@ -1733,14 +1719,14 @@ function GetPlayerRole()
 	return CURRENT_ROLE
 end
 
-if playerClass == "DEATHKNIGHT" then
+if F.MyClass == "DEATHKNIGHT" then
 	updateEvents = "UPDATE_SHAPESHIFT_FORM"
 	function getRole()
 		if GetSpecialization() == 1 then -- Blood 1, Frost 2, Unholy 3
 			return "TANK"
 		end
 	end
-elseif playerClass == "DRUID" then
+elseif F.MyClass == "DRUID" then
 	updateEvents = "UPDATE_SHAPESHIFT_FORM"
 	function getRole()
 		local form = GetShapeshiftFormID() -- Aquatic 4, Bear 5, Cat 1, Flight 29, Moonkin 31, Swift Flight 27, Travel 3, Tree 2
@@ -1750,7 +1736,7 @@ elseif playerClass == "DRUID" then
 			return "HEALER"
 		end
 	end
-elseif playerClass == "MONK" then
+elseif F.MyClass == "MONK" then
 	updateEvents = "UPDATE_SHAPESHIFT_FORM"
 	function getRole()
 		local form = GetShapeshiftFormID() -- Tiger 24, Ox 23, Serpent 20
@@ -1760,7 +1746,7 @@ elseif playerClass == "MONK" then
 			return "HEALER"
 		end
 	end
-elseif playerClass == "PALADIN" then
+elseif F.MyClass == "PALADIN" then
 	local RIGHTEOUS_FURY = GetSpellInfo(25780)
 	updateEvents = "PLAYER_REGEN_DISABLED"
 	function getRole()
@@ -1770,19 +1756,19 @@ elseif playerClass == "PALADIN" then
 			return "HEALER"
 		end
 	end
-elseif playerClass == "PRIEST" then
+elseif F.MyClass == "PRIEST" then
 	function getRole()
 		if GetSpecialization() ~= 3 then -- Discipline 1, Holy 2, Shadow 3
 			return "HEALER"
 		end
 	end
-elseif playerClass == "SHAMAN" then
+elseif F.MyClass == "SHAMAN" then
 	function getRole()
 		if GetSpecialization() == 3 then -- Elemental 1, Enhancement 2, Restoration 3
 			return "HEALER"
 		end
 	end
-elseif playerClass == "WARRIOR" then
+elseif F.MyClass == "WARRIOR" then
 	updateEvents = "UPDATE_SHAPESHIFT_FORM"
 	function getRole()
 		if GetSpecialization() == 3 and GetShapeshiftFormID() == 18 then -- Battle 17, Berserker 19, Defensive 18

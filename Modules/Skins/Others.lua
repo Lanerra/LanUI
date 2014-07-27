@@ -3,6 +3,7 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	-- Others Blizzard frame we want to reskin
+	GameMenuFrame:StripTextures()
 	local skins = {
 		'StaticPopup1',
 		'StaticPopup2',
@@ -29,8 +30,8 @@ local function LoadSkin()
 	end
 	
 	InterfaceOptionsFrame:StripTextures()
-	InterfaceOptionsFrame:CreateBD()
-	InterfaceOptionsFrame.backdrop:SetTemplate(true)
+	InterfaceOptionsFrame:CreateBD(true)
+	--InterfaceOptionsFrame.backdrop:SetTemplate(true)
 
 	--LFD Role Picker frame
 	LFDRoleCheckPopup:StripTextures()
@@ -111,20 +112,21 @@ local function LoadSkin()
 	for i = 1, getn(BlizzardMenuButtons) do
 		local button = _G['GameMenuButton'..BlizzardMenuButtons[i]]
 		
-		GameMenuButtonStore:Point('TOP', GameMenuButtonHelp, 'BOTTOM', 0, -2)
-		GameMenuButtonOptions:Point('TOP', GameMenuButtonStore, 'BOTTOM', 0, -2)
-		GameMenuButtonUIOptions:Point('TOP', GameMenuButtonOptions, 'BOTTOM', 0, -2)
-		GameMenuButtonKeybindings:Point('TOP', GameMenuButtonUIOptions, 'BOTTOM', 0, -2)
+		GameMenuButtonHelp:Point('CENTER', GameMenuFrame, 'TOP', 0, -36)
+		GameMenuButtonStore:Point('TOP', GameMenuButtonHelp, 'BOTTOM', 0, -4)
+		GameMenuButtonOptions:Point('TOP', GameMenuButtonStore, 'BOTTOM', 0, -4)
+		GameMenuButtonUIOptions:Point('TOP', GameMenuButtonOptions, 'BOTTOM', 0, -4)
+		GameMenuButtonKeybindings:Point('TOP', GameMenuButtonUIOptions, 'BOTTOM', 0, -4)
 		
 		if GameMenuButtonAddOns then
-			GameMenuButtonAddOns:Point('TOP', GameMenuButtonKeybindings, 'BOTTOM', 0, -2)
-			GameMenuButtonMacros:Point('TOP', GameMenuButtonAddOns, 'BOTTOM', 0, -2)
-			GameMenuButtonLogout:Point('TOP', GameMenuButtonMacros, 'BOTTOM', 0, -2)
+			GameMenuButtonAddOns:Point('TOP', GameMenuButtonKeybindings, 'BOTTOM', 0, -4)
+			GameMenuButtonMacros:Point('TOP', GameMenuButtonAddOns, 'BOTTOM', 0, -4)
+			GameMenuButtonLogout:Point('TOP', GameMenuButtonMacros, 'BOTTOM', 0, -4)
 		else
-			GameMenuButtonMacros:Point('TOP', GameMenuButtonKeybindings, 'BOTTOM', 0, -2)
+			GameMenuButtonMacros:Point('TOP', GameMenuButtonKeybindings, 'BOTTOM', 0, -4)
 		end
 		
-		GameMenuButtonLogout:Point('TOP', GameMenuButtonMacros, 'BOTTOM', 0, -2)
+		GameMenuButtonLogout:Point('TOP', GameMenuButtonMacros, 'BOTTOM', 0, -4)
 		
 		if button then
 			button:Reskin()
@@ -245,7 +247,7 @@ local function LoadSkin()
 		local SkinFrames = _G[frames[i]]
 		if SkinFrames then
 			SkinFrames:StripTextures()
-			SkinFrames:CreateBD()
+			SkinFrames:CreateBD(true)
 			if SkinFrames ~= _G['VideoOptionsFramePanelContainer'] and SkinFrames ~= _G['InterfaceOptionsFramePanelContainer'] then
 				SkinFrames.backdrop:Point('TOPLEFT',-1,0)
 				SkinFrames.backdrop:Point('BOTTOMRIGHT',0,1)
@@ -256,9 +258,9 @@ local function LoadSkin()
 		end
 	end
 	InterfaceOptionsFrameCategories:SetFrameLevel(3)
-	InterfaceOptionsFrameCategories.backdrop:SetTemplate(true)
+--[[	InterfaceOptionsFrameCategories.backdrop:SetTemplate(true)
 	InterfaceOptionsFrameAddOns.backdrop:SetTemplate(true)
-	InterfaceOptionsFramePanelContainer.backdrop:SetTemplate(true)
+	InterfaceOptionsFramePanelContainer.backdrop:SetTemplate(true)]]
 
 	local interfacetab = {
 		'InterfaceOptionsFrameTab1',

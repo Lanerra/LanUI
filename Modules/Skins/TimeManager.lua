@@ -37,8 +37,7 @@ local function LoadSkin()
 	TimeManagerStopwatchCheck:SetHighlightTexture(hover)
 	
 	StopwatchFrame:StripTextures()
-	StopwatchFrame:CreateBD()
-	StopwatchFrame.backdrop:SetTemplate(true)
+	StopwatchFrame:CreateBD(true)
 	StopwatchFrame.backdrop:Point('TOPLEFT', 0, -17)
 	StopwatchFrame.backdrop:Point('BOTTOMRIGHT', 0, 2)
 	

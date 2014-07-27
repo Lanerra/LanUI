@@ -17,11 +17,6 @@ local function LoadSkin()
 	PVEFrameLeftInsetBg:Hide()
 	PVEFrame.shadows:Hide()
 
-	GroupFinderFrameGroupButton1.icon:SetTexture('Interface\\Icons\\INV_Helmet_08')
-	GroupFinderFrameGroupButton2.icon:SetTexture('Interface\\Icons\\inv_helmet_06')
-	GroupFinderFrameGroupButton3.icon:SetTexture('Interface\\Icons\\Icon_Scenarios')
-	GroupFinderFrameGroupButton4.icon:SetTexture('Interface\\Icons\\Icon_Scenarios')
-
 	for i = 1, NumTabs do
 		local bu = GroupFinderFrame['groupButton'..i]
 
@@ -40,17 +35,20 @@ local function LoadSkin()
 		bu.icon:SetPoint('LEFT', 10, 0)
 		bu.border = CreateFrame('Frame', nil, bu)
 		bu.border:CreateBD()
-		bu.border.backdrop:SetTemplate(true)
 		bu.border.backdrop:Point('TOPLEFT', bu.icon, -2, 2)
 		bu.border.backdrop:Point('BOTTOMRIGHT', bu.icon, 2, -2)
 	end
 
-	PVEFrame:CreateBD()
-	PVEFrame.backdrop:SetTemplate(true)
+	PVEFrame:CreateBD(true)
 	PVEFrameTab1:SkinTab()
 	PVEFrameTab2:SkinTab()
+	PVEFrameTab1:ClearAllPoints()
+	PVEFrameTab2:ClearAllPoints()
+	PVEFrameTab1:Point('BOTTOMLEFT', PVEFrame, 'BOTTOMLEFT', 20, -28)
 	PVEFrameTab2:Point('LEFT', PVEFrameTab1, 'RIGHT', 4, 0)
 	PVEFrameCloseButton:SkinCloseButton()
+	PVEFrameTab1.SetPoint = F.Dummy
+	PVEFrameTab2.SetPoint = F.Dummy
 	
 	-- Dungeon finder
 	LFDQueueFrameFindGroupButton:StripTextures()
@@ -81,8 +79,7 @@ local function LoadSkin()
 					button:StripTextures()
 					
 					button.border = CreateFrame('Frame', nil, button)
-					button.border:CreateBD()
-					button.border.backdrop:SetTemplate(true)
+					button.border:CreateBD(true)
 					button.border.backdrop:Point('TOPLEFT', icon, -2, 2)
 					button.border.backdrop:Point('BOTTOMRIGHT', icon, 2, -2)
 					button.border.backdrop:SetBackdropColor(0, 0, 0, 0)
@@ -144,8 +141,7 @@ local function LoadSkin()
 				button:StripTextures()
 				
 				button.border = CreateFrame('Frame', nil, button)
-				button.border:CreateBD()
-				button.border.backdrop:SetTemplate(true)
+				button.border:CreateBD(true)
 				button.border.backdrop:Point('TOPLEFT', icon, -2, 2)
 				button.border.backdrop:Point('BOTTOMRIGHT', icon, 2, -2)
 				button.border.backdrop:SetBackdropColor(0, 0, 0, 0)
@@ -218,8 +214,7 @@ local function LoadSkin()
 		end
 	end
 
-	RaidBrowserFrame:CreateBD()
-	RaidBrowserFrame.backdrop:SetTemplate(true)
+	RaidBrowserFrame:CreateBD(true)
 	RaidBrowserFrameCloseButton:SkinCloseButton()
 	LFRQueueFrameSpecificListScrollFrameScrollBar:SkinScrollBar()
 	LFRQueueFrameCommentScrollFrameScrollBar:SkinScrollBar()
@@ -235,8 +230,7 @@ local function LoadSkin()
 		tab:GetNormalTexture():Point('TOPLEFT', 2, -2)
 		tab:GetNormalTexture():Point('BOTTOMRIGHT', -2, 2)
 
-		tab:CreateBD()
-		tab.backdrop:SetTemplate(true)
+		tab:CreateBD(true)
 		tab.backdrop:SetAllPoints()
 		tab:StyleButton()
 		
@@ -379,8 +373,7 @@ local function LoadSecondarySkin()
 		local rewardsRow = ChallengesFrame['RewardRow'..i]
 		for j = 1, 2 do
 			local bu = rewardsRow['Reward'..j]
-			bu:CreateBD()
-			bu.backdrop:SetTemplate(true)
+			bu:CreateBD(true)
 			bu.Icon:SetTexCoord(.08, .92, .08, .92)	
 		end
 	end

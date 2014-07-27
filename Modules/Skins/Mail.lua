@@ -18,7 +18,7 @@ local function LoadSkin()
 		
 		local b = _G['MailItem'..i..'Button']
 		b:StripTextures()
-		b:SetTemplate(true)
+		b:CreateBD()
 		b:StyleButton()
 
 		local t = _G['MailItem'..i..'ButtonIcon']

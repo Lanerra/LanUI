@@ -904,8 +904,6 @@ local OnEvent = function(self, event, ...)
 			end
 			
 			Backdrop:SetPoint('BOTTOMRIGHT', MainFrame, 0, -4)
-			Backdrop:SetBackdrop(backdrop)
-			Backdrop:SetBackdropColor(0, 0, 0, 0.5)
 			Backdrop:SetFrameStrata('BACKGROUND')
 			Backdrop:EnableMouse(true)
 			Backdrop:RegisterForDrag('LeftButton')

@@ -11,15 +11,13 @@ local function LoadSkin()
 	
 	ArchaeologyFrameRankBar:StripTextures()
 	ArchaeologyFrameRankBar:SetStatusBarTexture(C.Media.StatusBar)
-	ArchaeologyFrameRankBar:CreateBD()
-	ArchaeologyFrameRankBar:SetTemplate(true)
+	ArchaeologyFrameRankBar:CreateBD(true)
 	
 	ArchaeologyFrameArtifactPageSolveFrameStatusBar:StripTextures()
 	ArchaeologyFrameArtifactPageSolveFrameStatusBar:SetStatusBarTexture(C.Media.StatusBar)
 	ArchaeologyFrameArtifactPageSolveFrameStatusBar:SetStatusBarColor(0.7, 0.2, 0)
-	ArchaeologyFrameArtifactPageSolveFrameStatusBar:CreateBD()
-	ArchaeologyFrameArtifactPageSolveFrameStatusBar:SetTemplate(true)
-	ArchaeologyFrameArtifactPageSolveFrameStatusBar:SetBeautyBorderPadding(1)
+	ArchaeologyFrameArtifactPageSolveFrameStatusBar:CreateBD(true)
+	ArchaeologyFrameArtifactPageSolveFrameStatusBar:SetBeautyBorderPadding(2)
 	
 	for i=1, ARCHAEOLOGY_MAX_COMPLETED_SHOWN do
 		local artifact = _G['ArchaeologyFrameCompletedPageArtifact'..i]

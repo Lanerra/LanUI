@@ -30,7 +30,7 @@ local function LoadSkin()
 	InspectModelFrameBorderBottom:Kill()
 	InspectModelFrameBorderBottom2:Kill()
 	InspectModelFrameBackgroundOverlay:Kill()
-	InspectModelFrame:CreateBD()
+	InspectModelFrame:CreateBD(true)
 	
 		local slots = {
 			'HeadSlot',

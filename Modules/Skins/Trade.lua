@@ -3,8 +3,7 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	TradeFrame:StripTextures(true)
-	TradeFrame:CreateBD()
-	TradeFrame.backdrop:SetTemplate(true)
+	TradeFrame:CreateBD(true)
 	TradeFrameInset:StripTextures()
 	TradeRecipientMoneyBg:StripTextures()
 	TradeRecipientMoneyInset:StripTextures()

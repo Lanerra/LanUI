@@ -10,6 +10,7 @@ if C.Panels.ABPanel == true then
     ABPanel:SetFrameStrata('BACKGROUND')
     
     ABPanel:SetTemplate()
+    ABPanel.backdrop:SetOutside()
     
     for i = 1, 12 do
         _G['ActionButton'..i]:SetFrameStrata('HIGH')

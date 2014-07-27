@@ -34,7 +34,7 @@ local function LoadSkin()
 		
 		button:SkinNextPrevButton(true)
 		
-		frame:CreateBD()
+		frame:CreateBD(true)
 		frame.backdrop:Point('TOPLEFT', 20, 2)
 		frame.backdrop:Point('BOTTOMRIGHT', button, 'BOTTOMRIGHT', 2, -2)
 	end
@@ -110,7 +110,7 @@ local function LoadSkin()
 		for i, class in ipairs(CLASS_SORT_ORDER) do
 			local button = _G['CalendarClassButton'..i]
 			button:StripTextures()
-			button:CreateBD()
+			button:CreateBD(true)
 			
 			local tcoords = CLASS_ICON_TCOORDS[class]
 			local buttonIcon = button:GetNormalTexture()
@@ -121,7 +121,7 @@ local function LoadSkin()
 		CalendarClassButton1:Point('TOPLEFT', CalendarClassButtonContainer, 'TOPLEFT', 5, 0)
 		
 		CalendarClassTotalsButton:StripTextures()
-		CalendarClassTotalsButton:CreateBD()
+		CalendarClassTotalsButton:CreateBD(true)
 	end)
 	
 	--Texture Picker Frame

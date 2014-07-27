@@ -9,6 +9,7 @@ local function LoadSkin()
 	
 	ItemUpgradeFrame.ItemButton:StripTextures()
 	ItemUpgradeFrame.ItemButton:SetTemplate()
+	ItemUpgradeFrame.ItemButton.backdrop:SetOutside()
 	ItemUpgradeFrame.ItemButton:StyleButton()
 	ItemUpgradeFrame.ItemButton.IconTexture:ClearAllPoints()
 	ItemUpgradeFrame.ItemButton.IconTexture:Point('TOPLEFT', 2, -2)

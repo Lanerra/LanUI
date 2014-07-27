@@ -3,8 +3,7 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	DressUpFrame:StripTextures(true)
-	DressUpFrame:CreateBD()
-	DressUpFrame.backdrop:SetTemplate(true)
+	DressUpFrame:CreateBD(true)
 	DressUpFrame.backdrop:Point('TOPLEFT', 6, 0)
 	DressUpFrame.backdrop:Point('BOTTOMRIGHT', -32, 70)
 

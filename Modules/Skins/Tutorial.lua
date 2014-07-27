@@ -3,8 +3,7 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	TutorialFrame:StripTextures()
-	TutorialFrame:CreateBD()
-	TutorialFrame.backdrop:SetTemplate(true)
+	TutorialFrame:CreateBD(true)
 	TutorialFrame.backdrop:Point('TOPLEFT', 6, 0)
 	TutorialFrame.backdrop:Point('BOTTOMRIGHT', 6, -6)
 	TutorialFrameCloseButton:SkinCloseButton(TutorialFrameCloseButton.backdrop)

@@ -8,7 +8,7 @@ local function LoadSkin()
 		local bag = _G['ContainerFrame'..i]
 		if bag then
 			bag:StripTextures(true)
-			bag:CreateBD()
+			bag:CreateBD(true)
 
 			bag.backdrop:Point('TOPLEFT', 4, -2)
 			bag.backdrop:Point('BOTTOMRIGHT', 1, 1)
@@ -42,7 +42,7 @@ local function LoadSkin()
 	local bank = BankFrame
 	if bank then
 		bank:StripTextures(true)
-		bank:CreateBD()
+		bank:CreateBD(true)
 		BankFrameCloseButton:SkinCloseButton(BankFrameCloseButton.backdrop)
 		BankFrameMoneyFrameBorder:StripTextures()
 		BankFrameMoneyFrameInset:StripTextures()
@@ -90,7 +90,7 @@ local function LoadSkin()
 			local bag = _G['ContainerFrame'..i]
 			if bag then
 				bag:StripTextures(true)
-				bag:CreateBD()
+				bag:CreateBD(true)
 				bag.backdrop:Point('TOPLEFT', 4, -2)
 				bag.backdrop:Point('BOTTOMRIGHT', 1, 1)
 				_G['ContainerFrame'..i..'CloseButton']:SkinCloseButton(_G['ContainerFrame'..i..'CloseButton'].backdrop)

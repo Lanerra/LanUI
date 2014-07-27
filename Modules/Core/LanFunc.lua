@@ -18,21 +18,6 @@ end
 F.Scale = function(x) return Scale(x) end
 F.Mult = Mult
 
-local function UpdateColor(t)
-	if t == template then return end
-
-	if t == 'ClassColor' or t == 'Class Color' or t == 'Class' then
-		local c = RAID_CLASS_COLORS[class]
-		borderr, borderg, borderb = c[1], c[2], c[3]
-		backdropr, backdropg, backdropb, backdropa = unpack(C.Media.BackdropColor)
-	else
-		borderr, borderg, borderb = unpack(C.Media.BorderColor)
-		backdropr, backdropg, backdropb, backdropa = unpack(C.Media.BackdropColor)
-	end
-	
-	template = t
-end
-
 F.PetBarUpdate = function(self, event)
 	local petActionButton, petActionIcon, petAutoCastableTexture, petAutoCastShine
 	for i = 1, NUM_PET_ACTION_SLOTS, 1 do
@@ -163,14 +148,6 @@ F.StylePet = function()
 	end
 end
 
-function topattern(str)
-   str = gsub(str, "%%%d?$?c", ".+")
-   str = gsub(str, "%%%d?$?s", ".+")
-   str = gsub(str, "%%%d?$?d", "%%d+")
-   str = gsub(str, "([%(%)])", "%%%1")
-   return str
-end
-
 function F.RGBToHex(r, g, b)
 	r = r <= 1 and r >= 0 and r or 0
 	g = g <= 1 and g >= 0 and g or 0
@@ -186,11 +163,6 @@ function F.ShortValue(v)
 	else
 		return v
 	end
-end
-
-function F.Round(number, decimals)
-	if not decimals then decimals = 0 end
-    return (('%%.%df'):format(decimals)):format(number)
 end
 
 -- API stuff
@@ -239,39 +211,49 @@ local function SetInside(obj, anchor, xOffset, yOffset)
 	obj:Point('BOTTOMRIGHT', anchor, 'BOTTOMRIGHT', -xOffset, yOffset)
 end
 
-local function Filter(frame, name)
-    if not frame:GetName() then return end
-	local sbut = frame:GetName():match(name)
-    if (sbut) then
-        return true
-    else
-        return false
-    end
-end
+local function SetTemplate(frame, nobd)
+	if frame.skinned then return end
+    local f
+	
+	if frame:GetObjectType() == "Texture" then
+		f = frame:GetParent()
+	else
+		f = frame
+	end
+	
+	if not nobd then
+		local lvl = f:GetFrameLevel()
 
-local function SetTemplate(f, nobd)
-	if f.skinned then return end
-    texture = C.Media.Backdrop
-	
-	UpdateColor(t)
-	
-	if not nobd and f.SetBackdrop then
-		f:SetBackdrop({
-			bgFile = texture, 
+		local bg = CreateFrame("Frame", nil, f)
+		bg:SetParent(f)
+		bg:SetInside()
+		bg:SetFrameLevel(lvl == 0 and 1 or lvl - 1)
+
+		bg:SetBackdrop({
+			bgFile = C.Media.Backdrop,
+			edgeFile = C.Media.Backdrop,
+			edgeSize = F.Mult,
 		})
-		
-		f:SetBackdropColor(backdropr, backdropg, backdropb, backdropa)
+
+		bg:SetBackdropColor(unpack(C.Media.BackdropColor))
+		bg:SetBackdropBorderColor(bc.r, bc.g, bc.b)
+
+		f.backdrop = bg
 	end
     
     if C.Media.ClassColor == true then
-        CreateBorderLight(f, C.Media.BorderSize, bc.r, bc.g, bc.b)
-        SetTexture(f, 'white')
+        CreateBorderLight(f.backdrop or f, C.Media.BorderSize, bc.r, bc.g, bc.b)
+        SetTexture(f.backdrop or f, 'white')
     else
-        CreateBorderLight(f, C.Media.BorderSize, bc.r, bc.g, bc.b)
-        SetTexture(f, 'default')
+        CreateBorderLight(f.backdrop or f, C.Media.BorderSize, bc.r, bc.g, bc.b)
+        SetTexture(f.backdrop or f, 'default')
     end
 	
-	f:SetBeautyBorderPadding(1)
+	if f.backdrop then
+		f.backdrop:SetBeautyBorderPadding(1)
+	else
+		f:SetBeautyBorderPadding(1)
+	end
 	f.skinned = true
 end
 F.SetTemplate = SetTemplate -- Compatibility, yo
@@ -316,9 +298,8 @@ local function StyleButton(button)
 	if button.isSkinned then return end
 	
 	local name = button:GetName()
-	local normal = _G[name..'NormalTexture2'] or _G[name..'NormalTexture']
 	
-	if normal then
+	if normal and name then
 		normal:ClearAllPoints()
 		normal:SetPoint('TOPRIGHT', button, 1, 1)
 		normal:SetPoint('BOTTOMLEFT', button, -1, -1)
@@ -377,86 +358,68 @@ local function FontString(parent, name, fontName, fontHeight, fontStyle, justify
 	return fs
 end
 
-local function HighlightTarget(self, event, unit)
-	if self.unit == 'target' then return end
-	if UnitIsUnit('target', self.unit) then
-		self.HighlightTarget:Show()
-	else
-		self.HighlightTarget:Hide()
-	end
-end
-
-local function HighlightUnit(f, r, g, b)
-	if f.HighlightTarget then return end
-	local glowBorder = {edgeFile = C.Media.Backdrop, edgeSize = 1}
-	f.HighlightTarget = CreateFrame('Frame', nil, f)
-	f.HighlightTarget:Point('TOPLEFT', f, 'TOPLEFT', -2, 2)
-	f.HighlightTarget:Point('BOTTOMRIGHT', f, 'BOTTOMRIGHT', 2, -2)
-	f.HighlightTarget:SetBackdrop(glowBorder)
-	f.HighlightTarget:SetFrameLevel(f:GetFrameLevel() + 1)
-	f.HighlightTarget:SetBackdropBorderColor(r,g,b,1)
-	f.HighlightTarget:Hide()
-	f:RegisterEvent('PLAYER_TARGET_CHANGED', HighlightTarget)
-end
-
 local function StripTextures(object, kill)
-	for i=1, object:GetNumRegions() do
+	for i = 1, object:GetNumRegions() do
 		local region = select(i, object:GetRegions())
-		if region:GetObjectType() == 'Texture' then
-			if kill then
+		if region and region:GetObjectType() == "Texture" then
+			if kill and type(kill) == 'boolean' then
 				region:Kill()
+			elseif region:GetDrawLayer() == kill then
+				region:SetTexture(nil)
+			elseif kill and type(kill) == 'string' and region:GetTexture() ~= kill then
+				region:SetTexture(nil)
 			else
 				region:SetTexture(nil)
 			end
 		end
-	end	
+	end
 end
 
 -- Let's skin this bitch!
 
 local function SetModifiedBackdrop(self)
 	local color = F.PlayerColor
-	self:SetBackdropColor(bc.r*0.5, bc.g*0.5, bc.b*0.5, 0.8)
-	self:SetBackdropBorderColor(color.r, color.g, color.b)
+	self.backdrop:SetBackdropColor(bc.r*0.5, bc.g*0.5, bc.b*0.5, 0.8)
+	self.backdrop:SetBackdropBorderColor(color.r, color.g, color.b)
 end
 
 local function SetOriginalBackdrop(self)
 	local color = F.PlayerColor
 	
-	if C.Media.ClassColor == true then
-		self:SetBackdropColor(bc.r * .25, bc.g * .25, bc.b * .25, 0.5)
-	else
-		self:SetBackdropColor(unpack(C.Media.BackdropColor))
-	end
+	self.backdrop:SetBackdropColor(unpack(C.Media.BackdropColor))
 end
 
-local function CreateBD(f, border)
-	if f.backdrop then return end
-	texture = C.Media.Backdrop
-
-	local b = CreateFrame('Frame', nil, f)
-	b:SetOutside()
+local function CreateBD(frame, border)
+	local f
+	local bdColor = C.Media.BackdropColor
 	
-	if b.SetBackdrop then
-		b:SetBackdrop({
-			bgFile = texture, 
-		})
-		
-		b:SetBackdropColor(backdropr, backdropg, backdropb, backdropa)
+	if frame:GetObjectType() == "Texture" then
+		f = frame:GetParent()
+	else
+		f = frame
 	end
+
+	local lvl = f:GetFrameLevel()
+
+	local bg = CreateFrame("Frame", nil, f)
+	bg:SetParent(f)
+	bg:SetInside()
+	bg:SetFrameLevel(lvl == 0 and 1 or lvl - 1)
+
+	bg:SetBackdrop({
+		bgFile = C.Media.Backdrop,
+		edgeFile = C.Media.Backdrop,
+		edgeSize = F.Mult,
+	})
+
+	bg:SetBackdropColor(unpack(bdColor))
+	bg:SetBackdropBorderColor(bc.r, bc.g, bc.b)
 	
 	if border then
-		f:SetTemplate(true)
-	end
-
-	if f:GetFrameLevel() - 1 >= 0 then
-		b:SetFrameLevel(f:GetFrameLevel() - 1)
-	else
-		b:SetFrameLevel(0)
+		bg:SetTemplate(true)
 	end
 	
-	
-	f.backdrop = b
+	f.backdrop = bg
 end
 F.CreateBD = CreateBD -- Compatibility, yo
 
@@ -527,14 +490,12 @@ local function Reskin(f)
 	f:SetDisabledTexture('')
 
 	f:HookScript('OnEnter', function(self)
-        self:SetBackdropBorderColor(bc.r, bc.g, bc.b)
-        self:SetBackdropColor(bc.r*0.5, bc.g*0.5, bc.b*0.5, 0.8)
+        SetModifiedBackdrop(self)
         glow:CreatePulse()
     end)
  	
     f:HookScript('OnLeave', function(self)
-        self:SetBackdropBorderColor(bc.r, bc.g, bc.b)
-        self:SetBackdropColor(bc.r * .25, bc.g * .25, bc.b * .25, 0.5)
+		SetOriginalBackdrop(self)
         glow:SetScript('OnUpdate', nil)
         glow:SetAlpha(0)
     end)

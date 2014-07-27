@@ -61,10 +61,14 @@ local function StyleBubble(frame)
 		elseif region:GetObjectType() == 'FontString' then
 			region:SetFont(C.Media.Font, 13)
 			region:SetShadowOffset(Scale, -Scale)
+            region:SetDrawLayer('OVERLAY')
+            
+            frame:SetTemplate()
+            region:SetParent(frame.backdrop)
 		end
 	end
 
-	frame:SetTemplate()
+	--frame:SetTemplate()
 end
 
 local function isChatBubble(frame)

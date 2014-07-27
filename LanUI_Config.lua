@@ -120,7 +120,8 @@ C['UF'] = {
         ToT = true,
         Party = true,
         Raid = true,
-        HealerOverride = true -- Forces display of predictive healing (incoming heals)
+        HealerOverride = true, -- Forces display of predictive healing (incoming heals)
+        ClassColorHealth = false
     },
     Media = {
         FontSize = 15,

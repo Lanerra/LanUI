@@ -43,9 +43,9 @@ local function LoadSkin()
 			local button = _G['SpellButton'..i]
 			local icon = _G['SpellButton'..i..'IconTexture']
 
-			if not InCombatLockdown() then
+			--[[if not InCombatLockdown() then
 				button:SetFrameLevel(SpellBookFrame:GetFrameLevel() + 5)
-			end
+			end]]
 			
 			if first then
 				for i = 1, button:GetNumRegions() do
@@ -77,6 +77,8 @@ local function LoadSkin()
 
 				if not button.backdrop then
 					button:CreateBD(true)
+					button.backdrop:SetOutside()
+					button.backdrop:SetBeautyBorderPadding(2)
 				end
 			end
 
@@ -259,10 +261,10 @@ local function LoadSkin()
 
 		if icon then
 			icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-			icon:SetInside()
-			--[[icon:ClearAllPoints()
+			--icon:SetInside()
+			icon:ClearAllPoints()
 			icon:Point('TOPLEFT', 4, -4)
-			icon:Point('BOTTOMRIGHT', -4, 4)]]
+			icon:Point('BOTTOMRIGHT', -4, 4)
 
 			button:SetFrameLevel(button:GetFrameLevel() + 2)
 			if not button.isSkinned then
@@ -287,7 +289,9 @@ local function LoadSkin()
 		statusbar:SetStatusBarTexture(C.Media.StatusBar)
 		statusbar:SetStatusBarColor(0, 0.3, 0)
 		statusbar:CreateBD(true)
-
+		statusbar.backdrop:SetOutside()
+		statusbar.backdrop:SetBeautyBorderPadding(2)
+		
 		statusbar.rankText:ClearAllPoints()
 		statusbar.rankText:SetPoint('CENTER')
 	end

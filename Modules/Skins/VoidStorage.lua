@@ -78,8 +78,7 @@ local function LoadSkin()
 	
 	-- dress
 	SideDressUpFrame:StripTextures(true)
-	SideDressUpFrame:CreateBD()
-	SideDressUpFrame.backdrop:SetTemplate(true)
+	SideDressUpFrame:CreateBD(true)
 
 	SideDressUpModelResetButton:SkinButton()
 	SideDressUpModelCloseButton:StripTextures()

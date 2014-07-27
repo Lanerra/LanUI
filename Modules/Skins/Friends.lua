@@ -19,7 +19,7 @@ local function LoadSkin()
 		end
 		tab:GetHighlightTexture():SetTexture(nil)
 		tab.backdrop = CreateFrame('Frame', nil, tab)
-		tab.backdrop:CreateBD()
+		tab.backdrop:CreateBD(true)
 		tab.backdrop:SetFrameLevel(tab:GetFrameLevel() - 1)
 		tab.backdrop:Point('TOPLEFT', 3, -8)
 		tab.backdrop:Point('BOTTOMRIGHT', -6, 0)
@@ -146,8 +146,8 @@ local function LoadSkin()
 	end
 	--BNet Frame
 	FriendsFrameBroadcastInput:CreateBD(true)
-	ChannelFrameDaughterFrameChannelName:CreateBD()
-	ChannelFrameDaughterFrameChannelPassword:CreateBD()
+	ChannelFrameDaughterFrameChannelName:CreateBD(true)
+	ChannelFrameDaughterFrameChannelPassword:CreateBD(true)
 
 	ChannelFrame:HookScript('OnShow', UpdateChannel)
 	hooksecurefunc('FriendsFrame_OnEvent', UpdateChannel)

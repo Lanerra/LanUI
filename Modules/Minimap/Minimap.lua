@@ -89,6 +89,8 @@ end
 
 Minimap:SetMaskTexture(C.Media.Backdrop)
 Minimap:SetTemplate()
+Minimap.backdrop:SetOutside()
+Minimap.backdrop:SetBeautyBorderPadding(2)
 
     -- Enable mousewheel zooming
 

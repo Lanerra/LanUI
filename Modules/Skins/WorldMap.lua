@@ -4,14 +4,14 @@ local bc = C.Media.BorderColor
 local function LoadSkin()
 	setfenv(WorldMapFrame_OnShow, setmetatable({ UpdateMicroButtons = function() end }, { __index = _G })) -- blizzard taint fix for 5.4.1
 	
-	WorldMapFrame:CreateBD()
-	WorldMapFrame.backdrop:SetTemplate(true)
+	WorldMapFrame:CreateBD(true)
+	--WorldMapFrame.backdrop:SetTemplate(true)
 	WorldMapFrame.backdrop:EnableMouse(true)
 	
 	WorldMapDetailFrame.backdrop = CreateFrame('Frame', nil, WorldMapFrame)
 	WorldMapDetailFrame.backdrop:SetTemplate()
-	WorldMapDetailFrame.backdrop:Point('TOPLEFT', WorldMapDetailFrame, 'TOPLEFT', -2, 2)
-	WorldMapDetailFrame.backdrop:Point('BOTTOMRIGHT', WorldMapDetailFrame, 'BOTTOMRIGHT', 2, -2)
+	WorldMapDetailFrame.backdrop:Point('TOPLEFT', WorldMapDetailFrame, 'TOPLEFT', -4, 3)
+	WorldMapDetailFrame.backdrop:Point('BOTTOMRIGHT', WorldMapDetailFrame, 'BOTTOMRIGHT', 4, -3)
 	WorldMapDetailFrame.backdrop:SetFrameLevel(WorldMapDetailFrame:GetFrameLevel() - 2)
 
 	WorldMapFrameCloseButton:SkinCloseButton()
@@ -130,19 +130,6 @@ local function LoadSkin()
 		end
 	end)
 
-	local coords = CreateFrame('Frame', 'CoordsFrame', WorldMapFrame)
-	local fontheight = 12*1.1
-	coords:SetFrameLevel(90)
-	coords:FontString('PlayerText', C.Media.Font, fontheight, 'THINOUTLINE')
-	coords:FontString('MouseText', C.Media.Font, fontheight, 'THINOUTLINE')
-	coords.PlayerText:SetTextColor(1, 1, 1)
-	coords.MouseText:SetTextColor(1, 1, 1)
-	coords.PlayerText:SetPoint('BOTTOMLEFT', WorldMapDetailFrame, 'BOTTOMLEFT', 5, 5)
-	coords.PlayerText:SetText('Player:   0, 0')
-	coords.MouseText:SetPoint('BOTTOMLEFT', coords.PlayerText, 'TOPLEFT', 0, 5)
-	coords.MouseText:SetText('Mouse:   0, 0')
-	local int = 0
-
 	WorldMapFrame:HookScript('OnUpdate', function(self, elapsed)
 		if WORLDMAP_SETTINGS.size == WORLDMAP_FULLMAP_SIZE then
 			WorldMapFrameSizeUpButton:Hide()
@@ -154,39 +141,6 @@ local function LoadSkin()
 			WorldMapFrameSizeUpButton:Hide()
 			WorldMapFrameSizeDownButton:Show()
 		end		
-
-		int = int + 1
-		
-		if int >= 3 then
-			local inInstance, _ = IsInInstance()
-			local x,y = GetPlayerMapPosition('player')
-			x = math.floor(100 * x)
-			y = math.floor(100 * y)
-			if x ~= 0 and y ~= 0 then
-				coords.PlayerText:SetText(PLAYER..':   '..x..', '..y)
-			else
-				coords.PlayerText:SetText(' ')
-			end
-			
-
-			local scale = WorldMapDetailFrame:GetEffectiveScale()
-			local width = WorldMapDetailFrame:GetWidth()
-			local height = WorldMapDetailFrame:GetHeight()
-			local centerX, centerY = WorldMapDetailFrame:GetCenter()
-			local x, y = GetCursorPosition()
-			local adjustedX = (x / scale - (centerX - (width/2))) / width
-			local adjustedY = (centerY + (height/2) - y / scale) / height	
-
-			if (adjustedX >= 0  and adjustedY >= 0 and adjustedX <= 1 and adjustedY <= 1) then
-				adjustedX = math.floor(100 * adjustedX)
-				adjustedY = math.floor(100 * adjustedY)
-				coords.MouseText:SetText(MOUSE_LABEL..':   '..adjustedX..', '..adjustedY)
-			else
-				coords.MouseText:SetText(' ')
-			end
-			
-			int = 0
-		end				
 	end)
 
 	-- dropdown on full map is scaled incorrectly

@@ -4,8 +4,7 @@ local bc = C.Media.BorderColor
 local function LoadSkin()
 	GMSurveyHeader:StripTextures()
 	GMSurveyFrame:StripTextures()
-	GMSurveyFrame:CreateBD()
-	GMSurveyFrame.backdrop:SetTemplate(true)
+	GMSurveyFrame:CreateBD(true)
 	GMSurveyFrame.backdrop:Point('TOPLEFT', 0, 0)
 	GMSurveyFrame.backdrop:Point('BOTTOMRIGHT', -44, 10)
 

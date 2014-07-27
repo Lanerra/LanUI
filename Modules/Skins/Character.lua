@@ -228,6 +228,9 @@ local function LoadSkin()
 				
 				if not statusbar.backdrop then
 					statusbar:CreateBD(true)
+					statusbar.backdrop:Point('TOPLEFT', statusbar, -1, 2)
+					statusbar.backdrop:Point('BOTTOMRIGHT', statusbar, 1, -1)
+					statusbar.backdrop:SetBeautyBorderPadding(2)
 				end
 				
 				_G['ReputationBar'..i..'Background']:SetTexture(nil)
@@ -306,7 +309,7 @@ local function LoadSkin()
 	TokenFramePopupBackpackCheckBox:SkinCheckBox()
 
 	--Pet
-	PetModelFrame:CreateBD()
+	PetModelFrame:CreateBD(true)
 
 	PetModelFrameRotateRightButton:SkinRotateButton()
 	PetModelFrameRotateLeftButton:SkinRotateButton()

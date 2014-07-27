@@ -3,8 +3,7 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	TabardFrame:StripTextures()
-	TabardFrame:CreateBD()
-	TabardFrame.backdrop:SetTemplate(true)
+	TabardFrame:CreateBD(true)
 	TabardFrame.backdrop:Point('TOPLEFT', 0, 0)
 	TabardFrame.backdrop:Point('BOTTOMRIGHT', 0, 0)
 

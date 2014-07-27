@@ -62,10 +62,9 @@ local function LoadSkin()
 	AuctionProgressBarText:SetPoint('CENTER')
 	
 	AuctionProgressBar:StripTextures()
-	AuctionProgressBar:CreateBD()
+	AuctionProgressBar:CreateBD(true)
 	AuctionProgressBar:SetStatusBarTexture(C.Media.StatusBar)
 	AuctionProgressBar:SetStatusBarColor(1, 1, 0)
-	AuctionProgressBar:SetTemplate(true)
 	
 	BrowseNextPageButton:SkinNextPrevButton()
 	BrowsePrevPageButton:SkinNextPrevButton()
@@ -198,9 +197,8 @@ local function LoadSkin()
 			--TODO: Find a better method to ensure that the icon:GetNormalTexture doesn't return after clicking
 			icon:HookScript('OnUpdate', function() icon:GetNormalTexture():Kill() end)
 			
-			icon:CreateBD()
+			icon:CreateBD(true)
 			icon.backdrop:SetAllPoints()
-			icon:SetTemplate(true)
 		end
 
 		button:StripTextures()
@@ -227,7 +225,7 @@ local function LoadSkin()
 		--TODO: Find a better method to ensure that the icon:GetNormalTexture doesn't return after clicking
 		icon:HookScript('OnUpdate', function() icon:GetNormalTexture():Kill() end)
 		
-		icon:CreateBD()
+		icon:CreateBD(true)
 		icon.backdrop:SetAllPoints()
 
 		button:StripTextures()
@@ -251,7 +249,7 @@ local function LoadSkin()
 		icon:StyleButton()
 		icon:HookScript('OnUpdate', function() icon:GetNormalTexture():Kill() end)
 		
-		icon:CreateBD()
+		icon:CreateBD(true)
 		icon.backdrop:SetAllPoints()
 
 		button:StripTextures()
@@ -362,7 +360,7 @@ local function LoadSecondarySkin()
 	end)
 	
 	BlackMarketFrame.HotDeal:StripTextures()
-	BlackMarketFrame.HotDeal.Item:CreateBD()
+	BlackMarketFrame.HotDeal.Item:CreateBD(true)
 	BlackMarketFrame.HotDeal.Item:StyleButton()
 	BlackMarketFrame.HotDeal.Item.hover:SetAllPoints()
 	BlackMarketFrame.HotDeal.Item.pushed:SetAllPoints()

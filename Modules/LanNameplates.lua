@@ -341,6 +341,7 @@ local function SkinPlate(self, nameFrame)
     })
     self.Castbar:SetBackdropColor(0.2, 0.2, 0.2, 0.5)
 
+    self.Castbar:SetStatusBarTexture(C.Media.StatusBar)
     self.Castbar:ClearAllPoints()
     self.Castbar:SetPoint('TOPRIGHT', self.Health, 'BOTTOMRIGHT', 0, -9)
     self.Castbar:SetPoint('BOTTOMLEFT', self.Health, 'BOTTOMLEFT', 0, -20)

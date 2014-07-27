@@ -64,8 +64,7 @@ local function LoadSecondarySkin()
 		if _G[buttons[i]] then _G[buttons[i]]:SkinButton() end
 	end
 	RaidInfoScrollFrame:StripTextures()
-	RaidInfoFrame:CreateBD()
-	RaidInfoFrame.backdrop:SetTemplate(true)
+	RaidInfoFrame:CreateBD(true)
 	RaidInfoFrame.backdrop:Point( 'TOPLEFT', RaidInfoFrame, 'TOPLEFT')
 	RaidInfoFrame.backdrop:Point( 'BOTTOMRIGHT', RaidInfoFrame, 'BOTTOMRIGHT')
 	RaidInfoCloseButton:SkinCloseButton(RaidInfoFrame)
