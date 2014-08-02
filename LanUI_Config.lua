@@ -7,16 +7,28 @@ end
 
 C['FirstTime'] = false -- How sweet! Fresh meat!
 
+C['Media'] = {
+    ['Font'] = [[Interface\Addons\LanUI\Media\Expressway.ttf]], -- Default font
+    ['SCTFont'] = [[Interface\Addons\LanUI\Media\Source2.ttf]], -- Scrolling Combat Text Font
+    ['FontSize'] = 15, -- Default font size
+    ['StatusBar'] = [[Interface\Addons\LanUI\Media\StatusBar]], -- Default statusbar
+    ['BuffBorder'] = [[Interface\Addons\LanUI\Media\textureNormal]], -- Buff border texture
+    ['DebuffBorder'] = [[Interface\Addons\LanUI\Media\textureDebuff]], -- Debuff border texture
+    ['OverlayBorder'] = [[Interface\Addons\LanUI\Media\textureOverlay]], -- Overlay border for other elements
+    ['Backdrop'] = [[Interface\BUTTONS\WHITE8X8]], -- Background texture for panels/skinning
+    ['Glow'] = [[Interface\AddOns\LanUI\Media\glowTex]], -- Texture used for glows
+    ['BackdropColor'] = {0, 0, 0, 0.5}, -- Background color for panels/skinning
+    ['BorderColor'] = {1, 1, 1}, -- Border color
+    ['BorderSize'] = 12, -- Border size
+    ['ClassColor'] = true, -- Class color our borders?
+}
+
 C['ActionBars'] = {
     ['Hotkey'] = false, -- Show button hotkeys
     ['Macro'] = false, -- Show name of macros
-    ['HideShapeshift'] = false, -- Hide shapeshift/totembar
     ['ButtonSize'] = 27, -- Size of buttons
     ['PetButtonSize'] = 29, -- Size of pet and stance buttons
     ['ButtonSpacing'] = 4, -- Spacing between buttons
-    ['OwnShadow'] = false, -- Use separate bar for Shadow Dance (Rogue Only)
-    ['OwnMeta'] = true, -- Use separate bar for Metamorphosis (Warlock Only)
-    ['OwnStance'] = false, -- Use separate bar for each Warrior Stance (Warrior Only)
     ['Bar2'] = true, -- Need a second bar?
     ['Bar3'] = false, -- How about a third?
 }
@@ -41,34 +53,6 @@ C['Minimap'] = {
         ['InstanceDifficulty'] = false,
     },
 }
-
-C['Media'] = {
-    ['Font'] = [[Interface\Addons\LanUI\Media\Expressway.ttf]], -- Default font
-    ['SCTFont'] = [[Interface\Addons\LanUI\Media\Source2.ttf]], -- Scrolling Combat Text Font
-    ['FontSize'] = 15, -- Default font size
-    ['StatusBar'] = [[Interface\Addons\LanUI\Media\StatusBar]], -- Default statusbar
-    ['BuffBorder'] = [[Interface\Addons\LanUI\Media\textureNormal]], -- Buff border texture
-    ['DebuffBorder'] = [[Interface\Addons\LanUI\Media\textureDebuff]], -- Debuff border texture
-    ['OverlayBorder'] = [[Interface\Addons\LanUI\Media\textureOverlay]], -- Overlay border for other elements
-    ['Backdrop'] = [[Interface\BUTTONS\WHITE8X8]], -- Background texture for panels/skinning
-    ['Glow'] = [[Interface\AddOns\LanUI\Media\glowTex]], -- Texture used for glows
-    ['BackdropColor'] = {0, 0, 0, 0.5}, -- Background color for panels/skinning
-    ['BorderColor'] = {1, 1, 1}, -- Border color
-    ['BorderSize'] = 12, -- Border size
-    ['ClassColor'] = true, -- Class color our borders?
-}
-
--- NO TOUCHY! -----------------------------------------------------------
-if C.ActionBars.Bar3 then
-    C.ActionBars.Bar2 = true
-end
-
-if C.Media.ClassColor then
-    C.Media.BorderColor = F.PlayerColor
-else
-    C.Media.BorderColor.r, C.Media.BorderColor.g, C.Media.BorderColor.b = C.Media.BorderColor[1], C.Media.BorderColor[2], C.Media.BorderColor[3]
-end
--------------------------------------------------------------------------
 
 C['Panels'] = {
     ['ABPanel'] = true, -- Panel for action bars
@@ -240,3 +224,15 @@ C['UF'] = {
         },
     },
 }
+
+-- NO TOUCHY! -----------------------------------------------------------
+if C.ActionBars.Bar3 then
+    C.ActionBars.Bar2 = true
+end
+
+if C.Media.ClassColor then
+    C.Media.BorderColor = F.PlayerColor
+else
+    C.Media.BorderColor.r, C.Media.BorderColor.g, C.Media.BorderColor.b = C.Media.BorderColor[1], C.Media.BorderColor[2], C.Media.BorderColor[3]
+end
+-------------------------------------------------------------------------
