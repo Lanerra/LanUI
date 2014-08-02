@@ -593,7 +593,6 @@ f:SetScript('OnEvent', function()
         InterfaceOptionsActionBarsPanelBottomLeft:SetChecked(1)
         InterfaceOptionsActionBarsPanelBottomRight:SetChecked(1)
         
-        MultiActionBar_Update()
         InterfaceOptions_UpdateMultiActionBars()
     elseif C.ActionBars.Bar2 then
         if C.ActionBars.Bar3 then return end
@@ -604,7 +603,6 @@ f:SetScript('OnEvent', function()
         InterfaceOptionsActionBarsPanelBottomLeft:SetChecked(1)
         InterfaceOptionsActionBarsPanelBottomRight:SetChecked(0)
         
-        MultiActionBar_Update()
         InterfaceOptions_UpdateMultiActionBars()
     else
         SetActionBarToggles(0, 0, 0, 0, 1)
@@ -613,7 +611,6 @@ f:SetScript('OnEvent', function()
         InterfaceOptionsActionBarsPanelBottomLeft:SetChecked(0)
         InterfaceOptionsActionBarsPanelBottomRight:SetChecked(0)
         
-        MultiActionBar_Update()
         InterfaceOptions_UpdateMultiActionBars()
     end
 end)
