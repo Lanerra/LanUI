@@ -1,11 +1,11 @@
 local F, C, G = unpack(select(2, ...))
 
 -- Kill Blizzard options for ActionBars
-InterfaceOptionsActionBarsPanelBottomLeft:Kill()
+--[[InterfaceOptionsActionBarsPanelBottomLeft:Kill()
 InterfaceOptionsActionBarsPanelBottomRight:Kill()
 InterfaceOptionsActionBarsPanelRight:Kill()
 InterfaceOptionsActionBarsPanelRightTwo:Kill()
-InterfaceOptionsActionBarsPanelAlwaysShowActionBars:Kill()
+InterfaceOptionsActionBarsPanelAlwaysShowActionBars:Kill()]]
 
 -- Kill micromenu
 CharacterMicroButton:SetScale(0.0001)
@@ -20,8 +20,6 @@ QuestLogMicroButton:SetScale(0.0001)
 QuestLogMicroButton:EnableMouse(false)
 GuildMicroButton:SetScale(0.0001)
 GuildMicroButton:EnableMouse(false)
-PVPMicroButton:SetScale(0.0001)
-PVPMicroButton:EnableMouse(false)
 LFDMicroButton:SetScale(0.0001)
 LFDMicroButton:EnableMouse(false)
 EJMicroButton:SetScale(0.0001)

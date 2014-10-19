@@ -106,7 +106,7 @@ for _, tooltip in pairs({
     ApplyTooltipStyle(tooltip)
 end
 
-    -- Itemquaility border, we use our beautycase functions
+    -- Item quality border, we use our beautycase functions
 
 for _, tooltip in pairs({
     GameTooltip,

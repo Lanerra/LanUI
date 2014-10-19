@@ -1,5 +1,8 @@
 local F, C, G = unpack(select(2, ...))
 
+-- Texture Coordinates
+F.TexCoords = {.08, .92, .08, .92}
+
 -- Kill Talent popup
 TalentMicroButtonAlert:UnregisterAllEvents()
 TalentMicroButtonAlert:SetParent(LanUIHider)

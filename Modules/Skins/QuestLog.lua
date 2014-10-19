@@ -2,7 +2,7 @@ local F, C, G = unpack(select(2, ...))
 local bc = C.Media.BorderColor
 
 local function LoadSkin()
-	QuestLogFrameCloseButton:SkinCloseButton()
+	--[[QuestLogFrameCloseButton:SkinCloseButton()
 	QuestLogFrame:StripTextures()
 	QuestLogFrame:SetTemplate()
 	QuestLogCount:StripTextures()
@@ -134,7 +134,7 @@ local function LoadSkin()
 	QuestLogFrame:HookScript('OnShow', function()
 		QuestLogDetailScrollFrame:Height(QuestLogScrollFrame:GetHeight()-4)
 	end)
-	QuestLogDetailFrameInset:StripTextures()
+	QuestLogDetailFrameInset:StripTextures()]]
 end	
 
 tinsert(F.SkinFuncs['LanUI'], LoadSkin)

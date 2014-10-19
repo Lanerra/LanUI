@@ -26,6 +26,8 @@ F.PetBarUpdate = function(self, event)
 		petActionIcon = _G[buttonName..'Icon']
 		petAutoCastableTexture = _G[buttonName..'AutoCastable']
 		petAutoCastShine = _G[buttonName..'Shine']
+		local checked = petActionButton:GetCheckedTexture()
+		
 		local name, subtext, texture, isToken, isActive, autoCastAllowed, autoCastEnabled = GetPetActionInfo(i)
 
 		if not isToken then
@@ -62,12 +64,8 @@ F.PetBarUpdate = function(self, event)
 		else
 			AutoCastShine_AutoCastStop(petAutoCastShine)
 		end
-
-		if name then
-			petActionButton:SetAlpha(1)
-		else
-			petActionButton:SetAlpha(0)
-		end
+		
+		petActionButton:SetAlpha(1)
 
 		if texture then
 			if GetPetActionSlotUsable(i) then
@@ -85,6 +83,8 @@ F.PetBarUpdate = function(self, event)
 			SetDesaturation(petActionIcon, 1)
 			petActionButton:SetChecked(0)
 		end
+		
+		checked:SetAlpha(0.3)
 	end
 end
 
@@ -294,7 +294,7 @@ local function Kill(object)
 	object:Hide()
 end
 
-local function StyleButton(button)
+function StyleButton(button)
 	if button.isSkinned then return end
 	
 	local name = button:GetName()
@@ -502,7 +502,7 @@ local function Reskin(f)
 end
 F.Reskin = Reskin -- Compatibility, yo
 
-local function SkinButton(f, strip)
+function SkinButton(f, strip)
 	if f:GetName() then
 		local l = _G[f:GetName()..'Left']
 		local m = _G[f:GetName()..'Middle']
@@ -545,7 +545,7 @@ local function SkinIconButton(b, shrinkIcon)
 	end
 
 	if icon then
-		icon:SetTexCoord(.08,.88,.08,.88)
+		icon:SetTexCoord(unpack(F.TexCoords))
 
 		-- create a backdrop around the icon
 
@@ -559,8 +559,9 @@ local function SkinIconButton(b, shrinkIcon)
 	end
 	b.isSkinned = true
 end
+F.SkinIconButton = SkinIconButton
 
-local function SkinScrollBar(frame)
+function SkinScrollBar(frame)
 	if _G[frame:GetName()..'BG'] then _G[frame:GetName()..'BG']:SetTexture(nil) end
 	if _G[frame:GetName()..'Track'] then _G[frame:GetName()..'Track']:SetTexture(nil) end
 
@@ -623,7 +624,7 @@ local tabs = {
 	'Right',
 }
 
-local function SkinTab(tab)
+function SkinTab(tab)
 	if not tab then return end
 	for _, object in pairs(tabs) do
 		local tex = _G[tab:GetName()..object]
@@ -671,7 +672,7 @@ local function SkinTab(tab)
 end
 F.SkinTab = SkinTab -- Compatibility, yo
 
-local function SkinNextPrevButton(btn, horizonal)
+function SkinNextPrevButton(btn, horizonal)
 	--SetTemplate(btn)
 	Size(btn, btn:GetWidth() - 15, btn:GetHeight() - 15)
 	
@@ -720,20 +721,55 @@ local function SkinRotateButton(btn)
 end
 F.SkinRotateButton = SkinRotateButton -- Compatibility, yo
 
-local function SkinEditBox(frame)
-	if _G[frame:GetName()..'Left'] then Kill(_G[frame:GetName()..'Left']) end
-	if _G[frame:GetName()..'Middle'] then Kill(_G[frame:GetName()..'Middle']) end
-	if _G[frame:GetName()..'Right'] then Kill(_G[frame:GetName()..'Right']) end
-	if _G[frame:GetName()..'Mid'] then Kill(_G[frame:GetName()..'Mid']) end
-	CreateBD(frame)
+function SkinIcon(icon, parent)
+	parent = parent or icon:GetParent()
 	
-	if frame:GetName() and frame:GetName():find('Silver') or frame:GetName():find('Copper') then
-		Point(frame.backdrop, 'BOTTOMRIGHT', -12, -2)
+	icon:SetTexCoord(unpack(F.TexCoords))
+	parent:CreateBD()
+	icon:SetParent(parent.backdrop)
+	parent.backdrop:SetOutside(icon)
+end
+F.SkinIcon = SkinIcon
+
+function SkinEditBox(frame)
+	frame:CreateBD()
+
+	if frame.TopLeftTex then frame.TopLeftTex:Kill() end
+	if frame.TopRightTex then frame.TopRightTex:Kill() end
+	if frame.TopTex then frame.TopTex:Kill() end
+	if frame.BottomLeftTex then frame.BottomLeftTex:Kill() end
+	if frame.BottomRightTex then frame.BottomRightTex:Kill() end
+	if frame.BottomTex then frame.BottomTex:Kill() end
+	if frame.LeftTex then frame.LeftTex:Kill() end
+	if frame.RightTex then frame.RightTex:Kill() end
+	if frame.MiddleTex then frame.MiddleTex:Kill() end
+	
+	if frame:GetName() then
+		if _G[frame:GetName().."Left"] then _G[frame:GetName().."Left"]:Kill() end
+		if _G[frame:GetName().."Middle"] then _G[frame:GetName().."Middle"]:Kill() end
+		if _G[frame:GetName().."Right"] then _G[frame:GetName().."Right"]:Kill() end
+		if _G[frame:GetName().."Mid"] then _G[frame:GetName().."Mid"]:Kill() end
+		
+		if frame:GetName():find("Silver") or frame:GetName():find("Copper") then
+			frame.backdrop:Point("BOTTOMRIGHT", -12, -2)
+		end		
+	end
+
+	if(frame.Left) then
+		frame.Left:Kill()
+	end
+
+	if(frame.Right) then
+		frame.Right:Kill()
+	end
+
+	if(frame.Middle) then
+		frame.Middle:Kill()
 	end
 end
 F.SkinEditBox = SkinEditBox -- Compatibility, yo
 
-local function SkinDropDownBox(frame, width)
+function SkinDropDownBox(frame, width)
 	local button = _G[frame:GetName()..'Button']
 	if not width then width = 155 end
 	
@@ -749,7 +785,7 @@ local function SkinDropDownBox(frame, width)
 end
 F.SkinDropDownBox = SkinDropDownBox -- Compatibility, yo
 
-local function SkinCheckBox(frame)
+function SkinCheckBox(frame)
 	StripTextures(frame)
 	CreateBD(frame)
 	Point(frame.backdrop, 'TOPLEFT', 4, -4)
@@ -779,7 +815,7 @@ local function SkinCheckBox(frame)
 end
 F.SkinCheckBox = SkinCheckBox -- Compatibility, yo
 
-local function SkinCloseButton(f, point)	
+function SkinCloseButton(f, point)	
 	if point then
 		Point(f, 'TOPRIGHT', point, 'TOPRIGHT', -5, -5)
 	end
@@ -796,7 +832,7 @@ local function SkinCloseButton(f, point)
 end
 F.SkinCloseButton = SkinCloseButton -- Compatibility, yo
 
-local function SkinSlideBar(frame, height, movetext)
+function SkinSlideBar(frame, height, movetext)
 	--frame:SetTemplate()
 	frame:SetBackdropColor(0, 0, 0, .8)
 
@@ -853,6 +889,7 @@ local function addapi(object)
 	if not object.CreatePulse then mt.CreatePulse = CreatePulse end
 	if not object.Reskin then mt.Reskin = Reskin end
 	if not object.CreateBackdrop then mt.CreateBackdrop = CreateBD end
+	if not object.SkinIcon then mt.SkinIcon = SkinIcon end
 end
 
 local handled = {['Frame'] = true}

@@ -4,13 +4,13 @@ local bc = C.Media.BorderColor
 local function LoadSkin()
 	GuildFrame:StripTextures(true)
 	GuildFrame:SetTemplate()
-	GuildLevelFrame:Kill()
+	--GuildLevelFrame:Kill()
 	
 	GuildMemberDetailCloseButton:SkinCloseButton()
 	GuildFrameCloseButton:SkinCloseButton()
+	GuildInfoFrameApplicantsContainerScrollBar:SkinScrollBar()
 	
 	local striptextures = {
-		'GuildNewPerksFrame',
 		'GuildFrameInset',
 		'GuildFrameBottomInset',
 		'GuildAllPerksFrame',
@@ -67,9 +67,6 @@ local function LoadSkin()
 		end
 	end
 	
-	GuildPerksToggleButton:StripTextures()
-	GuildPerksToggleButton:SkinButton()
-	
 	local checkbuttons = {
 		'Quest', 
 		'Dungeon',
@@ -90,9 +87,6 @@ local function LoadSkin()
 	GuildRecruitmentHealerButton:GetChildren():SkinCheckBox()
 	GuildRecruitmentDamagerButton:GetChildren():SkinCheckBox()
 	
-	GuildXPFrame:ClearAllPoints()
-	GuildXPFrame:Point('TOP', GuildFrame, 'TOP', 0, -40)
-	
 	GuildPerksContainerScrollBar:SkinScrollBar()
 	
 	GuildFactionBar:StripTextures()
@@ -103,50 +97,6 @@ local function LoadSkin()
 	GuildFactionBar.backdrop:SetBeautyBorderPadding(2)
 	GuildFactionBar.backdrop:Point('TOPLEFT', GuildFactionBar, 'TOPLEFT', -1, -1)
 	GuildFactionBar.backdrop:Point('BOTTOMRIGHT', GuildFactionBar, 'BOTTOMRIGHT', -1, -1)
-	
-	GuildXPBar:StripTextures()
-	GuildXPBarLeft:Kill()
-	GuildXPBarRight:Kill()
-	GuildXPBarMiddle:Kill()
-	GuildXPBarBG:Kill()
-	GuildXPBarShadow:Kill()
-	GuildXPBarCap:Kill()
-	GuildXPBar.progress:SetTexture(C.Media.StatusBar)
-	GuildXPBar:CreateBD(true)
-	GuildXPBar.backdrop:Point('TOPLEFT', GuildXPBar.progress, 'TOPLEFT', -1, 2)
-	GuildXPBar.backdrop:Point('BOTTOMRIGHT', GuildXPBar, 'BOTTOMRIGHT', -1, 0)
-	
-	GuildLatestPerkButton:StripTextures()
-	GuildLatestPerkButtonIconTexture:SetTexCoord(.08, .92, .08, .92)
-	GuildLatestPerkButtonIconTexture:ClearAllPoints()
-	GuildLatestPerkButtonIconTexture:Point('TOPLEFT', 2, -2)
-	GuildLatestPerkButton:CreateBD(true)
-	GuildLatestPerkButton.backdrop:Point('TOPLEFT', GuildLatestPerkButtonIconTexture, 'TOPLEFT', -2, 2)
-	GuildLatestPerkButton.backdrop:Point('BOTTOMRIGHT', GuildLatestPerkButtonIconTexture, 'BOTTOMRIGHT', 2, -2)
-	
-	GuildNextPerkButton:StripTextures()
-	GuildNextPerkButtonIconTexture:SetTexCoord(.08, .92, .08, .92)
-	GuildNextPerkButtonIconTexture:ClearAllPoints()
-	GuildNextPerkButtonIconTexture:Point('TOPLEFT', 2, -2)
-	GuildNextPerkButton:CreateBD(true)
-	GuildNextPerkButton.backdrop:Point('TOPLEFT', GuildNextPerkButtonIconTexture, 'TOPLEFT', -2, 2)
-	GuildNextPerkButton.backdrop:Point('BOTTOMRIGHT', GuildNextPerkButtonIconTexture, 'BOTTOMRIGHT', 2, -2)
-	
-	--Guild Perk buttons list
-	for i=1, 8 do
-		local button = _G['GuildPerksContainerButton'..i]
-		button:StripTextures()
-		
-		if button.icon then
-			button.icon:SetTexCoord(.08, .92, .08, .92)
-			button.icon:ClearAllPoints()
-			button.icon:Point('TOPLEFT', 2, -2)
-			button:CreateBD(true)
-			button.backdrop:Point('TOPLEFT', button.icon, 'TOPLEFT', -2, 2)
-			button.backdrop:Point('BOTTOMRIGHT', button.icon, 'BOTTOMRIGHT', 2, -2)
-			button.icon:SetParent(button.backdrop)
-		end
-	end
 	
 	--Roster
 	GuildRosterContainerScrollBar:SkinScrollBar()
@@ -164,9 +114,9 @@ local function LoadSkin()
 	end
 	
 	--Detail Frame
-	GuildMemberDetailFrame:SetTemplate()
-	GuildMemberNoteBackground:SetTemplate(true)
-	GuildMemberOfficerNoteBackground:SetTemplate(true)
+	GuildMemberDetailFrame:CreateBD()
+	GuildMemberNoteBackground:CreateBD()
+	GuildMemberOfficerNoteBackground:CreateBD()
 	GuildMemberRankDropdown:SetFrameLevel(GuildMemberRankDropdown:GetFrameLevel() + 5)
 	GuildMemberRankDropdown:SkinDropDownBox(175)
 
@@ -180,7 +130,7 @@ local function LoadSkin()
 	GuildNewsFiltersFrame:SetTemplate()
 	GuildNewsFiltersFrameCloseButton:SkinCloseButton()
 	
-	for i=1, 7 do
+	for i=1, 6 do
 		_G['GuildNewsFilterButton'..i]:SkinCheckBox()
 	end
 	
@@ -189,7 +139,6 @@ local function LoadSkin()
 	
 	--Info Frame
 	GuildInfoDetailsFrameScrollBar:SkinScrollBar()
-	GuildInfoFrameApplicantsContainerScrollBar:SkinScrollBar()
 	GuildInfoFrameInfoMOTDScrollFrameScrollBar:SkinScrollBar()
 	
 	for i=1, 3 do

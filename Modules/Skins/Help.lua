@@ -22,7 +22,7 @@ local function LoadSkin()
 	-- skin main frames
 	for i = 1, #frames do
 		_G[frames[i]]:StripTextures(true)
-		_G[frames[i]]:CreateBD(true)
+		_G[frames[i]]:CreateBD()
 	end
 	
 	HelpFrameKnowledgebase:StripTextures(true)
@@ -116,7 +116,11 @@ local function LoadSkin()
 			local navButton = self.navList[i]
 			local lastNav = self.navList[i-1]
 			if navButton and lastNav then
-				navButton:SetFrameLevel(lastNav:GetFrameLevel() - 2)
+				if lastNav:GetFrameLevel() > 2 then
+					navButton:SetFrameLevel(lastNav:GetFrameLevel() - 2)
+				else
+					navButton:SetFrameLevel(0)
+				end
 			end
 		end			
 	end
@@ -124,17 +128,14 @@ local function LoadSkin()
 	hooksecurefunc('NavBar_AddButton', function(self, buttonData)
 		local navButton = self.navList[#self.navList]
 		
-		
 		if not navButton.skinned then
 			navButton:SkinButton(true)
 			navButton.skinned = true
 			
-			navButton:HookScript('OnClick', function()
-				navButtonFrameLevel(self)
-			end)
+			if (navButton.MenuArrowButton) then
+				navButton.MenuArrowButton:SkinNextPrevButton()
+			end
 		end
-		
-		navButtonFrameLevel(self)
 	end)
 	
 	HelpFrameGM_ResponseScrollFrame2ScrollBar:SkinScrollBar()
@@ -152,7 +153,7 @@ local function LoadSkin()
 		local child = select(i, HelpFrameReportBug:GetChildren())
 		if child and not child:GetName() then
 			child:StripTextures()
-			child:SetTemplate()
+			child:CreateBD()
 		end
 	end
 	
@@ -160,7 +161,7 @@ local function LoadSkin()
 		local child = select(i, HelpFrameSubmitSuggestion:GetChildren())
 		if child and not child:GetName() then
 			child:StripTextures()
-			child:SetTemplate()
+			child:CreateBD()
 		end
 	end
 	

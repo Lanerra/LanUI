@@ -3,26 +3,35 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	local buttons = {
-		'KeyBindingFrameDefaultButton',
-		'KeyBindingFrameUnbindButton',
-		'KeyBindingFrameOkayButton',
-		'KeyBindingFrameCancelButton',
+		'defaultsButton',
+		'unbindButton',
+		'okayButton',
+		'cancelButton',
 	}
 	
 	for _, v in pairs(buttons) do
-		_G[v]:StripTextures()
-		_G[v]:SkinButton()
+		KeyBindingFrame[v]:StripTextures()
+		KeyBindingFrame[v]:SkinButton()
 	end
 	
-	KeyBindingFrameCharacterButton:SkinCheckBox()
-	KeyBindingFrameHeaderText:ClearAllPoints()
-	KeyBindingFrameHeaderText:Point('TOP', KeyBindingFrame, 'TOP', 0, -4)
+	KeyBindingFrame.header:StripTextures()
+	KeyBindingFrameScrollFrame:StripTextures()
+	KeyBindingFrameScrollFrameScrollBar:SkinScrollBar()
+	
+	KeyBindingFrame.characterSpecificButton:SkinCheckBox()
+	KeyBindingFrame.header:ClearAllPoints()
+	KeyBindingFrame.header:Point('TOP', KeyBindingFrame, 'TOP', 0, -4)
 	KeyBindingFrame:StripTextures()
 	KeyBindingFrame:SetTemplate()
 	
+	KeyBindingFrameCategoryList:StripTextures()
+	KeyBindingFrameCategoryList:CreateBD()
+	KeyBindingFrame.bindingsContainer:StripTextures()
+	KeyBindingFrame.bindingsContainer:CreateBD()
+	
 	for i = 1, KEY_BINDINGS_DISPLAYED  do
-		local button1 = _G['KeyBindingFrameBinding'..i..'Key1Button']
-		local button2 = _G['KeyBindingFrameBinding'..i..'Key2Button']
+		local button1 = _G['KeyBindingFrameKeyBinding'..i..'Key1Button']
+		local button2 = _G['KeyBindingFrameKeyBinding'..i..'Key2Button']
 		button1:StripTextures(true)
 		button1:StyleButton(false)
 		--button1:SetTemplate(true)
@@ -31,10 +40,9 @@ local function LoadSkin()
 		--button2:SetTemplate(true)
 	end
 	
-	KeyBindingFrameUnbindButton:Point('RIGHT', KeyBindingFrameOkayButton, 'LEFT', -3, 0)
-	KeyBindingFrameOkayButton:Point('RIGHT', KeyBindingFrameCancelButton, 'LEFT', -3, 0)
-	
-	KeyBindingFrameScrollFrameScrollBar:SkinScrollBar()
+	KeyBindingFrame.okayButton:SetPoint('BOTTOMLEFT', KeyBindingFrame.unbindButton, 'BOTTOMRIGHT', 3, 0)
+	KeyBindingFrame.cancelButton:SetPoint('BOTTOMLEFT', KeyBindingFrame.okayButton, 'BOTTOMRIGHT', 3, 0)
+	KeyBindingFrame.unbindButton:SetPoint('BOTTOMRIGHT', KeyBindingFrame, 'BOTTOMRIGHT', -211, 16)
 end
 
 F.SkinFuncs['Blizzard_BindingUI'] = LoadSkin

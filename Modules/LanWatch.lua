@@ -1,4 +1,4 @@
-local F, C, G = unpack(select(2, ...))
+--[[local F, C, G = unpack(select(2, ...))
 
 local font = C.Media.Font
 local texture = C.Media.Backdrop
@@ -273,7 +273,7 @@ hooksecurefunc('WatchFrame_Update', function(self, event)
 		bg:SetWidth(WatchFrame:GetWidth() + 2)
 		WatchFrame:Show()
 	end
-end)
+end)]]
 
 --[[F.RegisterEvent('PLAYER_REGEN_DISABLED', function()
 	WatchFrame:Hide()

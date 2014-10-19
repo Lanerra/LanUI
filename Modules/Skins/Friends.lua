@@ -66,14 +66,11 @@ local function LoadSkin()
 		'FriendsFrameBroadcastInputLeft',
 		'FriendsFrameBroadcastInputRight',
 		'FriendsFrameBroadcastInputMiddle',
-		'ChannelFrameDaughterFrameChannelNameLeft',
-		'ChannelFrameDaughterFrameChannelNameRight',
-		'ChannelFrameDaughterFrameChannelNameMiddle',
-		'ChannelFrameDaughterFrameChannelPasswordLeft',
-		'ChannelFrameDaughterFrameChannelPasswordRight',				
-		'ChannelFrameDaughterFrameChannelPasswordMiddle',			
 	}
-
+	
+	ChannelFrameDaughterFrameChannelName:SkinEditBox()
+	ChannelFrameDaughterFrameChannelPassword:SkinEditBox()
+	
 	local buttons = {
 		'FriendsFrameAddFriendButton',
 		'FriendsFrameSendMessageButton',
@@ -235,7 +232,6 @@ local function LoadSkin()
 	WhoFrameEditBox:Point('RIGHT', -6, 0)
 	RaidFrameConvertToRaidButton:SkinButton()
 	RaidFrameRaidInfoButton:SkinButton()
-	RaidFrameRaidBrowserButton:SkinButton()
 	FriendsFrameMutePlayerButton:SkinButton()
 	FriendsFrameMutePlayerButton:Width(107)
 	FriendsFrameBattlenetFrame:StripTextures()
@@ -250,8 +246,7 @@ local function LoadSkin()
 	FriendsFrameBattlenetFrame.BroadcastFrame.ScrollFrame.UpdateButton:SkinButton()
 	BattleTagInviteFrame:StripTextures()
 	BattleTagInviteFrame:SetTemplate()
-	BattleTagInviteFrameScrollFrame:StripTextures()
-	BattleTagInviteFrameScrollFrame:SetTemplate()
+
 	for i=1, BattleTagInviteFrame:GetNumChildren() do
 		local child = select(i, BattleTagInviteFrame:GetChildren())
 		if child:GetObjectType() == 'Button' then

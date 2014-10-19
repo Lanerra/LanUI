@@ -18,7 +18,7 @@ for _, frame in pairs({
 	'AchievementMicroButton',
 	'QuestLogMicroButton',
 	'GuildMicroButton',
-	'PVPMicroButton',
+	--'PVPMicroButton',
 	'LFDMicroButton',
 	'CompanionsMicroButton',
 	'EJMicroButton',

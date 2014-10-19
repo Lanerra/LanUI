@@ -113,67 +113,6 @@ eventFrame:SetScript('OnEvent', function(self, event, ...)
     end
 end)
 
-------------------------------------------------------------------------
--- QuestLog display customization
-------------------------------------------------------------------------
-
--- Get quest title info
-
-local questtags, tags = {}, {Elite = '+', Group = 'G', Dungeon = 'D', Raid = 'R', PvP = 'P', Daily = '*', Heroic = 'H', Repeatable = '?', Legendary = 'L'}
-
-local function GetTaggedTitle(i)
-    local name, level, tag, group, header, _, complete, daily = GetQuestLogTitle(i)
-    if header or not name then
-        return
-    end
-
-    if not group or group == 0 then
-        group = nil
-    end
-    
-    return string.format('[%s%s%s%s] %s', level, tag and tags[tag] or '', daily and tags.Daily or '',group or '', name), tag, daily, complete
-end
-
-------------------------------------------------------------------------
--- Add info to the quest log
-------------------------------------------------------------------------
-local function QuestLog_Update()
-    for i,butt in pairs(QuestLogScrollFrame.buttons) do
-        local qi = butt:GetID()
-        local title, tag, daily, complete = GetTaggedTitle(qi)
-        if title then
-            butt:SetText('  '..title)
-        end
-        
-        if (tag or daily) and not complete then
-            butt.tag:SetText('')
-        end
-        
-        QuestLogTitleButton_Resize(butt)
-    end
-end
-hooksecurefunc('QuestLog_Update', QuestLog_Update)
-hooksecurefunc(QuestLogScrollFrame, 'update', QuestLog_Update)
-
--- Add tags to the quest watcher
-hooksecurefunc('WatchFrame_Update', function()
-    local questWatchMaxWidth, watchTextIndex = 0, 1
-
-    for i=1,GetNumQuestWatches() do
-        local qi = GetQuestIndexForWatch(i)
-        if qi then
-            local numObjectives = GetNumQuestLeaderBoards(qi)
-
-            if numObjectives > 0 then
-                for bi,butt in pairs(WATCHFRAME_QUESTLINES) do
-                    if butt.text:GetText() == GetQuestLogTitle(qi) then butt.text:SetText(GetTaggedTitle(qi)) end
-                end
-            end
-        end
-    end
-end)
-
-
 -- Add tags to quest links in chat
 local function filter(self, event, msg, ...)
     if msg then
@@ -1397,7 +1336,7 @@ end
 
 -- UIScaler by Haleth
 local scaler = CreateFrame('Frame')
-scaler:RegisterEvent('VARIABLES_LOADED')
+scaler:RegisterEvent('PLAYER_ENTERING_WORLD')
 scaler:RegisterEvent('UI_SCALE_CHANGED')
 scaler:SetScript('OnEvent', function(self, event)
 	if not InCombatLockdown() then
@@ -1406,7 +1345,9 @@ scaler:SetScript('OnEvent', function(self, event)
 			UIParent:SetScale(scale)
 		else
 			self:UnregisterEvent('UI_SCALE_CHANGED')
-			SetCVar('uiScale', scale)
+			F.Delay(1, function()
+				SetCVar('uiScale', scale)
+			end)
 		end
 	else
 		self:RegisterEvent('PLAYER_REGEN_ENABLED')

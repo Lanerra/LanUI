@@ -20,69 +20,69 @@ local function LoadSkin()
 		_G[object]:StripTextures()
 	end
 
+	for i=1, 2 do
+		local tab = VoidStorageFrame["Page"..i]
+		local normTex = tab:GetNormalTexture()
+		local texture = normTex:GetTexture()
+		tab:StripTextures()
+
+		tab:StyleButton(nil, true)
+		tab:SetNormalTexture(texture)
+		normTex:SetTexCoord(unpack(F.TexCoords))
+		normTex:SetInside()
+		tab:SetTemplate()
+	end
+
+	VoidStoragePurchaseFrame:SetFrameStrata('DIALOG')
 	VoidStorageFrame:SetTemplate()
 	VoidStoragePurchaseFrame:SetTemplate()
 	VoidStorageFrameMarbleBg:Kill()
 	VoidStorageFrameLines:Kill()
 	select(2, VoidStorageFrame:GetRegions()):Kill()
 
-	VoidStoragePurchaseButton:SkinButton()
-	VoidStorageHelpBoxButton:SkinButton()
-	VoidStorageTransferButton:SkinButton()
+	StyleButton(VoidStoragePurchaseButton)
+	StyleButton(VoidStorageHelpBoxButton)
+	StyleButton(VoidStorageTransferButton)
 
-	VoidStorageBorderFrame.CloseButton:SkinCloseButton()
+	SkinCloseButton(VoidStorageBorderFrame.CloseButton)
 	VoidItemSearchBox:CreateBD()
-	VoidItemSearchBox.backdrop:Point('TOPLEFT', 10, -1)
-	VoidItemSearchBox.backdrop:Point('BOTTOMRIGHT', 4, 1)
+	VoidItemSearchBox.backdrop:Point("TOPLEFT", 10, -1)
+	VoidItemSearchBox.backdrop:Point("BOTTOMRIGHT", 4, 1)
 
 	for i = 1, 9 do
-		local button_d = _G['VoidStorageDepositButton'..i]
-		local button_w = _G['VoidStorageWithdrawButton'..i]
-		local icon_d = _G['VoidStorageDepositButton'..i..'IconTexture']
-		local icon_w = _G['VoidStorageWithdrawButton'..i..'IconTexture']
+		local button_d = _G["VoidStorageDepositButton"..i]
+		local button_w = _G["VoidStorageWithdrawButton"..i]
+		local icon_d = _G["VoidStorageDepositButton"..i.."IconTexture"]
+		local icon_w = _G["VoidStorageWithdrawButton"..i.."IconTexture"]
 
-		_G['VoidStorageDepositButton'..i..'Bg']:Hide()
-		_G['VoidStorageWithdrawButton'..i..'Bg']:Hide()
+		_G["VoidStorageDepositButton"..i.."Bg"]:Hide()
+		_G["VoidStorageWithdrawButton"..i.."Bg"]:Hide()
 
 		button_d:StyleButton()
-		button_d:SetTemplate(true)
+		button_d:SetTemplate()
 
 		button_w:StyleButton()
-		button_w:SetTemplate(true)
+		button_w:SetTemplate()
 
-		icon_d:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-		icon_d:ClearAllPoints()
-		icon_d:Point('TOPLEFT', 2, -2)
-		icon_d:Point('BOTTOMRIGHT', -2, 2)
+		icon_d:SetTexCoord(unpack(F.TexCoords))
+		icon_d:SetInside()
 
-		icon_w:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-		icon_w:ClearAllPoints()
-		icon_w:Point('TOPLEFT', 2, -2)
-		icon_w:Point('BOTTOMRIGHT', -2, 2)
+		icon_w:SetTexCoord(unpack(F.TexCoords))
+		icon_w:SetInside()
 	end
 
 	for i = 1, 80 do
-		local button = _G['VoidStorageStorageButton'..i]
-		local icon = _G['VoidStorageStorageButton'..i..'IconTexture']
+		local button = _G["VoidStorageStorageButton"..i]
+		local icon = _G["VoidStorageStorageButton"..i.."IconTexture"]
 
-		_G['VoidStorageStorageButton'..i..'Bg']:Hide()
+		_G["VoidStorageStorageButton"..i.."Bg"]:Hide()
 
 		button:StyleButton()
 		button:SetTemplate()
 
-		icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-		icon:ClearAllPoints()
-		icon:Point('TOPLEFT', 2, -2)
-		icon:Point('BOTTOMRIGHT', -2, 2)
+		icon:SetTexCoord(unpack(F.TexCoords))
+		icon:SetInside()
 	end
-	
-	-- dress
-	SideDressUpFrame:StripTextures(true)
-	SideDressUpFrame:CreateBD(true)
-
-	SideDressUpModelResetButton:SkinButton()
-	SideDressUpModelCloseButton:StripTextures()
-	SideDressUpModelCloseButton:SkinCloseButton()
 end
 
 F.SkinFuncs['Blizzard_VoidStorageUI'] = LoadSkin

@@ -23,7 +23,7 @@ local format = string.format
 
 -- Guild Locals
 
-local guildInfoString = "%s [%d]"
+local guildInfoString = "%s"
 local guildInfoString2 = "%s: %d/%d"
 local guildMotDString = "  %s |cffaaaaaa- |cffffffff%s"
 local levelNameString = "|cff%02x%02x%02x%d|r |cff%02x%02x%02x%s|r %s"
@@ -31,7 +31,7 @@ local levelNameStatusString = "|cff%02x%02x%02x%d|r %s %s"
 local nameRankString = "%s |cff999999-|cffffffff %s"
 local noteString = "  '%s'"
 local officerNoteString = "  o: '%s'"
-local guildTable, guildXP, guildMotD = {}, {}, ""
+local guildTable, guildMotD = {}, ""
 local totalGuildOnline = 0
 
 -- Friend Locals
@@ -164,7 +164,6 @@ f.Left:RegisterEvent('PLAYER_GUILD_UPDATE')
 f.Left:RegisterEvent('GUILD_ROSTER_SHOW')
 f.Left:RegisterEvent('GUILD_ROSTER_UPDATE')
 f.Left:RegisterEvent('GUILD_MOTD')
-f.Left:RegisterEvent('GUILD_XP_UPDATE')
 
 f.Left.Text = f.Left:CreateFontString(nil, 'BACKGROUND')
 f.Left.Text:SetFont('Fonts\\ARIALN.ttf', 12)
@@ -413,20 +412,6 @@ local function BuildGuildTable()
 	end)
 end
 
-local function UpdateGuildXP()
-	local currentXP, remainingXP = UnitGetGuildXP("player")
-	local nextLevelXP = currentXP + remainingXP
-	
-	-- prevent 4.3 division / 0
-	if nextLevelXP == 0 or maxDailyXP == 0 then
-        return
-    end
-	
-	local percentTotal = tostring(math.ceil((currentXP / nextLevelXP) * 100))
-	
-	guildXP[0] = { currentXP, nextLevelXP, percentTotal }
-end
-
 local function UpdateGuildMessage()
 	guildMotD = GetGuildRosterMOTD()
 end
@@ -523,29 +508,19 @@ f.Left:SetScript("OnEnter", function(self)
 	local zonec, classc, levelc
 	local online = totalGuildOnline
 	local GuildInfo = GetGuildInfo('player')
-	local GuildLevel = GetGuildLevel()
 		
 	local anchor, panel, xoff, yoff = 'ANCHOR_TOP', f.Left, 0, 5
 	GameTooltip:SetOwner(panel, anchor, xoff, yoff)
 	GameTooltip:ClearLines()
-	if GuildInfo and GuildLevel then
-		GameTooltip:AddDoubleLine(string.format(guildInfoString, GuildInfo, GuildLevel), string.format(guildInfoString2, 'Guild:', online, #guildTable),tthead.r,tthead.g,tthead.b,tthead.r,tthead.g,tthead.b)
+	if GuildInfo then
+		GameTooltip:AddDoubleLine(string.format(guildInfoString, GuildInfo), string.format(guildInfoString2, 'Guild:', online, #guildTable),tthead.r,tthead.g,tthead.b,tthead.r,tthead.g,tthead.b)
 	end
 	
 	if guildMotD ~= "" then GameTooltip:AddLine(' ') GameTooltip:AddLine(string.format(guildMotDString, GUILD_MOTD, guildMotD), ttsubh.r, ttsubh.g, ttsubh.b, 1) end
 	
 	local col = F.RGBToHex(ttsubh.r, ttsubh.g, ttsubh.b)
 	GameTooltip:AddLine' '
-	if GuildLevel and GuildLevel ~= 25 then
-		--UpdateGuildXP()
 		
-		if guildXP[0] then
-			local currentXP, nextLevelXP, percentTotal = unpack(guildXP[0])
-			
-			GameTooltip:AddLine(string.format(col..GUILD_EXPERIENCE_CURRENT, "|r |cFFFFFFFF"..F.ShortValue(currentXP), F.ShortValue(nextLevelXP), percentTotal))
-		end
-	end
-	
 	local _, _, standingID, barMin, barMax, barValue = GetGuildFactionInfo()
 	if standingID ~= 8 then -- Not Max Rep
 		barMax = barMax - barMin

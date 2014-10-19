@@ -72,9 +72,14 @@ local function StyleBubble(frame)
 end
 
 local function isChatBubble(frame)
-	if frame:GetName() then return end
-	if not frame:GetRegions() then return end
-	return frame:GetRegions():GetTexture() == [[Interface\Tooltips\ChatBubble-Background]]
+    for i = 1, frame:GetNumRegions() do
+        local region = select(i, frame:GetRegions())
+        if (region.GetTexture and region:GetTexture() and type(region:GetTexture() == "string") and strlower(region:GetTexture()) == [[interface\tooltips\chatbubble-background]]) then
+            return true
+        end
+	end
+
+    return false
 end
 
 local last = 0

@@ -9,7 +9,7 @@ C['FirstTime'] = false -- How sweet! Fresh meat!
 
 C['Media'] = {
     ['Font'] = [[Interface\Addons\LanUI\Media\Expressway.ttf]], -- Default font
-    ['SCTFont'] = [[Interface\Addons\LanUI\Media\Source2.ttf]], -- Scrolling Combat Text Font
+    ['SCTFont'] = [[Interface\Addons\LanUI\Media\HOOGE.ttf]], -- Scrolling Combat Text Font
     ['FontSize'] = 15, -- Default font size
     ['StatusBar'] = [[Interface\Addons\LanUI\Media\StatusBar]], -- Default statusbar
     ['BuffBorder'] = [[Interface\Addons\LanUI\Media\textureNormal]], -- Buff border texture

@@ -11,7 +11,7 @@ LanCombat.frame:SetWidth(F.Scale(311.5))
 LanCombat.frame:SetHeight(F.Scale(104.5))
 LanCombat.frame:Point('TOPLEFT', UIParent, F.Scale(33), F.Scale(-24))
 LanCombat.frame:EnableMouse(false)
-LanCombat.frame:Hide()
+--LanCombat.frame:Hide()
 
 local function ScrollFrame(self, delta)
     if delta > 0 then
@@ -74,7 +74,7 @@ LanCombat.frame.columns = {}
 for i = 1, 3 do
     local smf = CreateFrame('ScrollingMessageFrame', nil, LanCombat.frame)
     smf:SetMaxLines(1000)
-    smf:SetFont(Media.Font, 9)
+    smf:SetFont(Media.SCTFont, 9)
     smf:SetSpacing(2)
     smf:SetFading(true)
     smf:SetFadeDuration(5)
@@ -128,7 +128,6 @@ tex3:SetTexture(icon)
 --tex3:SetTexCoord(1/4, 0, 1/4, 1, 1/2, 0, 1/2, 1)
 tex3:SetTexCoord(20/64, 39/64, 22/64, 41/64)
 tex3:SetPoint('TOPRIGHT', LanCombat.frame, 'BOTTOMRIGHT', 0, F.Scale(-2))
-
 
 -- Parsing stuff
 local cCL, columns = LanCombat.frame, LanCombat.frame.columns

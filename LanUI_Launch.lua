@@ -46,8 +46,6 @@ f:SetScript('OnEvent', function(_, event, ...)
 		
 		SetCVar('scriptErrors', 1) -- Display Lua errors
 		
-		SetCVar('M2Faster', 3) -- Increase number of threads available to WoW for rendering
-		
 	    SetCVar('chatBubblesParty', 1) -- Show party chat bubbles
 	    SetCVar('chatBubbles', 1) -- Show standard chat bubbles
 		

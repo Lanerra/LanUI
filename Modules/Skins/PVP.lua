@@ -3,12 +3,8 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	PVPUIFrame:StripTextures()
-	PVPUIFrame:SetTemplate()
-	PVPUIFrame.LeftInset:StripTextures()
-	PVPUIFrame.Shadows:StripTextures()
+	--PVPUIFrame.Shadows:StripTextures()
 
-	PVPUIFrameCloseButton:SkinCloseButton()
-	
 	HonorFrame.RoleInset:StripTextures()
 	
 	HonorFrame.RoleInset.DPSIcon.checkButton:SkinCheckBox(true)
@@ -18,7 +14,7 @@ local function LoadSkin()
 	HonorFrame.RoleInset.TankIcon.checkButton:SetFrameStrata('HIGH')
 	HonorFrame.RoleInset.HealerIcon.checkButton:SetFrameStrata('HIGH')
 
-	for i=1, 3 do
+	for i=1, 4 do
 		local button = _G['PVPQueueFrameCategoryButton'..i]
 		button.Background:Kill()
 		button.Ring:Kill()
@@ -53,20 +49,18 @@ local function LoadSkin()
 	HonorFrame.BonusFrame.RandomBGButton.SelectedTexture:ClearAllPoints()
 	HonorFrame.BonusFrame.RandomBGButton.SelectedTexture:SetAllPoints()
 	HonorFrame.BonusFrame.RandomBGButton.SelectedTexture:SetTexture(0, 1, 0, 0.1)
-	HonorFrame.BonusFrame.CallToArmsButton:StripTextures()
-	HonorFrame.BonusFrame.CallToArmsButton:SkinButton()
-	HonorFrame.BonusFrame.CallToArmsButton.SelectedTexture:ClearAllPoints()
-	HonorFrame.BonusFrame.CallToArmsButton.SelectedTexture:SetAllPoints()
-	HonorFrame.BonusFrame.CallToArmsButton.SelectedTexture:SetTexture(0, 1, 0, 0.1)
 	
-	for i = 1, 2 do
-		local b = HonorFrame.BonusFrame['WorldPVP'..i..'Button']
-		b:StripTextures()
-		b:SkinButton()
-		b.SelectedTexture:ClearAllPoints()
-		b.SelectedTexture:SetAllPoints()
-		b.SelectedTexture:SetTexture(0, 1, 0, 0.1)
-	end
+	HonorFrame.BonusFrame.Arena1Button:StripTextures()
+	HonorFrame.BonusFrame.Arena1Button:SetTemplate()
+	HonorFrame.BonusFrame.Arena1Button:StyleButton()
+	HonorFrame.BonusFrame.Arena1Button.SelectedTexture:SetInside()
+	HonorFrame.BonusFrame.Arena1Button.SelectedTexture:SetTexture(1, 1, 0, 0.1)	
+
+	HonorFrame.BonusFrame.Arena2Button:StripTextures()
+	HonorFrame.BonusFrame.Arena2Button:SetTemplate()
+	HonorFrame.BonusFrame.Arena2Button:StyleButton()
+	HonorFrame.BonusFrame.Arena2Button.SelectedTexture:SetInside()
+	HonorFrame.BonusFrame.Arena2Button.SelectedTexture:SetTexture(1, 1, 0, 0.1)
 	
 	-->>>CONQUEST FRAME
 	ConquestFrame.Inset:StripTextures()
@@ -122,6 +116,7 @@ local function LoadSkin()
 	ConquestFrame.Arena5v5.SelectedTexture:ClearAllPoints()
 	ConquestFrame.Arena5v5.SelectedTexture:SetAllPoints()
 	ConquestFrame.Arena5v5.SelectedTexture:SetTexture(0, 1, 0, 0.1)
+	SkinCheckBox(WarGameTournamentModeCheckButton)
 	
 	ConquestTooltip:SetTemplate()
 	ConquestTooltip:SetScale(C.Tweaks.UIScale)

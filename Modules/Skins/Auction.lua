@@ -68,7 +68,11 @@ local function LoadSkin()
 	
 	BrowseNextPageButton:SkinNextPrevButton()
 	BrowsePrevPageButton:SkinNextPrevButton()
-
+	
+	BrowseNextPageButton:SetPoint("TOPRIGHT", AuctionFrameBrowse, "TOPRIGHT", 70, -60)
+	BrowsePrevPageButton:SetPoint("TOPLEFT", AuctionFrameBrowse, "TOPLEFT", 658, -60)
+	
+	SkinCheckBox(ExactMatchCheckButton)
 	
 	local buttons = {
 		'BrowseBidButton',

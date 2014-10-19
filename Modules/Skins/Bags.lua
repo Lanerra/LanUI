@@ -39,7 +39,7 @@ local function LoadSkin()
 	BagItemSearchBox:SkinEditBox()
 
 	-- BANK
-	local bank = BankFrame
+	--[[local bank = BankFrame
 	if bank then
 		bank:StripTextures(true)
 		bank:CreateBD(true)
@@ -109,7 +109,7 @@ local function LoadSkin()
 				end
 			end
 		end
-	end
+	end]]
 end
 
 tinsert(F.SkinFuncs['LanUI'], LoadSkin)

@@ -197,10 +197,6 @@ end
 
 -- Health update function of doom!
 local function UpdateHealth(Health, unit, min, max)
-    if (Health:GetParent().unit ~= unit) then
-        return
-	end
-    
 	if (not unit == 'pet' or unit == 'focus' or unit == 'targettarget' or unit == 'player') then
 		if (UnitIsDead(unit) or UnitIsGhost(unit) or not UnitIsConnected(unit)) then
             Health:SetValue(0)
@@ -263,12 +259,15 @@ local function UpdateHealth(Health, unit, min, max)
 	end
 	
 	-- Bar Color Stuff	
-	local color = RAID_CLASS_COLORS[select(2, UnitClass(unit))]
-    if (C.UF.Show.ClassColorHealth) then
+	if (C.UF.Show.ClassColorHealth) then
         Health.colorClass = true
     else
-        Health:SetStatusBarColor(.25, .25, .25)
+        Health:SetStatusBarColor(0.25, 0.25, 0.25)
     end
+	
+	if UnitIsTapped(unit) then
+		Health:SetStatusBarColor(0.6, 0.6, 0.6)
+	end
 end
 
 -- Group update health function
