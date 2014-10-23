@@ -119,7 +119,7 @@ oUF.Tags.Methods['LanShortName'] = function(unit)
     end
 end
 
-oUF.Tags.Events['LanPower'] = 'UNIT_ENERGY UNIT_FOCUS UNIT_MANA UNIT_RAGE UNIT_MAXRUNIC_POWER UNIT_RUNIC_POWER'
+oUF.Tags.Events['LanPower'] = 'UNIT_DISPLAYPOWER UNIT_POWER_FREQUENT UNIT_MAXPOWER'
 oUF.Tags.Methods['LanPower'] = function(unit)
     local min = UnitPower(unit)
     return min
@@ -177,7 +177,7 @@ oUF.Tags.Methods['LanHolyPower'] = function(unit)
 		return string.format('|c50f58cba%d|r', hp)
 	end
 end
-oUF.Tags.Events['LanHolyPower'] = 'UNIT_POWER'
+oUF.Tags.Events['LanHolyPower'] = 'UNIT_POWER_FREQUENT'
 
 oUF.Tags.Methods['LanShards'] = function(unit)
 	local hp = UnitPower('player', SPELL_POWER_SOUL_SHARDS)
@@ -204,8 +204,4 @@ oUF.Tags.Methods['LanChi'] = function(unit)
         return string.format('|c909482c9%d|r', chi)
     end
 end
-    
-local num = UnitPower('player', SPELL_POWER_CHI)
-		if(num > 0) then
-			return num
-		end
+oUF.Tags.Events['LanChi'] = 'UNIT_POWER'

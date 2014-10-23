@@ -1,5 +1,10 @@
 local F, C, G = unpack(select(2, ...))
 
+local _G = _G
+local IsUsableAction = IsUsableAction
+local IsActionInRange = IsActionInRange
+local HasAction = HasAction
+
 -- Kill Blizzard options for ActionBars
 --[[InterfaceOptionsActionBarsPanelBottomLeft:Kill()
 InterfaceOptionsActionBarsPanelBottomRight:Kill()
@@ -95,14 +100,6 @@ for i = 1, num do
     
     button:StyleButton()
 end
-
-hooksecurefunc('ActionButton_ShowGrid', function(self)
-    local normal = _G[self:GetName()..'NormalTexture']
-    
-    if normal then
-        normal:SetVertexColor(0, 0, 0, 0)
-    end
-end)
 
 -- Show/Hide
 RegisterStateDriver(frame, 'visibility', '[petbattle][overridebar][vehicleui][possessbar,@vehicle,exists] hide; show')
@@ -225,7 +222,7 @@ frame:SetWidth(num * C.ActionBars.ButtonSize + (num - 1) * C.ActionBars.ButtonSp
 frame:SetHeight(C.ActionBars.ButtonSize + 2 * C.ActionBars.ButtonSpacing)
 
 if C.Panels.ABPanel then
-    frame:SetPoint('TOPLEFT', ABPanel)
+    frame:SetPoint('TOPLEFT', ABPanel, 2, -2)
 else
     frame:SetPoint('BOTTOM', UIParent, 0, 200)
 end
@@ -238,7 +235,7 @@ OverrideActionBar:SetScript('OnShow', nil) -- Kill OnShow
 
 local leaveButtonPlaced = false
 
-for i=1, num do
+for i = 1, num do
 	local button = _G['OverrideActionBarButton'..i]
 	if not button and not leaveButtonPlaced then
 		button = OverrideActionBar.LeaveButton
@@ -274,16 +271,29 @@ RegisterStateDriver(frame, 'visibility', '[petbattle] hide; [overridebar][vehicl
 RegisterStateDriver(OverrideActionBar, 'visibility', '[overridebar][vehicleui][possessbar,@vehicle,exists] show; hide')
 	
 -- Extra Action Bar
-_G['ExtraActionButton1']:SetParent(UIParent)
-_G['ExtraActionButton1']:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
-_G['ExtraActionButton1']:SetScale(1)
-_G['ExtraActionButton1']:SetPoint('BOTTOM', LanBar1, 'TOP', 0, C.ActionBars.ButtonSize * 2)
+local Extra = CreateFrame('Frame', 'LanExtraBar', UIParent, 'SecureHandlerStateTemplate')
+Extra:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
+Extra:SetPoint('BOTTOM', LanBar1, 'TOP', 0, C.ActionBars.ButtonSize * 2)
+
+RegisterStateDriver(Extra, 'visibility', '[petbattle][overridebar][vehicleui] hide; show')
+
+ExtraActionBarFrame:SetParent(Extra)
+ExtraActionBarFrame:EnableMouse(false)
+ExtraActionBarFrame:SetAllPoints()
+ExtraActionBarFrame.ignoreFramePositionManager = true
+
 _G['ExtraActionButton1']:SetTemplate(true)
 _G['ExtraActionButton1']:SetBeautyBorderPadding(2)
 _G['ExtraActionButton1']:StyleButton()
+_G['ExtraActionButton1HotKey']:Hide()
 
 local normal = ExtraActionButton1NormalTexture2 or ExtraActionButton1NormalTexture
-normal:SetVertexColor(0, 0, 0, 0)
+if normal then
+    hooksecurefunc(ExtraActionButton1, 'SetNormalTexture', function()
+        ExtraActionButton1NormalTexture:SetTexture(nil)
+        ExtraActionButton1NormalTexture2:SetTexture(nil)
+    end)
+end
 
 -- Stance Bar
 local num = NUM_STANCE_SLOTS
@@ -411,23 +421,6 @@ for _, kill in pairs(bagbuttonList) do
     kill:Kill()
 end
 
-for _, name in pairs({
-    'MultiBarBottomLeftButton',
-    'MultiBarBottomRightButton',
-    'ActionButton',
-}) do
-    if not InCombatLockdown() then
-        for i = 1, 12 do
-            local button = _G[name..i]
-            local normal = _G[name..i..'NormalTexture'] or _G[name..i..'NormalTexture2']
-            
-            if normal then
-                normal:SetVertexColor(0, 0, 0, 0)
-            end
-        end
-    end
-end
-
 -- Hide Blizzard Crap
 MainMenuBar:SetParent(G.Misc.UIHider)
 MainMenuBarPageNumber:SetParent(G.Misc.UIHider)
@@ -489,64 +482,61 @@ end
 button.style:SetTexture('')
 hooksecurefunc(texture, 'SetTexture', disableTexture)
 
-hooksecurefunc('ActionButton_ShowGrid', function(self)
-    local normal = _G[self:GetName()..'NormalTexture']
-    
-    if normal then
-        normal:SetVertexColor(0, 0, 0, 0)
-    end
-end)
-
 -- Change button status color
-hooksecurefunc('ActionButton_UpdateUsable', function(self)
+local function RangeUpdate(self)
+    -- Force an initial update because it isn't triggered on login in 6.0.2
+    ActionButton_UpdateHotkeys(self, self.buttonType)
+    
     if (IsAddOnLoaded('RedRange') or IsAddOnLoaded('GreenRange') or IsAddOnLoaded('tullaRange') or IsAddOnLoaded('RangeColors')) then
         return
     end  
-
-    local isUsable, notEnoughMana = IsUsableAction(self.action)
-    if (isUsable) then
-        _G[self:GetName()..'Icon']:SetVertexColor(1, 1, 1)
-    elseif (notEnoughMana) then
-        _G[self:GetName()..'Icon']:SetVertexColor(0.3, 0.3, 1)
-    else
-        _G[self:GetName()..'Icon']:SetVertexColor(0.35, 0.35, 0.35)
+    
+    local Name = self:GetName()
+	local Icon = _G[Name.."Icon"]
+    local NormalTexture
+    if Name.SetNormalTexture then
+        NormalTexture = Name:GetNormalTexture()
     end
-end)
+    local ID = self.action
+    local IsUsable, NotEnoughMana = IsUsableAction(ID)
+	local HasRange = ActionHasRange(ID)
+	local InRange = IsActionInRange(ID)
+	
+    if NormalTexture and Icon.SetVertexColor and NormalTexture.SetVertexColor then
+        NormalTexture:SetTexture(nil)
 
-local function ActionButton_OnUpdate(self, elapsed)
-    if (IsAddOnLoaded('RedRange') or IsAddOnLoaded('GreenRange') or IsAddOnLoaded('tullaRange') or IsAddOnLoaded('RangeColors')) then
+        hooksecurefunc(NormalTexture, 'SetVertexColor', function()
+            if IsUsable then -- Usable
+                if (HasRange and InRange == false) then -- Out of range
+                    Icon:SetVertexColor(0.8, 0.1, 0.1)
+                    NormalTexture:SetVertexColor(0.8, 0.1, 0.1)
+                else -- In range
+                    Icon:SetVertexColor(1.0, 1.0, 1.0)
+                    NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
+                end
+            elseif NotEnoughMana then -- Not enough power
+                Icon:SetVertexColor(0.1, 0.3, 1.0)
+                NormalTexture:SetVertexColor(0.1, 0.3, 1.0)
+            else -- Not usable
+                Icon:SetVertexColor(0.3, 0.3, 0.3)
+                NormalTexture:SetVertexColor(0.3, 0.3, 0.3)
+            end
+        end)
+    end
+end
+
+hooksecurefunc("ActionButton_Update", RangeUpdate)
+hooksecurefunc("ActionButton_UpdateUsable", RangeUpdate)   
+
+hooksecurefunc('ActionButton_OnUpdate', function(self, elapsed)
+    if (IsAddOnLoaded('tullaRange') or IsAddOnLoaded('RangeColors')) then
         return
-    end     
-
-    if (ActionButton_IsFlashing(self)) then
-        local flashtime = self.flashtime
-        flashtime = flashtime - elapsed
-
-        if (flashtime <= 0) then
-            local overtime = - flashtime
-            if (overtime >= ATTACK_BUTTON_FLASH_TIME) then
-                overtime = 0
-            end
-
-            flashtime = ATTACK_BUTTON_FLASH_TIME - overtime
-
-            local flashTexture = _G[self:GetName()..'Flash']
-            if (flashTexture:IsShown()) then
-                flashTexture:Hide()
-            else
-                flashTexture:Show()
-            end
-        end
-
-        self.flashtime = flashtime
     end
 
-    local rangeTimer = self.rangeTimer
-    if (rangeTimer) then
-        rangeTimer = rangeTimer - elapsed
-        if (rangeTimer <= 0.1) then
+    if (self.rangeTimer) then
+        if (self.rangeTimer - elapsed <= 0) then
             local isInRange = false
-            if (ActionHasRange(self.action) and IsActionInRange(self.action) == 0) then
+            if (IsActionInRange(self.action) == false) then
                 _G[self:GetName()..'Icon']:SetVertexColor(0.9, 0, 0)
                 isInRange = true
             end
@@ -555,68 +545,43 @@ local function ActionButton_OnUpdate(self, elapsed)
                 self.isInRange = isInRange
                 ActionButton_UpdateUsable(self)
             end
-
-            rangeTimer = TOOLTIP_UPDATE_TIME
         end
-
-        self.rangeTimer = rangeTimer
     end
-end
+end)
 hooksecurefunc('ActionButton_OnUpdate', ActionButton_OnUpdate)
 
 local f = CreateFrame('Frame', MainMenuBar)
 f:RegisterEvent('ADDON_LOADED')
-f:SetScript('OnEvent', function()
-    if (IsAddOnLoaded('tullaRange')) then
-        if (not tullaRange) then
-            return
+f:SetScript('OnEvent', function(addon)
+    if addon == 'LanUI' then
+        if C.ActionBars.Bar3 then
+            SetActionBarToggles(true, true, false, false, true)
+            InterfaceOptionsActionBarsPanelBottomLeft:SetChecked(1)
+            InterfaceOptionsActionBarsPanelBottomRight:SetChecked(1)
+            
+            InterfaceOptions_UpdateMultiActionBars()
+        elseif C.ActionBars.Bar2 then
+            if C.ActionBars.Bar3 then return end
+            
+            SetActionBarToggles(true, false, false, false, true)
+            InterfaceOptionsActionBarsPanelBottomLeft:SetChecked(1)
+            InterfaceOptionsActionBarsPanelBottomRight:SetChecked(0)
+            
+            InterfaceOptions_UpdateMultiActionBars()
+        else
+            SetActionBarToggles(false, false, false, false, true)
+            InterfaceOptionsActionBarsPanelBottomLeft:SetChecked(0)
+            InterfaceOptionsActionBarsPanelBottomRight:SetChecked(0)
+            
+            InterfaceOptions_UpdateMultiActionBars()
         end
-
-        function tullaRange.SetButtonColor(button, colorType)
-            if (button.tullaRangeColor ~= colorType) then
-                button.tullaRangeColor = colorType
-
-                local r, g, b = tullaRange:GetColor(colorType)
-
-                local icon =  _G[button:GetName()..'Icon']
-                icon:SetVertexColor(r, g, b)
-            end
-        end
-    end
-    
-    if C.ActionBars.Bar3 then
-        SetActionBarToggles(1, 1, 0, 0, 1)
-        SHOW_MULTI_ACTIONBAR_1 = 1
-        SHOW_MULTI_ACTIONBAR_2 = 1
-        InterfaceOptionsActionBarsPanelBottomLeft:SetChecked(1)
-        InterfaceOptionsActionBarsPanelBottomRight:SetChecked(1)
-        
-        InterfaceOptions_UpdateMultiActionBars()
-    elseif C.ActionBars.Bar2 then
-        if C.ActionBars.Bar3 then return end
-        
-        SetActionBarToggles(1, 0, 0, 0, 1)
-        SHOW_MULTI_ACTIONBAR_1 = 1
-        SHOW_MULTI_ACTIONBAR_2 = 0
-        InterfaceOptionsActionBarsPanelBottomLeft:SetChecked(1)
-        InterfaceOptionsActionBarsPanelBottomRight:SetChecked(0)
-        
-        InterfaceOptions_UpdateMultiActionBars()
-    else
-        SetActionBarToggles(0, 0, 0, 0, 1)
-        SHOW_MULTI_ACTIONBAR_1 = 0
-        SHOW_MULTI_ACTIONBAR_2 = 0
-        InterfaceOptionsActionBarsPanelBottomLeft:SetChecked(0)
-        InterfaceOptionsActionBarsPanelBottomRight:SetChecked(0)
-        
-        InterfaceOptions_UpdateMultiActionBars()
     end
 end)
 
 -- Shorten Hotkey display
 local gsub = string.gsub
 
-hooksecurefunc('ActionButton_UpdateHotkeys', function(self)
+hooksecurefunc('ActionButton_UpdateHotkeys', function(self, actionButtonType)
     local hotkey = _G[self:GetName()..'HotKey']
     local text = hotkey:GetText()
 
@@ -691,7 +656,6 @@ local textBL = XP:CreateFontString(nil, 'OVERLAY')
 textBL:SetPoint('TOPLEFT', XP, 'BOTTOMLEFT', 0, -2)
 textBL:SetFontObject(font)
 
-
 -- Helper Functions
 function XP:Move(ind, perc)
     ind:ClearAllPoints()
@@ -718,7 +682,7 @@ end
 function XP:PLAYER_XP_UPDATE()
     local min = UnitXP('player')
     local max = UnitXPMax('player')
-    local rested =  GetXPExhaustion()
+    local rested =  GetRestState()
 
     textMain:SetFormattedText('|cffffffff%.1f|r%%', min/max*100)
     textTL:SetFormattedText('%s', truncate(min))

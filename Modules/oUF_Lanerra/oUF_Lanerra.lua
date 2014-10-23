@@ -38,10 +38,6 @@ end
 do 
     for k, v in pairs(UnitPopupMenus) do
         for x, i in pairs(UnitPopupMenus[k]) do
-            if (i == 'SET_FOCUS' or i == 'CLEAR_FOCUS') then
-                table.remove(UnitPopupMenus[k],x)
-            end
-			
 			if (i == 'PET_DISMISS') then
 				table.remove(UnitPopupMenus[k],x)
 			end
@@ -257,17 +253,6 @@ local function UpdateHealth(Health, unit, min, max)
 			Health.Value:SetText()
 		end
 	end
-	
-	-- Bar Color Stuff	
-	if (C.UF.Show.ClassColorHealth) then
-        Health.colorClass = true
-    else
-        Health:SetStatusBarColor(0.25, 0.25, 0.25)
-    end
-	
-	if UnitIsTapped(unit) then
-		Health:SetStatusBarColor(0.6, 0.6, 0.6)
-	end
 end
 
 -- Group update health function
@@ -291,7 +276,6 @@ local function UpdateGroupHealth(Health, unit, min, max)
         Health.Value:SetText()
     end
     
-    local color = RAID_CLASS_COLORS[select(2, UnitClass(unit))]
     if (C.UF.Units.Party.Health.ClassColor) then
         Health.colorClass = true
     else
@@ -319,7 +303,6 @@ local function UpdateRaidHealth(Health, unit, min, max)
 			Health.Value:SetText()
 		end
 		
-		local color = RAID_CLASS_COLORS[select(2, UnitClass(unit))]
 		if (C.UF.Units.Raid.Health.ClassColor) then
 			Health.colorClass = true
 		else
@@ -533,14 +516,31 @@ local Stylish = function(self, unit, isSingle)
 	self:EnableMouse(true)
 	self:RegisterForClicks('AnyUp')
 	
+	if C.UF.Show.HealerOverride then
+		if GetCVarBool("predictedHealth") ~= true then
+			SetCVar("predictedHealth", "1")
+		end
+	else
+		if GetCVarBool("predictedHealth") == true then
+			SetCVar("predictedHealth", "0")
+		end
+	end
+	
     -- Health Bar-specific stylings
 	self.Health = CreateFrame('StatusBar', '$parentHealthBar', self)
 	self.Health:SetHeight(C.UF.Units.Player.Height * .87)
 	self.Health:SetStatusBarTexture(C.Media.StatusBar)
 	
+	if (C.UF.Show.ClassColorHealth and unit ~= 'pet') then
+        self.Health.colorClass = true
+    else
+        self.Health:SetStatusBarColor(0.25, 0.25, 0.25)
+    end
+	
+	self.Health.colorTapping = true
+	
 	-- Turn on the smoothness
 	self.Health.Smooth = true
-	
 	self.Health.frequentUpdates = 0.2
 	
 	self.Health:SetParent(self)
@@ -573,9 +573,15 @@ local Stylish = function(self, unit, isSingle)
 	self.Power:SetHeight(C.UF.Units.Player.Height * .11)
 	self.Power:SetStatusBarTexture(C.Media.StatusBar)
     
-	self.Power.colorClass = true
+	if C.UF.Show.ClassColorHealth then
+		self.Power.colorClass = false
+		self.Power.colorPower = true
+	else
+		self.Power.colorClass = true
+		self.Power.colorPower = false
+	end
 	self.Power.colorTapping = true
-    self.Power.colorReaction = true
+	self.Power.colorReaction = true
     	
 	-- We like to keep things smooth around here
     self.Power.frequentUpdates = 0.2
@@ -740,7 +746,6 @@ local Stylish = function(self, unit, isSingle)
         MirrorBorder:SetFrameLevel(_G[bar]:GetFrameLevel() + 2)
 		MirrorBorder:SetTemplate(true)
 		MirrorBorder:SetBeautyBorderPadding(2)
-		--MirrorBorder:SetBackdropColor(0, 0, 0, 0)
 		
 		_G[bar..'Border']:Hide()
 		
@@ -969,108 +974,110 @@ local Stylish = function(self, unit, isSingle)
 		self.Runes = Runes
     end
 
-    -- DruidPower Support
-    if (unit == 'player' and F.MyClass == 'DRUID') then    
-        self.Druid = CreateFrame('Frame')
-        self.Druid:SetParent(self) 
-        self.Druid:SetFrameStrata('LOW')
+	if unit == 'player' then
+		-- DruidPower Support
+		if (unit == 'player' and F.MyClass == 'DRUID') then    
+			self.Druid = CreateFrame('Frame')
+			self.Druid:SetParent(self) 
+			self.Druid:SetFrameStrata('LOW')
 
-        self.Druid.Power = CreateFrame('StatusBar', nil, self)
-        self.Druid.Power:SetPoint('TOP', self.Power, 'BOTTOM', 0, -7)
-        self.Druid.Power:SetStatusBarTexture(C.Media.StatusBar)
-        self.Druid.Power:SetFrameStrata('LOW')
-        self.Druid.Power:SetFrameLevel(self.Druid:GetFrameLevel() - 1)
-        self.Druid.Power:SetHeight(self.Power:GetHeight())
-        self.Druid.Power:SetWidth(self.Power:GetWidth())
-        self.Druid.Power:SetBackdrop(backdrop)
-        self.Druid.Power:SetBackdropColor(unpack(C.Media.BackdropColor))
-        
-        self.DruidBorder = CreateFrame('Frame', nil, self.Druid.Power)
-        self.DruidBorder:SetAllPoints(self.Druid.Power)
-        self.DruidBorder:SetFrameLevel(self.Druid.Power:GetFrameLevel() + 2)
-        
-        self.DruidBorder:SetTemplate()
-        self.DruidBorder:SetBackdropColor(0, 0, 0, 0)
+			self.Druid.Power = CreateFrame('StatusBar', nil, self)
+			self.Druid.Power:SetPoint('TOP', self.Power, 'BOTTOM', 0, -7)
+			self.Druid.Power:SetStatusBarTexture(C.Media.StatusBar)
+			self.Druid.Power:SetFrameStrata('LOW')
+			self.Druid.Power:SetFrameLevel(self.Druid:GetFrameLevel() - 1)
+			self.Druid.Power:SetHeight(self.Power:GetHeight())
+			self.Druid.Power:SetWidth(self.Power:GetWidth())
+			self.Druid.Power:SetBackdrop(backdrop)
+			self.Druid.Power:SetBackdropColor(unpack(C.Media.BackdropColor))
+			
+			self.DruidBorder = CreateFrame('Frame', nil, self.Druid.Power)
+			self.DruidBorder:SetAllPoints(self.Druid.Power)
+			self.DruidBorder:SetFrameLevel(self.Druid.Power:GetFrameLevel() + 2)
+			
+			self.DruidBorder:SetTemplate()
+			self.DruidBorder:SetBackdropColor(0, 0, 0, 0)
+			
+			table.insert(self.__elements, UpdateDruidPower)
+			self:RegisterEvent('UNIT_MANA', UpdateDruidPower)
+			self:RegisterEvent('UNIT_RAGE', UpdateDruidPower)
+			self:RegisterEvent('UNIT_ENERGY', UpdateDruidPower)
+			self:RegisterEvent('UPDATE_SHAPESHIFT_FORM', UpdateDruidPower)
+		end
 		
-        table.insert(self.__elements, UpdateDruidPower)
-        self:RegisterEvent('UNIT_MANA', UpdateDruidPower)
-        self:RegisterEvent('UNIT_RAGE', UpdateDruidPower)
-        self:RegisterEvent('UNIT_ENERGY', UpdateDruidPower)
-        self:RegisterEvent('UPDATE_SHAPESHIFT_FORM', UpdateDruidPower)
-    end
-    
-    -- Eclipse Bar Support
-    if (F.MyClass == 'DRUID') then
-        local EclipseBar = CreateFrame('Frame', nil, self)
-        EclipseBar:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
-        EclipseBar:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT', 0, -10)
-        EclipseBar:SetSize(self.Power:GetWidth(), self.Power:GetHeight())
-        EclipseBar:SetBackdrop(backdrop)
-        EclipseBar:SetBackdropColor(unpack(C.Media.BackdropColor))
-        
-        local EclipseBarBorder = CreateFrame('Frame', nil, EclipseBar)
-        EclipseBarBorder:SetAllPoints(EclipseBar)
-        EclipseBarBorder:SetTemplate()
-		EclipseBarBorder:SetBeautyBorderPadding(4)
-		EclipseBarBorder:SetBackdropColor(0, 0, 0, 0)
+		-- Eclipse Bar Support
+		if (F.MyClass == 'DRUID') then
+			local EclipseBar = CreateFrame('Frame', nil, self)
+			EclipseBar:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
+			EclipseBar:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT', 0, -10)
+			EclipseBar:SetSize(self.Power:GetWidth(), self.Power:GetHeight())
+			EclipseBar:SetBackdrop(backdrop)
+			EclipseBar:SetBackdropColor(unpack(C.Media.BackdropColor))
+			
+			local EclipseBarBorder = CreateFrame('Frame', nil, EclipseBar)
+			EclipseBarBorder:SetAllPoints(EclipseBar)
+			EclipseBarBorder:SetTemplate()
+			EclipseBarBorder:SetBeautyBorderPadding(4)
+			EclipseBarBorder:SetBackdropColor(0, 0, 0, 0)
 
-        local LunarBar = CreateFrame('StatusBar', nil, EclipseBar)
-        LunarBar:SetPoint('LEFT', EclipseBar, 'LEFT', 0, 0)
-        LunarBar:SetSize(self.Power:GetWidth(), self.Power:GetHeight())
-        LunarBar:SetStatusBarTexture(C.Media.StatusBar)
-        LunarBar:SetStatusBarColor(1, 1, 1)
-        EclipseBar.LunarBar = LunarBar
+			local LunarBar = CreateFrame('StatusBar', nil, EclipseBar)
+			LunarBar:SetPoint('LEFT', EclipseBar, 'LEFT', 0, 0)
+			LunarBar:SetSize(self.Power:GetWidth(), self.Power:GetHeight())
+			LunarBar:SetStatusBarTexture(C.Media.StatusBar)
+			LunarBar:SetStatusBarColor(1, 1, 1)
+			EclipseBar.LunarBar = LunarBar
 
-        local SolarBar = CreateFrame('StatusBar', nil, EclipseBar)
-        SolarBar:SetPoint('LEFT', LunarBar:GetStatusBarTexture(), 'RIGHT', 0, 0)
-        SolarBar:SetSize(self.Power:GetWidth(), self.Power:GetHeight())
-        SolarBar:SetStatusBarTexture(C.Media.StatusBar)
-        SolarBar:SetStatusBarColor(1, 3/5, 0)
-        EclipseBar.SolarBar = SolarBar
+			local SolarBar = CreateFrame('StatusBar', nil, EclipseBar)
+			SolarBar:SetPoint('LEFT', LunarBar:GetStatusBarTexture(), 'RIGHT', 0, 0)
+			SolarBar:SetSize(self.Power:GetWidth(), self.Power:GetHeight())
+			SolarBar:SetStatusBarTexture(C.Media.StatusBar)
+			SolarBar:SetStatusBarColor(1, 3/5, 0)
+			EclipseBar.SolarBar = SolarBar
 
-        local EclipseBarText = EclipseBarBorder:CreateFontString(nil, 'OVERLAY')
-        EclipseBarText:SetPoint('CENTER', EclipseBarBorder, 'CENTER', 0, 0)
-        EclipseBarText:SetFont(C.Media.Font, C.UF.Media.FontSize, 'OUTLINE')
-        self:Tag(EclipseBarText, '[pereclipse]%')
+			local EclipseBarText = EclipseBarBorder:CreateFontString(nil, 'OVERLAY')
+			EclipseBarText:SetPoint('CENTER', EclipseBarBorder, 'CENTER', 0, 0)
+			EclipseBarText:SetFont(C.Media.Font, C.UF.Media.FontSize, 'OUTLINE')
+			self:Tag(EclipseBarText, '[pereclipse]%')
 
-        self.EclipseBar = EclipseBar
-    end
-    
-    -- Soul Shard Support
-	if (F.MyClass == 'WARLOCK') then
-        local Shards = self:CreateFontString(nil, 'OVERLAY')
-        Shards:SetPoint('CENTER', self, 'RIGHT', 17, -2)
-        Shards:SetFont(C.Media.Font, 24, 'OUTLINE')
-        Shards:SetJustifyH('CENTER')
-        self:Tag(Shards, '[LanShards]')
-    end
+			self.EclipseBar = EclipseBar
+		end
+		
+		-- Soul Shard Support
+		if (F.MyClass == 'WARLOCK') then
+			local Shards = self:CreateFontString(nil, 'OVERLAY')
+			Shards:SetPoint('CENTER', self, 'RIGHT', 17, -2)
+			Shards:SetFont(C.Media.Font, 24, 'OUTLINE')
+			Shards:SetJustifyH('CENTER')
+			self:Tag(Shards, '[LanShards]')
+		end
 
-    -- Holy Power Support
-    if (F.MyClass == 'PALADIN') then
-        local HolyPower = self:CreateFontString(nil, 'OVERLAY')
-        HolyPower:SetPoint('CENTER', self, 'RIGHT', 17, -2)
-        HolyPower:SetFont(C.Media.Font, 24, 'OUTLINE')
-        HolyPower:SetJustifyH('CENTER')
-        self:Tag(HolyPower, '[LanHolyPower]')
-    end
-    
-    -- Combo points display
-	if (F.MyClass == 'ROGUE') or (F.MyClass == 'DRUID') then
-        local ComboPoints = self:CreateFontString(nil, 'OVERLAY')
-        ComboPoints:SetPoint('CENTER', self, 'RIGHT', 17, -2)
-        ComboPoints:SetFont(C.Media.Font, 24, 'OUTLINE')
-        ComboPoints:SetJustifyH('CENTER')
-        self:Tag(ComboPoints, '[LanCombo]')
-    end
-    
-    -- Chi display
-    if (F.MyClass == 'MONK') then
-        local Chi = self:CreateFontString(nil, 'OVERLAY')
-        Chi:SetPoint('CENTER', self, 'RIGHT', 17, 0)
-        Chi:SetFont(C.Media.Font, 24, 'OUTLINE')
-        Chi:SetJustifyH('CENTER')
-        self:Tag(Chi, '[LanChi]')
-    end
+		-- Holy Power Support
+		if (F.MyClass == 'PALADIN') then
+			local HolyPower = self:CreateFontString(nil, 'OVERLAY')
+			HolyPower:SetPoint('CENTER', self, 'RIGHT', 17, -2)
+			HolyPower:SetFont(C.Media.Font, 24, 'OUTLINE')
+			HolyPower:SetJustifyH('CENTER')
+			self:Tag(HolyPower, '[LanHolyPower]')
+		end
+		
+		-- Combo points display
+		if (F.MyClass == 'ROGUE') or (F.MyClass == 'DRUID') then
+			local ComboPoints = self:CreateFontString(nil, 'OVERLAY')
+			ComboPoints:SetPoint('CENTER', self, 'RIGHT', 17, -2)
+			ComboPoints:SetFont(C.Media.Font, 24, 'OUTLINE')
+			ComboPoints:SetJustifyH('CENTER')
+			self:Tag(ComboPoints, '[LanCombo]')
+		end
+		
+		-- Chi display
+		if (F.MyClass == 'MONK') then
+			local Chi = self:CreateFontString(nil, 'OVERLAY')
+			Chi:SetPoint('CENTER', self, 'RIGHT', 17, 0)
+			Chi:SetFont(C.Media.Font, 24, 'OUTLINE')
+			Chi:SetJustifyH('CENTER')
+			self:Tag(Chi, '[LanChi]')
+		end
+	end
 	
     -- Raid Icons
     if (unit == 'target') then
@@ -1317,7 +1324,6 @@ local function StylishGroup(self, unit)
 	self.SpellRange = true
     
     -- Hardcore border action!
-	--self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
     self.Overlay:SetTemplate()
 	self.Overlay:SetBeautyBorderPadding(4)
     
@@ -1476,7 +1482,6 @@ local function StylishRaid(self, unit)
 	
     -- Hardcore border action!
     self.Overlay:SetTemplate()
-	--self.Overlay:SetBackdropColor(0, 0, 0, 0)
 	self.Overlay:SetBeautyBorderPadding(4)
     
     self.UpdateBorder = UpdateBorder

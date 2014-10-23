@@ -11,7 +11,7 @@ LanCombat.frame:SetWidth(F.Scale(311.5))
 LanCombat.frame:SetHeight(F.Scale(104.5))
 LanCombat.frame:Point('TOPLEFT', UIParent, F.Scale(33), F.Scale(-24))
 LanCombat.frame:EnableMouse(false)
---LanCombat.frame:Hide()
+LanCombat.frame:Hide()
 
 local function ScrollFrame(self, delta)
     if delta > 0 then

@@ -299,11 +299,14 @@ function StyleButton(button)
 	
 	local name = button:GetName()
 	
-	if normal and name then
-		normal:ClearAllPoints()
-		normal:SetPoint('TOPRIGHT', button, 1, 1)
-		normal:SetPoint('BOTTOMLEFT', button, -1, -1)
-		normal:SetVertexColor(0, 0, 0, 0)
+	if button.GetNormalTexture and name then
+		local normal = button:GetNormalTexture()
+		if normal then
+			normal:ClearAllPoints()
+			normal:SetPoint('TOPRIGHT', button, 1, 1)
+			normal:SetPoint('BOTTOMLEFT', button, -1, -1)
+			normal:SetVertexColor(0, 0, 0, 0)
+		end
 	end
 	
 	if button.SetHighlightTexture and not button.hover then
@@ -941,6 +944,34 @@ F.Delay = function(delay, func, ...)
 	end
 	tinsert(waitTable,{delay,func,{...}})
 	return true
+end
+
+-- Unitframe tester
+local function TestBase()
+	for _, v in pairs(oUF.objects) do
+		v.unit = "target"
+		local buffs = v.Buffs or v.Auras
+		local debuffs = v.Debuffs
+		if buffs and buffs.CustomFilter then
+			buffs.CustomFilter = nil
+		end
+		if debuffs and debuffs.CustomFilter then
+			debuffs.CustomFilter = nil
+		end
+		v.Hide = function() return end
+		v:Show()
+	end
+	local time = 0
+	local f = CreateFrame("Frame")
+	f:SetScript("OnUpdate", function(self, elapsed)
+		time = time + elapsed
+		if ( time > 2 ) then
+			for _, v in pairs(oUF.objects) do
+				v:UpdateAllElements("OptionsRefresh")
+			end
+			time = 0
+		end
+	end)
 end
 
 ------------------------------------------------------------------------
