@@ -5,39 +5,6 @@ local IsUsableAction = IsUsableAction
 local IsActionInRange = IsActionInRange
 local HasAction = HasAction
 
--- Kill Blizzard options for ActionBars
---[[InterfaceOptionsActionBarsPanelBottomLeft:Kill()
-InterfaceOptionsActionBarsPanelBottomRight:Kill()
-InterfaceOptionsActionBarsPanelRight:Kill()
-InterfaceOptionsActionBarsPanelRightTwo:Kill()
-InterfaceOptionsActionBarsPanelAlwaysShowActionBars:Kill()]]
-
--- Kill micromenu
-CharacterMicroButton:SetScale(0.0001)
-CharacterMicroButton:EnableMouse(false)
-SpellbookMicroButton:SetScale(0.0001)
-SpellbookMicroButton:EnableMouse(false)
-TalentMicroButton:SetScale(0.0001)
-TalentMicroButton:EnableMouse(false)
-AchievementMicroButton:SetScale(0.0001)
-AchievementMicroButton:EnableMouse(false)
-QuestLogMicroButton:SetScale(0.0001)
-QuestLogMicroButton:EnableMouse(false)
-GuildMicroButton:SetScale(0.0001)
-GuildMicroButton:EnableMouse(false)
-LFDMicroButton:SetScale(0.0001)
-LFDMicroButton:EnableMouse(false)
-EJMicroButton:SetScale(0.0001)
-EJMicroButton:EnableMouse(false)
-MainMenuMicroButton:SetScale(0.0001)
-MainMenuMicroButton:EnableMouse(false)
-HelpMicroButton:SetScale(0.0001)
-HelpMicroButton:EnableMouse(false)
-CompanionsMicroButton:SetScale(0.0001)
-CompanionsMicroButton:EnableMouse(false)
-StoreMicroButton:SetScale(0.0001)
-StoreMicroButton:EnableMouse(false)
-
 -- Hide macro text
 if not C.ActionBars.Macro then
 	for i=1, 12 do
@@ -68,13 +35,6 @@ local buttonList = {}
 local frame = CreateFrame('Frame', 'LanBar1', UIParent, 'SecureHandlerStateTemplate')
 frame:SetWidth(num * C.ActionBars.ButtonSize + (num - 1) * C.ActionBars.ButtonSpacing + 2 * C.ActionBars.ButtonSpacing)
 frame:SetHeight(C.ActionBars.ButtonSize + 2 * C.ActionBars.ButtonSpacing)
-
-if C.Panels.ABPanel then
-    frame:SetPoint('TOPLEFT', ABPanel, 2, -2)
-else
-    frame:SetPoint('BOTTOM', UIParent, 0, 200)
-end
-
 frame:SetScale(1)
 
 MainMenuBarArtFrame:SetParent(frame)
@@ -105,79 +65,189 @@ end
 RegisterStateDriver(frame, 'visibility', '[petbattle][overridebar][vehicleui][possessbar,@vehicle,exists] hide; show')
 
 -- Bar 2
-if C.ActionBars.Bar2 then
-    local frame = CreateFrame('Frame', 'LanBar2', UIParent, 'SecureHandlerStateTemplate') -- MultiBarBottomLeft
-    frame:SetWidth(num * C.ActionBars.ButtonSize + (num - 1) * C.ActionBars.ButtonSpacing + 2 * C.ActionBars.ButtonSpacing)
-    frame:SetHeight(C.ActionBars.ButtonSize + C.ActionBars.ButtonSpacing)
-    frame:SetPoint('TOP', LanBar1, 'BOTTOM')
-    frame:SetScale(1)
+local bar2 = CreateFrame('Frame', 'LanBar2', UIParent, 'SecureHandlerStateTemplate') -- MultiBarBottomLeft
+bar2:SetWidth(num * C.ActionBars.ButtonSize + (num - 1) * C.ActionBars.ButtonSpacing + 2 * C.ActionBars.ButtonSpacing)
+bar2:SetHeight(C.ActionBars.ButtonSize + C.ActionBars.ButtonSpacing)
+bar2:SetScale(1)
+
+MultiBarBottomLeft:SetParent(bar2)
+MultiBarBottomLeft:EnableMouse(false)
+
+for i = 1, num do
+    local button = _G['MultiBarBottomLeftButton'..i]
+    table.insert(buttonList, button)
+    button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
+    button:ClearAllPoints()
     
-    MultiBarBottomLeft:SetParent(frame)
-    MultiBarBottomLeft:EnableMouse(false)
-    
-    for i = 1, num do
-        local button = _G['MultiBarBottomLeftButton'..i]
-        table.insert(buttonList, button)
-        button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
-        button:ClearAllPoints()
-        
-        if not button.skinned then
-            button:SetTemplate(true)
-            button:SetBeautyBorderPadding(2)
-        end
-        
-        if i == 1 then
-            button:SetPoint('BOTTOMLEFT', frame, C.ActionBars.ButtonSpacing, C.ActionBars.ButtonSpacing)
-        else
-            local previous = _G['MultiBarBottomLeftButton'..i - 1]
-            button:SetPoint('LEFT', previous, 'RIGHT', C.ActionBars.ButtonSpacing, 0)
-        end
-        
-        button:StyleButton()
+    if not button.skinned then
+        button:SetTemplate(true)
+        button:SetBeautyBorderPadding(2)
     end
     
-    -- Show/Hide
-    RegisterStateDriver(frame, 'visibility', '[petbattle][overridebar][vehicleui][possessbar,@vehicle,exists] hide; show')
+    if i == 1 then
+        button:SetPoint('BOTTOMLEFT', bar2, C.ActionBars.ButtonSpacing, C.ActionBars.ButtonSpacing)
+    else
+        local previous = _G['MultiBarBottomLeftButton'..i - 1]
+        button:SetPoint('LEFT', previous, 'RIGHT', C.ActionBars.ButtonSpacing, 0)
+    end
+    
+    button:StyleButton()
 end
 
-if C.ActionBars.Bar3 then
-    -- Bar 3
-    local frame = CreateFrame('Frame', 'LanBar3', UIParent, 'SecureHandlerStateTemplate') -- MultiBarBottomRight
-    frame:SetWidth(num * C.ActionBars.ButtonSize + (num - 1) * C.ActionBars.ButtonSpacing + 2 * C.ActionBars.ButtonSpacing)
-    frame:SetHeight(C.ActionBars.ButtonSize + C.ActionBars.ButtonSpacing)
-    frame:SetPoint('TOP', LanBar2, 'BOTTOM')
-    frame:SetScale(1)
+-- Show/Hide
+RegisterStateDriver(bar2, 'visibility', '[petbattle][overridebar][vehicleui][possessbar,@vehicle,exists] hide; show')
+
+-- Bar 3
+local bar3 = CreateFrame('Frame', 'LanBar3', UIParent, 'SecureHandlerStateTemplate') -- MultiBarBottomRight
+bar3:SetWidth(num * C.ActionBars.ButtonSize + (num - 1) * C.ActionBars.ButtonSpacing + 2 * C.ActionBars.ButtonSpacing)
+bar3:SetHeight(C.ActionBars.ButtonSize + C.ActionBars.ButtonSpacing)
+bar3:SetScale(1)
+
+MultiBarBottomRight:SetParent(bar3)
+MultiBarBottomRight:EnableMouse(false)
+
+for i = 1, num do
+    local button = _G['MultiBarBottomRightButton'..i]
+    table.insert(buttonList, button)
+    button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
+    button:ClearAllPoints()
     
-    MultiBarBottomRight:SetParent(frame)
-    MultiBarBottomRight:EnableMouse(false)
-    
-    for i = 1, num do
-        local button = _G['MultiBarBottomRightButton'..i]
-        table.insert(buttonList, button)
-        button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
-        button:ClearAllPoints()
-        
-        if not button.skinned then
-            button:SetTemplate(true)
-            button:SetBeautyBorderPadding(2)
-        end
-        
-        if i == 1 then
-            button:SetPoint('BOTTOMLEFT', frame, C.ActionBars.ButtonSpacing, C.ActionBars.ButtonSpacing)
-        else
-            local previous = _G['MultiBarBottomRightButton'..i - 1]
-            button:SetPoint('LEFT', previous, 'RIGHT', C.ActionBars.ButtonSpacing, 0)
-        end
-        
-        button:StyleButton()
+    if not button.skinned then
+        button:SetTemplate(true)
+        button:SetBeautyBorderPadding(2)
     end
     
-    -- Show/Hide
-    RegisterStateDriver(frame, 'visibility', '[petbattle][overridebar][vehicleui][possessbar,@vehicle,exists] hide; show')
+    if i == 1 then
+        button:SetPoint('BOTTOMLEFT', bar3, C.ActionBars.ButtonSpacing, C.ActionBars.ButtonSpacing)
+    else
+        local previous = _G['MultiBarBottomRightButton'..i - 1]
+        button:SetPoint('LEFT', previous, 'RIGHT', C.ActionBars.ButtonSpacing, 0)
+    end
+    
+    button:StyleButton()
 end
+
+-- Show/Hide
+RegisterStateDriver(frame, 'visibility', '[petbattle][overridebar][vehicleui][possessbar,@vehicle,exists] hide; show')
+
+local function PositionBars()
+	if InCombatLockdown() then return end
+
+	local leftShown, rightShown = MultiBarBottomLeft:IsShown(), MultiBarBottomRight:IsShown()
+
+	if leftShown and rightShown then
+		LanBar3:SetPoint('TOP', LanBar2, 'BOTTOM')
+		LanBar2:SetPoint('TOP', LanBar1, 'BOTTOM')
+        ABPanel:SetHeight((C.ActionBars.ButtonSize * 3) + (C.ActionBars.ButtonSpacing * 5))
+		
+        if C.Panels.ABPanel then
+            LanBar1:SetPoint('TOPLEFT', ABPanel, 2, -2)
+        else
+            LanBar1:SetPoint('BOTTOM', UIParent, 0, 200)
+        end
+	elseif leftShown then
+		LanBar2:SetPoint('TOP', LanBar1, 'BOTTOM')
+        ABPanel:SetHeight((C.ActionBars.ButtonSize * 2) + (C.ActionBars.ButtonSpacing * 4))
+		
+        if C.Panels.ABPanel then
+            LanBar1:SetPoint('TOPLEFT', ABPanel, 2, -2)
+        else
+            LanBar1:SetPoint('BOTTOM', UIParent, 0, 200)
+        end
+	elseif rightShown then
+		LanBar3:SetPoint('TOP', LanBar1, 'BOTTOM')
+        ABPanel:SetHeight((C.ActionBars.ButtonSize * 3) + (C.ActionBars.ButtonSpacing * 5))
+		
+        if C.Panels.ABPanel then
+            LanBar1:SetPoint('TOPLEFT', ABPanel, 2, -2)
+        else
+            LanBar1:SetPoint('BOTTOM', UIParent, 0, 200)
+        end
+    else
+        ABPanel:SetHeight(C.ActionBars.ButtonSize + (C.ActionBars.ButtonSpacing * 3))
+        
+        if C.Panels.ABPanel then
+            LanBar1:SetPoint('TOPLEFT', ABPanel, 2, -2)
+        else
+            LanBar1:SetPoint('BOTTOM', UIParent, 0, 200)
+        end
+    end
+end
+
+hooksecurefunc("MultiActionBar_Update", PositionBars)
+
+-- Right Bar 1
+
+local bar4 = CreateFrame("Frame", "LanMultiBarRight", UIParent, "SecureHandlerStateTemplate")
+bar4:SetHeight(num * C.ActionBars.ButtonSize + (num - 1) * C.ActionBars.ButtonSpacing + 2 * C.ActionBars.ButtonSpacing)
+bar4:SetWidth(C.ActionBars.ButtonSize + C.ActionBars.ButtonSpacing)
+bar4:SetScale(1)
+bar4:SetPoint("RIGHT", -30, 0)
+
+MultiBarRight:SetParent(bar4)
+MultiBarRight:EnableMouse(false)
+
+for i = 1, NUM_ACTIONBAR_BUTTONS do
+	local button = _G["MultiBarRightButton"..i]
+    table.insert(buttonList, button)
+	button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
+    button:ClearAllPoints()
+	
+    if not button.skinned then
+        button:SetTemplate(true)
+        button:SetBeautyBorderPadding(2)
+    end
+    
+    if i == 1 then
+		button:SetPoint("TOPLEFT", bar4)
+	else
+		local previous = _G["MultiBarRightButton"..i - 1]
+		button:SetPoint("TOP", previous, "BOTTOM", 0, -C.ActionBars.ButtonSpacing)
+	end
+    
+    button:StyleButton()
+end
+
+-- Show/Hide
+RegisterStateDriver(bar4, "visibility", "[petbattle][vehicleui][overridebar][possessbar,@vehicle,exists] hide; show")
+
+-- Right Bar 2
+
+local bar5 = CreateFrame("Frame", "LanMultiBarLeft", UIParent, "SecureHandlerStateTemplate")
+bar5:SetHeight(num * C.ActionBars.ButtonSize + (num - 1) * C.ActionBars.ButtonSpacing + 2 * C.ActionBars.ButtonSpacing)
+bar5:SetWidth(C.ActionBars.ButtonSize + C.ActionBars.ButtonSpacing)
+bar5:SetScale(1)
+bar5:SetPoint("RIGHT", -57 - C.ActionBars.ButtonSpacing, 0)
+
+MultiBarLeft:SetParent(bar5)
+MultiBarLeft:EnableMouse(false)
+
+for i = 1, NUM_ACTIONBAR_BUTTONS do
+	local button = _G["MultiBarLeftButton"..i]
+    table.insert(buttonList, button)
+	button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
+	button:ClearAllPoints()
+    
+    if not button.skinned then
+        button:SetTemplate(true)
+        button:SetBeautyBorderPadding(2)
+    end
+    
+	if i == 1 then
+		button:SetPoint("TOPLEFT", bar5)
+	else
+		local previous = _G["MultiBarLeftButton"..i-1]
+		button:SetPoint("TOP", previous, "BOTTOM", 0, -C.ActionBars.ButtonSpacing)
+	end
+    
+    button:StyleButton()
+end
+
+-- Show/Hide
+RegisterStateDriver(bar5, "visibility", "[petbattle][vehicleui][overridebar][possessbar,@vehicle,exists] hide; show")
 
 -- LeaveVehicle Button
-local button = CreateFrame('BUTTON', 'LanLeave', ABPanel or ChatFrame1, 'SecureHandlerClickTemplate, SecureHandlerStateTemplate');
+--[[local button = CreateFrame('BUTTON', 'LanLeave', ABPanel or ChatFrame1, 'SecureHandlerClickTemplate, SecureHandlerStateTemplate');
 table.insert(buttonList, button)
 button:SetSize(C.Media.FontSize, C.Media.FontSize)
 
@@ -211,31 +281,26 @@ end
 if not button.skinned then
 	button:SetTemplate()
     button:SetBackdropColor(1, 0, 0, 0.5)
-end
+end]]
 
 -- Show/Hide
-RegisterStateDriver(button, 'visibility', '[petbattle][overridebar][vehicleui] hide; [possessbar][@vehicle,exists] show; hide')
+--RegisterStateDriver(button, 'visibility', '[petbattle][overridebar][vehicleui] hide; [possessbar][@vehicle,exists] show; hide')
 
 -- Override Bar
-local frame = CreateFrame('Frame', 'LanOverride', UIParent, 'SecureHandlerStateTemplate')
-frame:SetWidth(num * C.ActionBars.ButtonSize + (num - 1) * C.ActionBars.ButtonSpacing + 2 * C.ActionBars.ButtonSpacing)
-frame:SetHeight(C.ActionBars.ButtonSize + 2 * C.ActionBars.ButtonSpacing)
+local override = CreateFrame('Frame', 'LanOverride', UIParent, 'SecureHandlerStateTemplate')
+override:SetWidth(num * C.ActionBars.ButtonSize + (num - 1) * C.ActionBars.ButtonSpacing + 2 * C.ActionBars.ButtonSpacing)
+override:SetHeight(C.ActionBars.ButtonSize + 2 * C.ActionBars.ButtonSpacing)
+override:SetPoint('BOTTOM', LanBar2, 'TOP')
 
-if C.Panels.ABPanel then
-    frame:SetPoint('TOPLEFT', ABPanel, 2, -2)
-else
-    frame:SetPoint('BOTTOM', UIParent, 0, 200)
-end
+override:SetScale(0.8)
 
-frame:SetScale(0.8)
-
-OverrideActionBar:SetParent(frame)
+OverrideActionBar:SetParent(override)
 OverrideActionBar:EnableMouse(false)
 OverrideActionBar:SetScript('OnShow', nil) -- Kill OnShow
 
 local leaveButtonPlaced = false
 
-for i = 1, num do
+for i = 1, 7 do
 	local button = _G['OverrideActionBarButton'..i]
 	if not button and not leaveButtonPlaced then
 		button = OverrideActionBar.LeaveButton
@@ -256,18 +321,17 @@ for i = 1, num do
 	end
     
 	if i == 1 then
-		button:SetPoint('BOTTOMLEFT', frame, C.ActionBars.ButtonSpacing, C.ActionBars.ButtonSpacing)
+		button:SetPoint('BOTTOMLEFT', override, C.ActionBars.ButtonSpacing, C.ActionBars.ButtonSpacing)
 	else
 		local previous = _G['OverrideActionBarButton'..i - 1]
 		button:SetPoint('LEFT', previous, 'RIGHT', C.ActionBars.ButtonSpacing, 0)
 	end
     
-    button:SetNormalTexture(nil)
     button:StyleButton()
 end
 
 -- Show/Hide
-RegisterStateDriver(frame, 'visibility', '[petbattle] hide; [overridebar][vehicleui][possessbar,@vehicle,exists] show; hide')
+RegisterStateDriver(override, 'visibility', '[petbattle] hide; [overridebar][vehicleui][possessbar,@vehicle,exists] show; hide')
 RegisterStateDriver(OverrideActionBar, 'visibility', '[overridebar][vehicleui][possessbar,@vehicle,exists] show; hide')
 	
 -- Extra Action Bar
@@ -315,6 +379,7 @@ StanceBarFrame.ignoreFramePositionManager = true
 
 for i = 1, num do
 	local button = _G['StanceButton'..i]
+    
 	table.insert(buttonList, button)
 	button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
 	button:ClearAllPoints()
@@ -340,6 +405,7 @@ PossessBarFrame:EnableMouse(false)
 
 for i = 1, num2 do
 	local button = _G['PossessButton'..i]
+    
 	table.insert(buttonList, button)
 	button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
 	button:ClearAllPoints()
@@ -363,24 +429,26 @@ end
 RegisterStateDriver(frame, 'visibility', '[petbattle][overridebar][vehicleui] hide; show')
 
 -- Pet Bar
-local num = NUM_PET_ACTION_SLOTS
-local frame = CreateFrame('Frame', 'LanPet', UIParent, 'SecureHandlerStateTemplate')
-frame:SetWidth(num * C.ActionBars.ButtonSize + (num - 1) * C.ActionBars.ButtonSpacing + 2 * C.ActionBars.ButtonSpacing)
-frame:SetHeight(C.ActionBars.ButtonSize + 2 * C.ActionBars.ButtonSpacing)
+local petbar = CreateFrame('Frame', 'LanPet', UIParent, 'SecureHandlerStateTemplate')
+petbar:SetWidth(num * C.ActionBars.ButtonSize + (num - 1) * C.ActionBars.ButtonSpacing + 2 * C.ActionBars.ButtonSpacing)
+petbar:SetHeight(C.ActionBars.ButtonSize + 2 * C.ActionBars.ButtonSpacing)
 
 if C.Panels.ABPanel then
-    frame:SetPoint('BOTTOM', ABPanel, 'TOP')
+    petbar:SetPoint('BOTTOM', ABPanel, 'TOP')
 else
-    frame:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPRIGHT', 0, 5)
+    petbar:SetPoint('BOTTOMLEFT', ActionButton1, 'TOPRIGHT', 0, 5)
 end
 
-frame:SetScale(1)
+petbar:SetScale(1)
 
-PetActionBarFrame:SetParent(frame)
+PetActionBarFrame:SetParent(petbar)
 PetActionBarFrame:EnableMouse(false)
+PetActionBarFrame:SetHeight(0.001)
 
-for i = 1, num do
+for i = 1, NUM_PET_ACTION_SLOTS do
 	local button = _G['PetActionButton'..i]
+    local cd = _G["PetActionButton"..i.."Cooldown"]
+    
 	table.insert(buttonList, button)
 	button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
 	button:ClearAllPoints()
@@ -391,7 +459,7 @@ for i = 1, num do
 	end
     
 	if i == 1 then
-		button:SetPoint('LEFT', frame, C.ActionBars.ButtonSpacing, 0)
+		button:SetPoint('LEFT', petbar, C.ActionBars.ButtonSpacing, 0)
 	else
 		local previous = _G['PetActionButton'..i - 1]
 		button:SetPoint('LEFT', previous, 'RIGHT', C.ActionBars.ButtonSpacing, 0)
@@ -401,71 +469,14 @@ for i = 1, num do
 	local cd = _G['PetActionButton'..i..'Cooldown']
 	cd:SetAllPoints(button)
     
+    _G['PetActionButton'..i..'HotKey']:Hide()
+    
     F.StylePet()
     hooksecurefunc('PetActionBar_Update', F.PetBarUpdate)
 end
 
 -- Show/Hide
-RegisterStateDriver(frame, 'visibility', '[petbattle] hide; [vehicleui] hide; [@pet,exists,nodead] show; hide')
-	
--- Bag Bar
-local bagbuttonList = {
-        MainMenuBarBackpackButton,
-        CharacterBag0Slot,
-        CharacterBag1Slot,
-        CharacterBag2Slot,
-        CharacterBag3Slot,
-}
-
-for _, kill in pairs(bagbuttonList) do
-    kill:Kill()
-end
-
--- Hide Blizzard Crap
-MainMenuBar:SetParent(G.Misc.UIHider)
-MainMenuBarPageNumber:SetParent(G.Misc.UIHider)
-ActionBarDownButton:SetParent(G.Misc.UIHider)
-ActionBarUpButton:SetParent(G.Misc.UIHider)
-OverrideActionBarExpBar:SetParent(G.Misc.UIHider)
-OverrideActionBarHealthBar:SetParent(G.Misc.UIHider)
-OverrideActionBarPowerBar:SetParent(G.Misc.UIHider)
-OverrideActionBarPitchFrame:SetParent(G.Misc.UIHider)
-
--- Textures
-StanceBarLeft:SetTexture(nil)
-StanceBarMiddle:SetTexture(nil)
-StanceBarRight:SetTexture(nil)
-SlidingActionBarTexture0:SetTexture(nil)
-SlidingActionBarTexture1:SetTexture(nil)
-PossessBackground1:SetTexture(nil)
-PossessBackground2:SetTexture(nil)
-MainMenuBarTexture0:SetTexture(nil)
-MainMenuBarTexture1:SetTexture(nil)
-MainMenuBarTexture2:SetTexture(nil)
-MainMenuBarTexture3:SetTexture(nil)
-MainMenuBarLeftEndCap:SetTexture(nil)
-MainMenuBarRightEndCap:SetTexture(nil)
-
-local textureList =  {
-	'_BG',
-	'EndCapL',
-	'EndCapR',
-	'_Border',
-	'Divider1',
-	'Divider2',
-	'Divider3',
-	'ExitBG',
-	'MicroBGL',
-	'MicroBGR',
-	'_MicroBGMid',
-	'ButtonBGL',
-	'ButtonBGR',
-	'_ButtonBGMid',
-}
-
-for _,tex in pairs(textureList) do
-    OverrideActionBar[tex]:SetAlpha(0)
-end
+RegisterStateDriver(petbar, 'visibility', '[petbattle][overridebar][vehicleui][possessbar,@vehicle,exists] hide; [@pet,exists,nomounted] show; hide')
 
 -- ExtraActionButton	
 -- Hook the ExtraActionButton1 texture, idea by roth via WoWInterface forums
@@ -492,41 +503,36 @@ local function RangeUpdate(self)
     end  
     
     local Name = self:GetName()
-	local Icon = _G[Name.."Icon"]
-    local NormalTexture
-    if Name.SetNormalTexture then
-        NormalTexture = Name:GetNormalTexture()
-    end
+	local Icon = self.icon
+    local NormalTexture = self.normalTexture
     local ID = self.action
     local IsUsable, NotEnoughMana = IsUsableAction(ID)
 	local HasRange = ActionHasRange(ID)
 	local InRange = IsActionInRange(ID)
-	
-    if NormalTexture and Icon.SetVertexColor and NormalTexture.SetVertexColor then
-        NormalTexture:SetTexture(nil)
 
-        hooksecurefunc(NormalTexture, 'SetVertexColor', function()
-            if IsUsable then -- Usable
-                if (HasRange and InRange == false) then -- Out of range
-                    Icon:SetVertexColor(0.8, 0.1, 0.1)
-                    NormalTexture:SetVertexColor(0.8, 0.1, 0.1)
-                else -- In range
-                    Icon:SetVertexColor(1.0, 1.0, 1.0)
-                    NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
-                end
-            elseif NotEnoughMana then -- Not enough power
-                Icon:SetVertexColor(0.1, 0.3, 1.0)
-                NormalTexture:SetVertexColor(0.1, 0.3, 1.0)
-            else -- Not usable
-                Icon:SetVertexColor(0.3, 0.3, 0.3)
-                NormalTexture:SetVertexColor(0.3, 0.3, 0.3)
-            end
-        end)
+    if (not NormalTexture) or Name == 'OverrideActionBarButton1' then
+        return
+    end
+    
+    if IsUsable then -- Usable
+        if (HasRange and InRange == false) then -- Out of range
+            Icon:SetVertexColor(0.8, 0.1, 0.1)
+            NormalTexture:SetVertexColor(0.8, 0.1, 0.1)
+        else -- In range
+            Icon:SetVertexColor(1.0, 1.0, 1.0)
+            NormalTexture:SetVertexColor(1.0, 1.0, 1.0)
+        end
+    elseif NotEnoughMana then -- Not enough power
+        Icon:SetVertexColor(0.1, 0.3, 1.0)
+        NormalTexture:SetVertexColor(0.1, 0.3, 1.0)
+    else -- Not usable
+        Icon:SetVertexColor(0.3, 0.3, 0.3)
+        NormalTexture:SetVertexColor(0.3, 0.3, 0.3)
     end
 end
 
 hooksecurefunc("ActionButton_Update", RangeUpdate)
-hooksecurefunc("ActionButton_UpdateUsable", RangeUpdate)   
+hooksecurefunc("ActionButton_UpdateUsable", RangeUpdate)
 
 hooksecurefunc('ActionButton_OnUpdate', function(self, elapsed)
     if (IsAddOnLoaded('tullaRange') or IsAddOnLoaded('RangeColors')) then
@@ -549,34 +555,6 @@ hooksecurefunc('ActionButton_OnUpdate', function(self, elapsed)
     end
 end)
 hooksecurefunc('ActionButton_OnUpdate', ActionButton_OnUpdate)
-
-local f = CreateFrame('Frame', MainMenuBar)
-f:RegisterEvent('ADDON_LOADED')
-f:SetScript('OnEvent', function(addon)
-    if addon == 'LanUI' then
-        if C.ActionBars.Bar3 then
-            SetActionBarToggles(true, true, false, false, true)
-            InterfaceOptionsActionBarsPanelBottomLeft:SetChecked(1)
-            InterfaceOptionsActionBarsPanelBottomRight:SetChecked(1)
-            
-            InterfaceOptions_UpdateMultiActionBars()
-        elseif C.ActionBars.Bar2 then
-            if C.ActionBars.Bar3 then return end
-            
-            SetActionBarToggles(true, false, false, false, true)
-            InterfaceOptionsActionBarsPanelBottomLeft:SetChecked(1)
-            InterfaceOptionsActionBarsPanelBottomRight:SetChecked(0)
-            
-            InterfaceOptions_UpdateMultiActionBars()
-        else
-            SetActionBarToggles(false, false, false, false, true)
-            InterfaceOptionsActionBarsPanelBottomLeft:SetChecked(0)
-            InterfaceOptionsActionBarsPanelBottomRight:SetChecked(0)
-            
-            InterfaceOptions_UpdateMultiActionBars()
-        end
-    end
-end)
 
 -- Shorten Hotkey display
 local gsub = string.gsub
@@ -620,7 +598,7 @@ end)
 -- XP Bar/Rep Bar
 local bc = C.Media.BorderColor
 
-local XP = CreateFrame('Frame', 'LanXP', UIParent)
+local XP = CreateFrame('Frame', 'LanXP', BottomPanel)
 XP:SetPoint('BOTTOM', BottomPanel, 'TOP', 0, 2)
 XP:SetWidth(512)
 XP:SetHeight(13)
@@ -631,13 +609,14 @@ local font = CreateFont('LanXPFont')
 font:SetFontObject(GameFontHighlightSmall)
 font:SetTextColor(bc.r, bc.g, bc.b)
 
-local indictator = XP:CreateTexture(nil, 'OVERLAY')
-indictator:SetWidth(1)
-indictator:SetTexture(bc.r, bc.g, bc.b)
-indictator:SetHeight(13)
+local indicator = XP:CreateTexture(nil, 'OVERLAY')
+indicator:SetWidth(1)
+indicator:SetTexture(bc.r, bc.g, bc.b)
+indicator:SetHeight(11)
+indicator:SetParent(XP.backdrop)
 
 local textMain = XP:CreateFontString(nil, 'OVERLAY')
-textMain:SetPoint('LEFT', indictator, 'RIGHT', 10, 0)
+textMain:SetPoint('LEFT', XP, 'RIGHT', 10, 0)
 textMain:SetFontObject(font)
 
 local textTR = XP:CreateFontString(nil, 'OVERLAY')
@@ -690,7 +669,7 @@ function XP:PLAYER_XP_UPDATE()
     textBL:SetFormattedText('|cffffffff%.1f|r bars', min/max*20)
     textBR:SetFormattedText('|cffffffff%.1f|r bars', min/max*20-20)
 
-    self:Move(indictator, min/max)
+    self:Move(indicator, min/max)
 end
 XP.PLAYER_LEVEL_UP = XP.PLAYER_XP_UPDATE
 
@@ -706,7 +685,7 @@ if F.Level == MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()] then
         textTR:SetFormattedText('|cffffffff%s|r / |cffffffff%s|r', min, max)
         textBL:SetFormattedText('')
         textBR:SetFormattedText('')
-        self:Move(indictator, min/max)
+        self:Move(indicator, min/max)
     end	
 end
 

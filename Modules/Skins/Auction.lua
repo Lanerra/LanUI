@@ -103,6 +103,7 @@ local function LoadSkin()
 	BrowseBidButton:Point('RIGHT', BrowseBuyoutButton, 'LEFT', -4, 0)		
 	AuctionsItemButton:StripTextures()
 	AuctionsItemButton:Reskin()
+	BrowseResetButton:ClearAllPoints()
 	BrowseResetButton:Point('TOPLEFT', AuctionFrameBrowse, 'TOPLEFT', 81, -74)
 	BrowseSearchButton:Point('TOPRIGHT', AuctionFrameBrowse, 'TOPRIGHT', 25, -34)
 	

@@ -3,7 +3,6 @@ local F, C, G = unpack(select(2, ...))
 local Hider = LanUIHider
 
 for _, frame in pairs({
-	--'MainMenuBar',
 	'MainMenuBarPageNumber',
 	'ActionBarDownButton',
 	'ActionBarUpButton',
@@ -18,7 +17,6 @@ for _, frame in pairs({
 	'AchievementMicroButton',
 	'QuestLogMicroButton',
 	'GuildMicroButton',
-	--'PVPMicroButton',
 	'LFDMicroButton',
 	'CompanionsMicroButton',
 	'EJMicroButton',
@@ -31,34 +29,11 @@ for _, frame in pairs({
 	'CharacterBag2Slot',
 	'CharacterBag3Slot',
 	'StanceBarFrame',
+	'MainMenuBar',
 }) do
 	_G[frame]:SetParent(Hider)
 	_G[frame].SetParent = F.Dummy
 end
-
---[[for _, button in pairs({
-	'CharacterMicroButton',
-	'SpellbookMicroButton',
-	'TalentMicroButton',
-	'AchievementMicroButton',
-	'QuestLogMicroButton',
-	'GuildMicroButton',
-	'PVPMicroButton',
-	'LFDMicroButton',
-	'CompanionsMicroButton',
-	'EJMicroButton',
-	'StoreMicroButton',
-	'MainMenuMicroButton',
-	'HelpMicroButton',
-}) do
-	if BottomPanel then
-		_G[button]:SetParent(BottomPanel)
-		_G[button].SetParent = F.Dummy
-	else
-		_G[button]:SetParent(Hider)
-		_G[button].SetParent = F.Dummy
-	end
-end]]
 
 for _, texture in pairs({
 	'StanceBarLeft',
@@ -94,5 +69,5 @@ for _, texture in pairs({
 	'ButtonBGR',
 	'_ButtonBGMid',
 }) do
-	OverrideActionBar[texture]:SetAlpha(0)
+	OverrideActionBar[texture]:Kill()
 end

@@ -29,8 +29,6 @@ C['ActionBars'] = {
     ['ButtonSize'] = 27, -- Size of buttons
     ['PetButtonSize'] = 29, -- Size of pet and stance buttons
     ['ButtonSpacing'] = 4, -- Spacing between buttons
-    ['Bar2'] = true, -- Need a second bar?
-    ['Bar3'] = false, -- How about a third?
 }
 
 C['Bags'] = {
@@ -226,10 +224,6 @@ C['UF'] = {
 }
 
 -- NO TOUCHY! -----------------------------------------------------------
-if C.ActionBars.Bar3 then
-    C.ActionBars.Bar2 = true
-end
-
 if C.Media.ClassColor then
     C.Media.BorderColor = F.PlayerColor
 else

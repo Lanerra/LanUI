@@ -4,7 +4,6 @@ if C.Panels.ABPanel == true then
     local ABPanel = CreateFrame('Frame', 'ABPanel', UIParent)
 
     ABPanel:SetPoint('BOTTOM', UIParent, 0, 50)
-    --ABPanel:SetSize((C.ActionBars.ButtonSize * 12) + (C.ActionBars.ButtonSpacing * 13), (C.ActionBars.ButtonSize * 1) + (C.ActionBars.ButtonSpacing * 2))
     ABPanel:SetWidth((C.ActionBars.ButtonSize * 12) + (C.ActionBars.ButtonSpacing * 14))
     ABPanel:SetHeight((C.ActionBars.ButtonSize) + (C.ActionBars.ButtonSpacing * 3))
     ABPanel:SetFrameStrata('BACKGROUND')
@@ -16,14 +15,6 @@ if C.Panels.ABPanel == true then
         _G['ActionButton'..i]:SetFrameStrata('HIGH')
         _G['MultiBarBottomLeftButton'..i]:SetFrameStrata('HIGH')
         _G['MultiBarBottomRightButton'..i]:SetFrameStrata('HIGH')
-    end
-    
-    if C.ActionBars.Bar2 then
-        ABPanel:SetHeight((C.ActionBars.ButtonSize * 2) + (C.ActionBars.ButtonSpacing * 4))
-    end
-    
-    if C.ActionBars.Bar3 then
-        ABPanel:SetHeight((C.ActionBars.ButtonSize * 3) + (C.ActionBars.ButtonSpacing * 5))
     end
 end
 

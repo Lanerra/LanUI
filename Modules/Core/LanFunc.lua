@@ -42,12 +42,12 @@ F.PetBarUpdate = function(self, event)
 		petActionButton.tooltipSubtext = subtext
 
 		if isActive and name ~= 'PET_ACTION_FOLLOW' then
-			petActionButton:SetChecked(1)
+			petActionButton:SetChecked(true)
 			if IsPetAttackAction(i) then
 				PetActionButton_StartFlash(petActionButton)
 			end
 		else
-			petActionButton:SetChecked(0)
+			petActionButton:SetChecked(false)
 			if IsPetAttackAction(i) then
 				PetActionButton_StopFlash(petActionButton)
 			end
@@ -83,8 +83,6 @@ F.PetBarUpdate = function(self, event)
 			SetDesaturation(petActionIcon, 1)
 			petActionButton:SetChecked(0)
 		end
-		
-		checked:SetAlpha(0.3)
 	end
 end
 
@@ -299,14 +297,13 @@ function StyleButton(button)
 	
 	local name = button:GetName()
 	
-	if button.GetNormalTexture and name then
-		local normal = button:GetNormalTexture()
-		if normal then
-			normal:ClearAllPoints()
-			normal:SetPoint('TOPRIGHT', button, 1, 1)
-			normal:SetPoint('BOTTOMLEFT', button, -1, -1)
-			normal:SetVertexColor(0, 0, 0, 0)
-		end
+	if button.SetNormalTexture and not button.normal and name then
+		local normal  = _G[name.."NormalTexture"];
+		local normal2 = button:GetNormalTexture()
+		if normal then normal:SetTexture(nil); normal:Hide(); normal:SetAlpha(0); end	
+		if normal2 then normal2:SetTexture(nil); normal2:Hide(); normal2:SetAlpha(0); end	
+		button.normal = normal
+		button.normal2 = normal2
 	end
 	
 	if button.SetHighlightTexture and not button.hover then
@@ -676,34 +673,63 @@ end
 F.SkinTab = SkinTab -- Compatibility, yo
 
 function SkinNextPrevButton(btn, horizonal)
-	--SetTemplate(btn)
-	Size(btn, btn:GetWidth() - 15, btn:GetHeight() - 15)
+	local norm, pushed, disabled
+	local inverseDirection = btn:GetName() and (strfind(btn:GetName():lower(), 'left') or strfind(btn:GetName():lower(), 'prev') or strfind(btn:GetName():lower(), 'decrement'))
 	
-	if horizonal then
-		btn:GetNormalTexture():SetTexCoord(0.3, 0.29, 0.3, 0.72, 0.65, 0.29, 0.65, 0.72)
-		btn:GetPushedTexture():SetTexCoord(0.3, 0.35, 0.3, 0.8, 0.65, 0.35, 0.65, 0.8)
-		btn:GetDisabledTexture():SetTexCoord(0.3, 0.29, 0.3, 0.75, 0.65, 0.29, 0.65, 0.75)	
+	btn:StripTextures()
+	btn:SetNormalTexture(nil)
+	btn:SetPushedTexture(nil)
+	btn:SetHighlightTexture(nil)
+	btn:SetDisabledTexture(nil)
+
+	if not btn.icon then
+		btn.icon = btn:CreateTexture(nil, 'ARTWORK')
+		btn.icon:Size(13)
+		btn.icon:SetPoint('CENTER')
+		btn.icon:SetTexture([[Interface\Buttons\SquareButtonTextures]])
+		btn.icon:SetTexCoord(0.01562500, 0.20312500, 0.01562500, 0.20312500)
+		
+		btn:SetScript('OnMouseDown', function(self)
+			if self:IsEnabled() then
+				self.icon:SetPoint("CENTER", -1, -1);
+			end		
+		end)
+		
+		btn:SetScript('OnMouseUp', function(self)
+			self.icon:SetPoint("CENTER", 0, 0);
+		end)
+		
+		btn:SetScript('OnDisable', function(self)
+			SetDesaturation(self.icon, true);
+			self.icon:SetAlpha(0.5);		
+		end)
+		
+		btn:SetScript('OnEnable', function(self)
+			SetDesaturation(self.icon, false);
+			self.icon:SetAlpha(1.0);		
+		end)
+		
+		if not btn:IsEnabled() then
+			btn:GetScript('OnDisable')(btn)
+		end
+	end
+
+	if buttonOverride then
+		if inverseDirection then
+			SquareButton_SetIcon(btn, 'UP')
+		else
+			SquareButton_SetIcon(btn, 'DOWN')
+		end
 	else
-		btn:GetNormalTexture():SetTexCoord(0.3, 0.29, 0.3, 0.81, 0.65, 0.29, 0.65, 0.81)
-		if btn:GetPushedTexture() then
-			btn:GetPushedTexture():SetTexCoord(0.3, 0.35, 0.3, 0.81, 0.65, 0.35, 0.65, 0.81)
-		end
-		if btn:GetDisabledTexture() then
-			btn:GetDisabledTexture():SetTexCoord(0.3, 0.29, 0.3, 0.75, 0.65, 0.29, 0.65, 0.75)
-		end
+		if inverseDirection then
+			SquareButton_SetIcon(btn, 'LEFT')
+		else
+			SquareButton_SetIcon(btn, 'RIGHT')
+		end	
 	end
 	
-	btn:GetNormalTexture():ClearAllPoints()
-	Point(btn:GetNormalTexture(), 'TOPLEFT', 2, -2)
-	Point(btn:GetNormalTexture(), 'BOTTOMRIGHT', -2, 2)
-	if btn:GetDisabledTexture() then
-		btn:GetDisabledTexture():SetAllPoints(btn:GetNormalTexture())
-	end
-	if btn:GetPushedTexture() then
-		btn:GetPushedTexture():SetAllPoints(btn:GetNormalTexture())
-	end
-	btn:GetHighlightTexture():SetTexture(1, 1, 1, 0.3)
-	btn:GetHighlightTexture():SetAllPoints(btn:GetNormalTexture())
+	SkinButton(btn)
+	btn:Size(btn:GetWidth() - 7, btn:GetHeight() - 7)
 end
 F.SkinNextPrevButton = SkinNextPrevButton -- Compatibility, yo
 
