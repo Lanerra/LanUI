@@ -289,8 +289,8 @@ local function SkinPlate(self, nameFrame)
 
     self.Overlay:SetTexCoord(0, 1, 0, 1)
     self.Overlay:ClearAllPoints()
-    self.Overlay:SetPoint('TOPRIGHT', self.Health, 35.66666667, 5)
-    self.Overlay:SetPoint('BOTTOMLEFT', self.Health, -37.66666667, -4.5)
+    self.Overlay:SetPoint('TOPRIGHT', self.Health, 31.66666667, 4.5)
+    self.Overlay:SetPoint('BOTTOMLEFT', self.Health, -33.66666667, -4.5)
     self.Overlay:SetDrawLayer('BORDER')
     self.Overlay:SetTexture(overlayTexture)
 
