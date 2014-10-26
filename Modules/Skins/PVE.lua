@@ -48,7 +48,7 @@ PVEFrame:StripTextures()
 	end)
 
 	hooksecurefunc(LFGDungeonReadyDialog, "SetBackdrop", function(self, backdrop)
-		if backdrop.bgFile ~= E["media"].blankTex then
+		if backdrop.bgFile ~= C.Media.Backdrop then
 			self:CreateBD()
 		end
 	end)
@@ -163,7 +163,7 @@ PVEFrame:StripTextures()
 		bu.icon:SetPoint("LEFT", 10, 0)
 		bu.border = CreateFrame("Frame", nil, bu)
 		bu.border:CreateBD()
-		bu.border:SetOutside(bu.icon)
+		bu.border.backdrop:SetOutside(bu.icon, 1, 1)
 		bu.icon:SetParent(bu.border)
 	end
 
@@ -171,7 +171,7 @@ PVEFrame:StripTextures()
 	for i=1, 3 do
 		SkinTab(_G['PVEFrameTab'..i])
 	end
-	PVEFrameTab1:SetPoint('BOTTOMLEFT', PVEFrame, 'BOTTOMLEFT', 19, -31)
+	PVEFrameTab1:SetPoint('BOTTOMLEFT', PVEFrame, 'BOTTOMLEFT', 19, -27)
 	
 	SkinCloseButton(PVEFrameCloseButton)
 

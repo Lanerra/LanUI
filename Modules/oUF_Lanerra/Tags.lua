@@ -195,7 +195,7 @@ oUF.Tags.Methods['LanCombo'] = function(unit)
         return string.format('|cffffff00%d|r', cp)
     end
 end
-oUF.Tags.Events['LanCombo'] = 'UNIT_COMBO_POINTS'
+oUF.Tags.Events['LanCombo'] = 'UNIT_COMBO_POINTS PLAYER_TARGET_CHANGED'
 
 oUF.Tags.Methods['LanChi'] = function(unit)
     local chi = UnitPower('player', SPELL_POWER_CHI)

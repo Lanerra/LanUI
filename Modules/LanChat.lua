@@ -294,10 +294,11 @@ for i = 1, NUM_CHAT_WINDOWS do
     end)
     
     tab:StripTextures()
-    tab:SkinTab()
     
     local p1, frame, p2, x, y = tab:GetPoint()
     tab:SetPoint(p1, frame, p2, x, y + 1)
+   
+    tab:SkinTab()
 
     -- Hide some of those unwanted textures
 

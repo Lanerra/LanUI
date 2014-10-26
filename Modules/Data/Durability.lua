@@ -21,7 +21,7 @@ local slotInfo = {
 
 local f = CreateFrame('Frame', 'DuraFrame')
 f:SetParent(CharacterFrame)
-f:SetSize(42, 32)
+f:SetSize(42, 30)
 f:SetFrameStrata('LOW')
 f:EnableMouse(false)
 f:SetPoint('LEFT', CharacterFrameTab4, 'RIGHT', 4, 0)

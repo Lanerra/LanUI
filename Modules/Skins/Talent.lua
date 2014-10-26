@@ -17,7 +17,10 @@ local function LoadSkin()
 	PlayerTalentFrame.backdrop:SetAllPoints()
 	PlayerTalentFrame.backdrop:SetFrameLevel(0)
 	PlayerTalentFrame.backdrop:SetPoint('BOTTOMRIGHT', PlayerTalentFrame, 'BOTTOMRIGHT', 0, -6)
-	
+	PlayerTalentFrameTalentsLearnButton:StripTextures()
+	PlayerTalentFrameTalentsLearnButton:StyleButton()
+	PlayerTalentFrameTalentsLearnButton:SkinButton()
+		
 	PlayerTalentFrameInset:StripTextures()
 	PlayerTalentFrameInset:CreateBD()
 	PlayerTalentFrameInset.backdrop:Hide()
@@ -54,8 +57,9 @@ local function LoadSkin()
 		SkinTab(_G['PlayerTalentFrameTab'..i])
 
 		if i == 1 then
-			local point, anchor, anchorPoint, x = _G['PlayerTalentFrameTab'..i]:GetPoint()
-			_G['PlayerTalentFrameTab'..i]:Point(point, anchor, anchorPoint, x, -4)
+			_G['PlayerTalentFrameTab'..i]:Point('TOPLEFT', PlayerTalentFrame, 'BOTTOMLEFT', 19, 2)
+		else
+			_G['PlayerTalentFrameTab'..i]:Point('LEFT', _G['PlayerTalentFrameTab'..i - 1], 'RIGHT')
 		end
 	end
 	
@@ -79,7 +83,7 @@ local function LoadSkin()
 		tab.pushed = true;
 		tab:CreateBD()
 		tab.backdrop:SetAllPoints()
-		tab:StyleButton(true)	
+		tab:StyleButton(true)
 		hooksecurefunc(tab:GetHighlightTexture(), "SetTexture", function(self, texPath)
 			if texPath ~= nil then
 				self:SetTexture(nil)
