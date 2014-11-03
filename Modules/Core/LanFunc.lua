@@ -545,7 +545,7 @@ local function SkinIconButton(b, shrinkIcon)
 	b:StyleButton()
 	
 	if icon then
-		icon:SetTexCoord(unpack(E.TexCoords))
+		icon:SetTexCoord(unpack(F.TexCoords))
 
 		-- create a backdrop around the icon
 		

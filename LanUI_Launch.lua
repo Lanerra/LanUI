@@ -95,6 +95,8 @@ f:SetScript('OnEvent', function(_, event, ...)
             ChatFrame3:SetHeight(C.Chat.ChatHeight)
             ChatFrame3:SetWidth(425)
             ChatFrame3:SetUserPlaced(true)
+			ChatFrame1:SetFading(false)
+			ChatFrame3:SetFading(false)
             
             FCF_SetWindowName(ChatFrame1, 'General')
 			FCF_SetWindowName(ChatFrame3, 'Guild')
