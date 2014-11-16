@@ -113,6 +113,9 @@ Minimap:SetScript('OnMouseUp', function(self, button)
     end
 end)
 
+    -- Shrink the Garrison Button
+GarrisonLandingPageMinimapButton:Size(26, 26)
+
     -- Skin the ticket status frame
 
 TicketStatusFrame:ClearAllPoints()

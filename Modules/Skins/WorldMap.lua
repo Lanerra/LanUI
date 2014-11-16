@@ -15,7 +15,7 @@ local function LoadSkin()
 	SkinDropDownBox(WorldMapLevelDropDown)
 	WorldMapLevelDropDown:SetPoint("TOPLEFT", -17, 0)
 
-	WorldMapFrame.BorderFrame:CreateBD()
+	WorldMapFrame.BorderFrame:SetTemplate()
 	WorldMapFrame.BorderFrame.Inset:CreateBD()
 	WorldMapFrame.BorderFrame.Inset.backdrop:SetPoint("TOPLEFT", WorldMapFrame.BorderFrame.Inset, "TOPLEFT", 3, -3)
 	WorldMapFrame.BorderFrame.Inset.backdrop:SetPoint("BOTTOMRIGHT", WorldMapFrame.BorderFrame.Inset, "BOTTOMRIGHT", -3, 2)

@@ -65,18 +65,19 @@ function UpdatePlayerLocation()
 end
 
 local function SkinButton(button, texture)
-	if(string.match(button:GetName(), 'WatchFrameItem%d+') and not button.skinned) then
+	--[[if(string.match(button:GetName(), 'WatchFrameItem%d+') and not button.skinned) then
 		button:SetSize(26, 26)
 
 		local icon = _G[button:GetName() .. 'IconTexture']
 		icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 		icon:SetPoint('TOPLEFT', 1, -1)
 		icon:SetPoint('BOTTOMRIGHT', -1, 1)
-
+		
 		_G[button:GetName() .. 'NormalTexture']:SetTexture()
 
 		button.skinned = true
-	end
+	end]]
+	return
 end
 
 local function SetLine(...)
@@ -197,8 +198,10 @@ local function SkinLine()
 		end
 	end
 
-	--[[for index = 1, #WATCHFRAME_LINKBUTTONS do
-		HighlightLine(WATCHFRAME_LINKBUTTONS[index], false)
+	--[[for i = 1, #WATCHFRAME_LINKBUTTONS do
+		if WATCHFRAME_LINKBUTTONS[i]:IsShown() then
+			HighlightLine(WATCHFRAME_LINKBUTTONS[i], false)
+		end
 	end]]
 end
 

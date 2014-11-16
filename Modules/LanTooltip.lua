@@ -239,6 +239,8 @@ local function SetHealthBarColor(unit)
     local r, g, b
     if unit then
         r, g, b = UnitSelectionColor(unit)
+	else
+		r, g, b = 0, 1, 0
     end
 
     GameTooltipStatusBar:SetStatusBarColor(r, g, b)
@@ -491,6 +493,7 @@ GameTooltip:SetScript('OnEvent', function(self, event, GUID)
         local GUIDInfo = {
             ['GUID'] = GUID,
             ['itemLevel'] = ilvl,
+            ['specIcon'] = icon and ' |T'..icon..':0|t' or '',
             ['lastUpdate'] = math.floor(now)
         }
         table.insert(self.inspectCache, GUIDInfo)

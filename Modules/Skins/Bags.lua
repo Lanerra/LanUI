@@ -2,7 +2,7 @@ local F, C, G = unpack(select(2, ...))
 local bc = C.Media.BorderColor
 
 -- Bags & Bank
-local function LoadSkin()
+--[[local function LoadSkin()
 	-- BAGS
 	for i = 1, 5 do
 		local bag = _G['ContainerFrame'..i]
@@ -36,7 +36,7 @@ local function LoadSkin()
 	BagItemSearchBox:Point('TOPLEFT', 19, -29)
 	BagItemSearchBox.ClearAllPoints = F.Dummy
 	BagItemSearchBox.SetPoint = F.Dummy
-	BagItemSearchBox:SkinEditBox()
+	BagItemSearchBox:SkinEditBox()]]
 
 	-- BANK
 	--[[local bank = BankFrame
@@ -109,7 +109,7 @@ local function LoadSkin()
 				end
 			end
 		end
-	end]]
+	end
 end
 
-tinsert(F.SkinFuncs['LanUI'], LoadSkin)
+tinsert(F.SkinFuncs['LanUI'], LoadSkin)]]

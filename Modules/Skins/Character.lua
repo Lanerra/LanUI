@@ -51,12 +51,12 @@ local function LoadSkin()
 			if itemId then
 				local _, _, rarity, _, _, _, _, _, _, _, _ = GetItemInfo(itemId)
 				if rarity and rarity > 1 then
-					target:SetBackdropBorderColor(GetItemQualityColor(rarity))
+					target:SetBeautyBorderColor(GetItemQualityColor(rarity))
 				else
-					target:SetBackdropBorderColor(unpack(bc))
+					target:SetBeautyBorderColor(bc.r, bc.g, bc.b)
 				end
 			else
-				target:SetBackdropBorderColor(unpack(bc))
+				target:SetBeautyBorderColor(bc.r, bc.g, bc.b)
 			end
 		end
 	end
@@ -143,7 +143,6 @@ local function LoadSkin()
 	
 	--Icon in upper right corner of character frame
 	CharacterFramePortrait:Kill()
-	--CharacterModelFrame:CreateBackdrop("Default")
 
 	local scrollbars = {
 		"PaperDollTitlesPaneScrollBar",
@@ -226,13 +225,13 @@ local function LoadSkin()
 				button:StripTextures()
 				button:StyleButton(true)
 				
-				icon:SetTexCoord(unpack(E.TexCoords))
+				icon:SetTexCoord(unpack(F.TexCoords))
 				_G["GearManagerDialogPopupButton"..i.."Icon"]:SetTexture(nil)
 
 				icon:SetInside()
 				button:SetFrameLevel(button:GetFrameLevel() + 2)
 				if not button.backdrop then
-					button:CreateBackdrop("Default")
+					button:CreateBD()
 					button.backdrop:SetAllPoints()			
 				end
 			end
@@ -289,10 +288,11 @@ local function LoadSkin()
 			local statusbar = _G["ReputationBar"..i.."ReputationBar"]
 
 			if statusbar then
-				statusbar:SetStatusBarTexture(E["media"].normTex)
+				statusbar:SetStatusBarTexture(C.Media.StatusBar)
 				
 				if not statusbar.backdrop then
-					statusbar:CreateBackdrop("Default")
+					statusbar:CreateBD()
+					statusbar.backdrop:SetOutside()
 				end
 				
 				_G["ReputationBar"..i.."Background"]:SetTexture(nil)
@@ -308,7 +308,7 @@ local function LoadSkin()
 			end		
 		end
 		ReputationDetailFrame:StripTextures()
-		ReputationDetailFrame:SetTemplate("Transparent")
+		ReputationDetailFrame:SetTemplate()
 		ReputationDetailFrame:Point("TOPLEFT", ReputationFrame, "TOPRIGHT", 4, -28)			
 	end	
 	ReputationFrame:HookScript("OnShow", UpdateFactionSkins)
@@ -327,17 +327,17 @@ local function LoadSkin()
 				button.categoryRight:Kill()
 				
 				if button.icon then
-					button.icon:SetTexCoord(unpack(E.TexCoords))
+					button.icon:SetTexCoord(unpack(F.TexCoords))
 				end
 			end
 		end
 		TokenFramePopup:StripTextures()
-		TokenFramePopup:SetTemplate("Transparent")
+		TokenFramePopup:SetTemplate()
 		TokenFramePopup:Point("TOPLEFT", TokenFrame, "TOPRIGHT", 4, -28)				
 	end)
 	
 	--Pet
-	PetModelFrame:CreateBackdrop("Default")
+	PetModelFrame:CreateBD()
 	PetModelFrameRotateRightButton:SkinRotateButton()
 	PetModelFrameRotateLeftButton:SkinRotateButton()
 	PetModelFrameRotateRightButton:ClearAllPoints()

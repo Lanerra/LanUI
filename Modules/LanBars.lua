@@ -598,7 +598,134 @@ end)
 -- XP Bar/Rep Bar
 local bc = C.Media.BorderColor
 
-local XP = CreateFrame('Frame', 'LanXP', BottomPanel)
+local Experience = CreateFrame("Frame", nil, UIParent)
+local HideTooltip = GameTooltip_Hide
+local Bars = 20
+
+Experience.NumBars = 1
+Experience.RestedColor = {75/255, 175/255, 76/255}
+Experience.XPColor = {0/255, 144/255, 255/255}
+
+function Experience:SetTooltip()
+	local Current, Max = Experience:GetExperience()
+	local Rested = GetXPExhaustion()
+	
+	GameTooltip:SetOwner(self, "ANCHOR_TOPRIGHT", 0, 5)
+	
+	GameTooltip:AddLine(string.format("|cff0090FF"..XP..": %d / %d (%d%% - %d/%d)|r", Current, Max, Current / Max * 100, Bars - (Bars * (Max - Current) / Max), Bars))
+	
+	if Rested then
+		GameTooltip:AddLine(string.format("|cff4BAF4C"..TUTORIAL_TITLE26..": +%d (%d%%)|r", Rested, Rested / Max * 100))
+	end
+	
+	GameTooltip:Show()
+end
+
+function Experience:GetExperience()
+	return UnitXP("player"), UnitXPMax("player")
+end
+
+function Experience:Update(event, owner)
+	if F.Level == MAX_PLAYER_LEVEL then
+		self:Disable()
+		
+		return
+	else
+        self:UnregisterEvent("UPDATE_EXPANSION_LEVEL")
+		self:Enable()
+	end
+	
+	local Current, Max = self:GetExperience()
+	local Rested = GetXPExhaustion()
+	local IsRested = GetRestState()
+	
+	for i = 1, self.NumBars do
+		self["XPBar"..i]:SetMinMaxValues(0, Max)
+		self["XPBar"..i]:SetValue(Current)
+		
+		if (IsRested == 1 and Rested) then
+			self["RestedBar"..i]:SetMinMaxValues(0, Max)
+			self["RestedBar"..i]:SetValue(Rested + Current)
+		else
+            self["RestedBar"..i]:SetMinMaxValues(0, 1)
+			self["RestedBar"..i]:SetValue(0)
+		end
+	end
+end
+
+function Experience:Create()
+	for i = 1, self.NumBars do
+		local XPBar = CreateFrame("StatusBar", nil, UIParent)
+		local RestedBar = CreateFrame("StatusBar", nil, UIParent)
+		
+		XPBar:SetStatusBarTexture(C.Media.StatusBar)
+		XPBar:SetStatusBarColor(bc.r, bc.g, bc.b)
+		XPBar:EnableMouse()
+        XPBar:SetFrameStrata("MEDIUM")
+        XPBar:SetFrameLevel(4)
+		XPBar:SetTemplate()
+		XPBar:SetScript("OnEnter", Experience.SetTooltip)
+		XPBar:SetScript("OnLeave", HideTooltip)
+		
+		RestedBar:SetStatusBarTexture(C.Media.StatusBar)
+		RestedBar:SetStatusBarColor(unpack(self.RestedColor))
+		RestedBar:SetAllPoints(XPBar)
+		RestedBar:SetFrameLevel(XPBar:GetFrameLevel() - 1)
+		RestedBar:SetAlpha(.5)
+		
+        XPBar:Size(512, 10)
+        XPBar:Point('BOTTOM', BottomPanel, 'TOP', 0, 4)
+		XPBar.backdrop:ClearAllPoints()
+		XPBar.backdrop:Point('TOPLEFT', XPBar, -3, 2)
+		XPBar.backdrop:Point('BOTTOMRIGHT', XPBar, 3, -3)
+		
+		self["XPBar"..i] = XPBar
+		self["RestedBar"..i] = RestedBar
+	end
+	
+	self:RegisterEvent("PLAYER_XP_UPDATE")
+	self:RegisterEvent("PLAYER_LEVEL_UP")
+	self:RegisterEvent("UPDATE_EXHAUSTION")
+	self:RegisterEvent("PLAYER_ENTERING_WORLD")
+	self:RegisterEvent("PLAYER_UPDATE_RESTING")
+    self:RegisterEvent("UPDATE_EXPANSION_LEVEL")
+	
+	self:SetScript("OnEvent", self.Update)
+end
+
+function Experience:Enable()
+	if not self.IsCreated then
+		self:Create()
+		
+		self.IsCreated = true
+	end
+	
+	for i = 1, self.NumBars do
+		if not self["XPBar"..i]:IsShown() then
+			self["XPBar"..i]:Show()
+		end
+		
+		if not self["RestedBar"..i]:IsShown() then
+			self["RestedBar"..i]:Show()
+		end
+	end	
+end
+
+function Experience:Disable()
+	for i = 1, self.NumBars do
+		if self["XPBar"..i]:IsShown() then
+			self["XPBar"..i]:Hide()
+		end
+		
+		if self["RestedBar"..i]:IsShown() then
+			self["RestedBar"..i]:Hide()
+		end
+	end
+end
+
+Experience:Enable()
+
+--[[local XP = CreateFrame('Frame', 'LanXP', BottomPanel)
 XP:SetPoint('BOTTOM', BottomPanel, 'TOP', 0, 2)
 XP:SetWidth(512)
 XP:SetHeight(13)
@@ -651,7 +778,7 @@ end
 
 -- Update Functions for xp bar
 function XP:PLAYER_ENTERING_WORLD()
-    if F.Level == MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()] then
+    if F.Level == MAX_PLAYER_LEVEL then
         self:UPDATE_FACTION()
     else
         self:PLAYER_XP_UPDATE()
@@ -674,7 +801,7 @@ end
 XP.PLAYER_LEVEL_UP = XP.PLAYER_XP_UPDATE
 
 function XP:UPDATE_FACTION()
-if F.Level == MAX_PLAYER_LEVEL_TABLE[GetExpansionLevel()] then
+    if F.Level == MAX_PLAYER_LEVEL then
         local name, standing, min, max, value = GetWatchedFactionInfo()
 
         if(not name) then return nil end
@@ -695,7 +822,7 @@ end)
 XP:RegisterEvent('PLAYER_XP_UPDATE')
 XP:RegisterEvent('UPDATE_FACTION')
 XP:RegisterEvent('PLAYER_LEVEL_UP')
-XP:RegisterEvent('PLAYER_ENTERING_WORLD')
+XP:RegisterEvent('PLAYER_ENTERING_WORLD')]]
 
 -- Move AltPowerBar
 PlayerPowerBarAlt:SetPoint('TOP', ABPanel, 'BOTTOM', 0, -2)

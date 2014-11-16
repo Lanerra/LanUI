@@ -65,12 +65,20 @@ eventFrame:SetScript('OnEvent', function(self, event, ...)
 
             for objective = 1, GetNumQuestLeaderBoards(questIndex) do
                 description, _, finished = GetQuestLogLeaderBoard(objective, questIndex)
+                --ChatFrame1:AddMessage('LanUI: '..description..', '..tostring(finished))
+
+                if finished then
+                    finished = 1
+                else
+                    finished = 0
+                end
+                
                 completed = completed + (finished or 0)
             end
 
             if completed == GetNumQuestLeaderBoards(questIndex) then
                 if description then
-                    RaidNotice_AddMessage(RaidWarningFrame, string.format('%s: Objective Complete'):format(description), ChatTypeInfo['SYSTEM'])
+                    RaidNotice_AddMessage(RaidWarningFrame, string.format('%s: Objective Complete', description), ChatTypeInfo['SYSTEM'])
                     PlaySoundFile([[Sound\Creature\Peon\PeonBuildingComplete1.wav]])
                 end
             else
@@ -435,7 +443,7 @@ F.RegisterEvent('CINEMATIC_START', function(boolean)
 end)
 
 F.RegisterEvent('CINEMATIC_STOP', function()
-    SetCVar('Sound_EnableMusic', 0)
+    --SetCVar('Sound_EnableMusic', 0)
     SetCVar('Sound_EnableAmbience', 1)
     SetCVar('Sound_EnableSFX', 1)
 end)

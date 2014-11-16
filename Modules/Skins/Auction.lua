@@ -268,16 +268,8 @@ local function LoadSkin()
 	end
 	
 	--Custom Backdrops
-	--[[AuctionFrameBrowse.bg1 = CreateFrame('Frame', nil, AuctionFrameBrowse)
-	AuctionFrameBrowse.bg1:SetTemplate()
-	AuctionFrameBrowse.bg1:Point('TOPLEFT', 20, -103)
-	AuctionFrameBrowse.bg1:Point('BOTTOMRIGHT', -575, 40)]]
 	BrowseFilterScrollFrame:Height(300) --Adjust scrollbar height a little off
 
-	--[[AuctionFrameBrowse.bg2 = CreateFrame('Frame', nil, AuctionFrameBrowse)
-	AuctionFrameBrowse.bg2:SetTemplate()
-	AuctionFrameBrowse.bg2:Point('TOPLEFT', AuctionFrameBrowse.bg1, 'TOPRIGHT', 4, 0)
-	AuctionFrameBrowse.bg2:Point('BOTTOMRIGHT', AuctionFrame, 'BOTTOMRIGHT', -8, 40)]]
 	BrowseScrollFrame:Height(300) --Adjust scrollbar height a little off
 	
 	AuctionFrameBid.bg = CreateFrame('Frame', nil, AuctionFrameBid)

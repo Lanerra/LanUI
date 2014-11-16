@@ -4,7 +4,7 @@ local _, ns = ...
 local oUF = ns.oUF
 local Interrupt = 'Interface\\Addons\\LanUI\\Media\\BorderInterrupt'
 local objects = {}
-local isHealer = (F.MyClass == 'Druid' or F.MyClass == 'Paladin' or F.MyClass == 'Priest' or F.MyClass == 'Shaman')
+local isHealer = (F.MyClass == 'DRUID' or F.MyClass == 'PALADIN' or F.MyClass == 'PRIEST' or F.MyClass == 'SHAMAN')
 local PlayerUnits = { player = true, pet = true, vehicle = true }
 local fontstrings = {}
 local PowerBarColor = PowerBarColor
@@ -196,7 +196,11 @@ local function UpdateHealth(Health, unit, min, max)
 		if (UnitIsDead(unit) or UnitIsGhost(unit) or not UnitIsConnected(unit)) then
             Health:SetValue(0)
             Health:SetStatusBarColor(.5, .5, .5)
-        end
+        elseif UnitIsTapped(unit) and not UnitIsTappedByPlayer(unit) then
+			Health:SetStatusBarColor(.5, .5, .5)
+		else
+			Health:SetStatusBarColor(.25, .25, .25)
+		end
 	end
 	
 	if (unit == 'player') then
@@ -364,7 +368,7 @@ local function UpdateDruidPower(self, event, unit)
 end
 
 -- Runes, sucka!
-if F.MyClass == 'Deathknight' then
+if F.MyClass == 'DEATHKNIGHT' then
 	-- Better unholy color:
 	oUF.colors.runes[2][1] = 0.3
 	oUF.colors.runes[2][2] = 0.9
@@ -529,6 +533,7 @@ local Stylish = function(self, unit, isSingle)
 	self.Health = CreateFrame('StatusBar', '$parentHealthBar', self)
 	self.Health:SetHeight(C.UF.Units.Player.Height * .87)
 	self.Health:SetStatusBarTexture(C.Media.StatusBar)
+	self.Health:SetStatusBarColor(0.25, 0.25, 0.25)
 	
 	if (C.UF.Show.ClassColorHealth and unit ~= 'pet') then
         self.Health.colorClass = true
@@ -536,7 +541,7 @@ local Stylish = function(self, unit, isSingle)
         self.Health:SetStatusBarColor(0.25, 0.25, 0.25)
     end
 	
-	self.Health.colorTapping = true
+	--self.Health.colorTapping = true
 	
 	-- Turn on the smoothness
 	self.Health.Smooth = true
@@ -579,7 +584,7 @@ local Stylish = function(self, unit, isSingle)
 		self.Power.colorClass = true
 		self.Power.colorPower = false
 	end
-	self.Power.colorTapping = true
+	--self.Power.colorTapping = true
 	self.Power.colorReaction = true
     	
 	-- We like to keep things smooth around here
@@ -950,7 +955,7 @@ local Stylish = function(self, unit, isSingle)
 	end
 	
 	-- Various oUF plugins support
-	if (unit == 'player' and F.MyClass == 'Deathknight') then
+	if (unit == 'player' and F.MyClass == 'DEATHKNIGHT') then
 		local Runes = {}
 		for index = 1, 6 do
 			-- Position and size of the rune bar indicators
@@ -975,7 +980,7 @@ local Stylish = function(self, unit, isSingle)
 
 	if unit == 'player' then
 		-- DruidPower Support
-		if (unit == 'player' and F.MyClass == 'Druid') then    
+		if (unit == 'player' and F.MyClass == 'DRUID') then    
 			self.Druid = CreateFrame('Frame')
 			self.Druid:SetParent(self) 
 			self.Druid:SetFrameStrata('LOW')
@@ -1005,7 +1010,7 @@ local Stylish = function(self, unit, isSingle)
 		end
 		
 		-- Eclipse Bar Support
-		if (F.MyClass == 'Druid') then
+		if (F.MyClass == 'DRUID') then
 			local EclipseBar = CreateFrame('Frame', nil, self)
 			EclipseBar:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -10)
 			EclipseBar:SetPoint('TOPRIGHT', self, 'BOTTOMRIGHT', 0, -10)
@@ -1042,7 +1047,7 @@ local Stylish = function(self, unit, isSingle)
 		end
 		
 		-- Soul Shard Support
-		if (F.MyClass == 'Warlock') then
+		if (F.MyClass == 'WARLOCK') then
 			local Shards = self:CreateFontString(nil, 'OVERLAY')
 			Shards:SetPoint('CENTER', self, 'RIGHT', 17, -2)
 			Shards:SetFont(C.Media.Font, 24, 'OUTLINE')
@@ -1051,7 +1056,7 @@ local Stylish = function(self, unit, isSingle)
 		end
 
 		-- Holy Power Support
-		if (F.MyClass == 'Paladin') then
+		if (F.MyClass == 'PALADIN') then
 			local HolyPower = self:CreateFontString(nil, 'OVERLAY')
 			HolyPower:SetPoint('CENTER', self, 'RIGHT', 17, -2)
 			HolyPower:SetFont(C.Media.Font, 24, 'OUTLINE')
@@ -1060,7 +1065,7 @@ local Stylish = function(self, unit, isSingle)
 		end
 		
 		-- Combo points display
-		if (F.MyClass == 'Rogue') or (F.MyClass == 'Druid') then
+		if (F.MyClass == 'ROGUE') or (F.MyClass == 'DRUID') then
 			local ComboPoints = self:CreateFontString(nil, 'OVERLAY')
 			ComboPoints:SetPoint('CENTER', self, 'RIGHT', 17, -2)
 			ComboPoints:SetFont(C.Media.Font, 24, 'OUTLINE')
@@ -1069,7 +1074,7 @@ local Stylish = function(self, unit, isSingle)
 		end
 		
 		-- Chi display
-		if (F.MyClass == 'Monk') then
+		if (F.MyClass == 'MONK') then
 			local Chi = self:CreateFontString(nil, 'OVERLAY')
 			Chi:SetPoint('CENTER', self, 'RIGHT', 17, 0)
 			Chi:SetFont(C.Media.Font, 24, 'OUTLINE')
@@ -1111,7 +1116,7 @@ local Stylish = function(self, unit, isSingle)
     end
 	
     -- Hardcore border action!	
-	if unit == 'player' and F.MyClass == 'Deathknight' then
+	if unit == 'player' and F.MyClass == 'DEATHKNIGHT' then
 		self.Overlay:Point('TOPLEFT', self.Runes[1])
 		self.Overlay:Point('BOTTOMRIGHT', self)
 	else
@@ -1722,14 +1727,14 @@ function GetPlayerRole()
 	return CURRENT_ROLE
 end
 
-if F.MyClass == "Deathknight" then
+if F.MyClass == "DEATHKNIGHT" then
 	updateEvents = "UPDATE_SHAPESHIFT_FORM"
 	function getRole()
 		if GetSpecialization() == 1 then -- Blood 1, Frost 2, Unholy 3
 			return "TANK"
 		end
 	end
-elseif F.MyClass == "Druid" then
+elseif F.MyClass == "DRUID" then
 	updateEvents = "UPDATE_SHAPESHIFT_FORM"
 	function getRole()
 		local form = GetShapeshiftFormID() -- Aquatic 4, Bear 5, Cat 1, Flight 29, Moonkin 31, Swift Flight 27, Travel 3, Tree 2
@@ -1739,7 +1744,7 @@ elseif F.MyClass == "Druid" then
 			return "HEALER"
 		end
 	end
-elseif F.MyClass == "Monk" then
+elseif F.MyClass == "MONK" then
 	updateEvents = "UPDATE_SHAPESHIFT_FORM"
 	function getRole()
 		local form = GetShapeshiftFormID() -- Tiger 24, Ox 23, Serpent 20
@@ -1749,7 +1754,7 @@ elseif F.MyClass == "Monk" then
 			return "HEALER"
 		end
 	end
-elseif F.MyClass == "Paladin" then
+elseif F.MyClass == "PALADIN" then
 	local RIGHTEOUS_FURY = GetSpellInfo(25780)
 	updateEvents = "PLAYER_REGEN_DISABLED"
 	function getRole()
@@ -1759,19 +1764,19 @@ elseif F.MyClass == "Paladin" then
 			return "HEALER"
 		end
 	end
-elseif F.MyClass == "Priest" then
+elseif F.MyClass == "PRIEST" then
 	function getRole()
 		if GetSpecialization() ~= 3 then -- Discipline 1, Holy 2, Shadow 3
 			return "HEALER"
 		end
 	end
-elseif F.MyClass == "Shaman" then
+elseif F.MyClass == "SHAMAN" then
 	function getRole()
 		if GetSpecialization() == 3 then -- Elemental 1, Enhancement 2, Restoration 3
 			return "HEALER"
 		end
 	end
-elseif F.MyClass == "Warrior" then
+elseif F.MyClass == "WARRIOR" then
 	updateEvents = "UPDATE_SHAPESHIFT_FORM"
 	function getRole()
 		if GetSpecialization() == 3 and GetShapeshiftFormID() == 18 then -- Battle 17, Berserker 19, Defensive 18
