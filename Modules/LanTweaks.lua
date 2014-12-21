@@ -44,7 +44,7 @@ local MostValuable = function()
         end
 
         if bestItem then
-            QuestInfoRewardsFrame.RewardButtons[bestItem]:Click()
+            QuestInfoFrame.rewardsFrame.RewardButton[bestItem]:Click()
         end
     end
 end

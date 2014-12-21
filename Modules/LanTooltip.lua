@@ -13,6 +13,7 @@ local UnitIsGhost = UnitIsGhost
 local UnitFactionGroup = UnitFactionGroup
 local UnitCreatureType = UnitCreatureType
 local GetQuestDifficultyColor = GetQuestDifficultyColor
+local bc = C.Media.BorderColor
 
 local tankIcon = '|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:0:19:22:41|t'
 local healIcon = '|TInterface\\LFGFrame\\UI-LFG-ICON-PORTRAITROLES.blp:13:13:0:0:64:64:20:39:1:20|t'
@@ -51,6 +52,7 @@ local function ApplyTooltipStyle(self)
         self:SetBackdropColor(0, 0, 0, 0.5)
     end)
 
+    self:StripTextures()
     self:SetTemplate()
 end
 
@@ -89,36 +91,36 @@ for _, tooltip in pairs({
     ShoppingTooltip2,
     ShoppingTooltip3,
 }) do
-    if tooltip.beautyBorder then
+    --if tooltip.beautyBorder then
         tooltip:HookScript('OnTooltipSetItem', function(self)
             local name, item = self:GetItem()
             if item then
                 local quality = select(3, GetItemInfo(item))
                 if quality then
                     local r, g, b = GetItemQualityColor(quality)
-                    self:SetBeautyBorderTexture('white')
-                    self:SetBeautyBorderColor(r, g, b)
+                    --self:SetBeautyBorderTexture('white')
+                    self.backdrop:SetBackdropBorderColor(r, g, b)
                 end
             end
         end)
 
         tooltip:HookScript('OnTooltipCleared', function(self)
             if C.Media.ClassColor then
-                self:SetBeautyBorderTexture('white')
-                self:SetBeautyBorderColor(unpack(F.PlayerColor))
+                --self:SetBeautyBorderTexture('white')
+                self.backdrop:SetBackdropBorderColor(bc.r, bc.g, bc.b)
             else
-                self:SetBeautyBorderTexture('default')
-                self:SetBeautyBorderColor(1, 1, 1)
+                --self:SetBeautyBorderTexture('default')
+                self.backdrop:SetBackdropBorderColor(1, 1, 1)
             end
         end)
-    end
+    --end
 end
 
     -- Itemlvl (by Gsuz) - http://www.tukui.org/forums/topic.php?id=10151
 
 local function GetItemLevel(unit)
     local total, item = 0, 0
-    for i, v in pairs({
+    local slots = {
         'Head',
         'Neck',
         'Shoulder',
@@ -135,21 +137,28 @@ local function GetItemLevel(unit)
         'Trinket1',
         'MainHand',
         'SecondaryHand',
-    }) do
-        local slot = GetInventoryItemLink(unit, GetInventorySlotInfo(v..'Slot'))
-        if slot ~= nil then
-            item = item + 1
-            total = total + select(4, GetItemInfo(slot))
+    }
+    
+    for i = 1, #slots do
+        local slot = GetInventoryItemLink(unit, GetInventorySlotInfo(('%sSlot'):format(slots[i])))
+        
+        if slot then
+            local ILVL = select(4, GetItemInfo(slot))
+            
+            if ILVL then
+                item = item + 1
+                total = total + ILVL
+            end
         end
     end
-
-    if item > 0 then
-        return floor(total / item + 0.5)
+    
+    if total < 1 then
+        return '...'
     end
-
-    return 0
+    
+    return floor(total / item)
 end
-
+ 
     -- Make sure we get a correct unit
 
 local function GetRealUnit(self)
@@ -397,12 +406,12 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
         
             -- Border coloring
 
-        if self.beautyBorder then
+        --if self.beautyBorder then
             local r, g, b = UnitSelectionColor(unit)
 
-            self:SetBeautyBorderTexture('white')
-            self:SetBeautyBorderColor(r, g, b)
-        end
+            --self:SetBeautyBorderTexture('white')
+            self.backdrop:SetBackdropBorderColor(r, g, b)
+        --end
 
             -- Dead or ghost recoloring
 
@@ -414,9 +423,13 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
         end
 
             -- Show player item lvl
-
-        if ilvl > 1 then
-            GameTooltip:AddLine(STAT_AVERAGE_ITEM_LEVEL .. ': ' .. '|cffFFFFFF'..ilvl..'|r')
+        ILVL = tonumber(ilvl)
+        
+        if ILVL > 1 then
+            GameTooltip:AddLine(STAT_AVERAGE_ITEM_LEVEL .. ': ' .. '|cffFFFFFF'..ILVL..'|r')
+        elseif not ILVL then
+            ChatFrame1:AddMessage(ilvl)
+            return
         end
     end
 end)
@@ -427,15 +440,15 @@ GameTooltip:HookScript('OnTooltipCleared', function(self)
     GameTooltipStatusBar:SetPoint('BOTTOMRIGHT', self, 'TOPRIGHT', -1, 3)
     GameTooltipStatusBar:SetBackdropColor(0, 1, 0, 0.3)
 
-    if self.beautyBorder then
+    --if self.beautyBorder then
         if C.Media.ClassColor then
-            self:SetBeautyBorderTexture('white')
-            self:SetBeautyBorderColor(unpack(F.PlayerColor))
+            --self:SetBeautyBorderTexture('white')
+            self.backdrop:SetBackdropBorderColor(bc.r, bc.g, bc.b)
         else
-            self:SetBeautyBorderTexture('default')
-            self:SetBeautyBorderColor(1, 1, 1)
+            --self:SetBeautyBorderTexture('default')
+            self.backdrop:SetBackdropBorderColor(1, 1, 1)
         end
-    end
+    --end
 end)
 
 hooksecurefunc('GameTooltip_SetDefaultAnchor', function(self, parent)

@@ -124,7 +124,7 @@ local function FormatMemoryValue(i)
 end
 
 local function ColorGradient(perc, ...)
-    if (perc > 1) then
+    --[[if (perc > 1) then
         local r, g, b = select(select('#', ...) - 2, ...) return r, g, b
     elseif (perc < 0) then
         local r, g, b = ... return r, g, b
@@ -135,12 +135,14 @@ local function ColorGradient(perc, ...)
     local segment, relperc = modf(perc*(num-1))
     local r1, g1, b1, r2, g2, b2 = select((segment*3)+1, ...)
 
-    return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc
+    return r1 + (r2-r1)*relperc, g1 + (g2-g1)*relperc, b1 + (b2-b1)*relperc]]
+	return
 end
 
 local function RGBGradient(num)
-    local r, g, b = ColorGradient(num, unpack(gradientColor))
-    return r, g, b
+    --local r, g, b = ColorGradient(num, unpack(gradientColor))
+    --return r, g, b
+	return
 end
 
 -- Create the tab frame

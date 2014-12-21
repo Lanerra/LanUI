@@ -40,7 +40,7 @@ local function LoadSkin()
 	
 	--Progress Frame
 	AuctionProgressFrame:StripTextures()
-	AuctionProgressFrame:SetTemplate(true)
+	AuctionProgressFrame:SetTemplate()
 	AuctionProgressFrameCancelButton:Reskin()
 	AuctionProgressFrameCancelButton:SetHitRectInsets(0, 0, 0, 0)
 	AuctionProgressFrameCancelButton:GetNormalTexture():ClearAllPoints()
@@ -55,14 +55,15 @@ local function LoadSkin()
 	local backdrop = CreateFrame('Frame', nil, AuctionProgressBarIcon:GetParent())
 	backdrop:Point('TOPLEFT', AuctionProgressBarIcon, 'TOPLEFT', -2, 2)
 	backdrop:Point('BOTTOMRIGHT', AuctionProgressBarIcon, 'BOTTOMRIGHT', 2, -2)
-	backdrop:SetTemplate()
+	backdrop:CreateBD()
 	AuctionProgressBarIcon:SetParent(backdrop)
 	
 	AuctionProgressBarText:ClearAllPoints()
 	AuctionProgressBarText:SetPoint('CENTER')
 	
 	AuctionProgressBar:StripTextures()
-	AuctionProgressBar:CreateBD(true)
+	AuctionProgressBar:CreateBD()
+	AuctionProgressBar.backdrop:SetOutside(AuctionProgressBar)
 	AuctionProgressBar:SetStatusBarTexture(C.Media.StatusBar)
 	AuctionProgressBar:SetStatusBarColor(1, 1, 0)
 	

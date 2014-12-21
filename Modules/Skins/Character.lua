@@ -35,7 +35,8 @@ local function LoadSkin()
 		slot:StripTextures()
 		slot:StyleButton(false)
 		slot.ignoreTexture:SetTexture([[Interface\PaperDollInfoFrame\UI-GearManager-LeaveItem-Transparent]])
-		slot:SetTemplate(true)
+		slot:CreateBD()
+		slot.backdrop:SetOutside(icon)
 		icon:SetTexCoord(unpack(F.TexCoords))
 		icon:SetInside()
 	end	
@@ -49,14 +50,14 @@ local function LoadSkin()
 			local itemId = GetInventoryItemID("player", slotId)
 
 			if itemId then
-				local _, _, rarity, _, _, _, _, _, _, _, _ = GetItemInfo(itemId)
+				local rarity = GetInventoryItemQuality('player', slotId)
 				if rarity and rarity > 1 then
-					target:SetBeautyBorderColor(GetItemQualityColor(rarity))
+					target.backdrop:SetBackdropBorderColor(GetItemQualityColor(rarity))
 				else
-					target:SetBeautyBorderColor(bc.r, bc.g, bc.b)
+					target.backdrop:SetBackdropBorderColor(bc.r, bc.g, bc.b)
 				end
 			else
-				target:SetBeautyBorderColor(bc.r, bc.g, bc.b)
+				target.backdrop:SetBackdropBorderColor(bc.r, bc.g, bc.b)
 			end
 		end
 	end

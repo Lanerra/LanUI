@@ -222,7 +222,8 @@ hooksecurefunc('AuraButton_Update', function(self, index)
     
     if (button and not border) then
         if (not button.skinned) then
-            F.SetTemplate(button, true)
+            button:CreateBD()
+            button.backdrop:SetOutside()
         end
     end
 end)

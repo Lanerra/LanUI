@@ -52,7 +52,7 @@ Modules\LanWarning.lua
 
 # Modules - Skins
 Modules\Skins\Achievement.lua
-Modules\Skins\AchievementPopup.lua
+Modules\Skins\Alerts.lua
 Modules\Skins\Archeology.lua
 Modules\Skins\Auction.lua
 Modules\Skins\Bags.lua
@@ -65,6 +65,7 @@ Modules\Skins\ColorPicker.lua
 Modules\Skins\DebugTools.lua
 Modules\Skins\DressUp.lua
 Modules\Skins\Friends.lua
+Modules\Skins\Garrison.lua
 Modules\Skins\Glyph.lua
 Modules\Skins\Gossip.lua
 Modules\Skins\Greeting.lua

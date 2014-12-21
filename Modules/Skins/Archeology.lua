@@ -11,13 +11,14 @@ local function LoadSkin()
 	
 	ArchaeologyFrameRankBar:StripTextures()
 	ArchaeologyFrameRankBar:SetStatusBarTexture(C.Media.StatusBar)
-	ArchaeologyFrameRankBar:CreateBD(true)
+	ArchaeologyFrameRankBar:CreateBD()	
+	ArchaeologyFrameRankBar.backdrop:SetOutside(ArchaeologyFrameRankBar)	
 	
 	ArchaeologyFrameArtifactPageSolveFrameStatusBar:StripTextures()
 	ArchaeologyFrameArtifactPageSolveFrameStatusBar:SetStatusBarTexture(C.Media.StatusBar)
 	ArchaeologyFrameArtifactPageSolveFrameStatusBar:SetStatusBarColor(0.7, 0.2, 0)
-	ArchaeologyFrameArtifactPageSolveFrameStatusBar:CreateBD(true)
-	ArchaeologyFrameArtifactPageSolveFrameStatusBar:SetBeautyBorderPadding(2)
+	ArchaeologyFrameArtifactPageSolveFrameStatusBar:CreateBD()
+	ArchaeologyFrameArtifactPageSolveFrameStatusBar.backdrop:SetOutside(ArchaeologyFrameArtifactPageSolveFrameStatusBar)
 	
 	for i=1, ARCHAEOLOGY_MAX_COMPLETED_SHOWN do
 		local artifact = _G['ArchaeologyFrameCompletedPageArtifact'..i]
@@ -77,9 +78,14 @@ local function LoadSkin()
 	ArchaeologyFrameArtifactPageHistoryScrollChildText:SetTextColor(1, 1, 1)
 	ArchaeologyFrameCloseButton:SkinCloseButton()
 	ArchaeologyFrameCompletedPagePrevPageButton:SkinCloseButton()
+	ArchaeologyFrameCompletedPagePrevPageButton.text:SetText('<')
 	ArchaeologyFrameCompletedPageNextPageButton:SkinCloseButton()
-	ArchaeologyFrameCompletedPagePrevPageButton.t:SetText('<')
-	ArchaeologyFrameCompletedPageNextPageButton.t:SetText('>')
+	ArchaeologyFrameCompletedPageNextPageButton:SetText('>')
+	ArchaeologyFrameSummaryPageNextPageButton:SkinCloseButton()
+	ArchaeologyFrameSummaryPageNextPageButton.text:SetText('>')
+	ArchaeologyFrameSummaryPagePrevPageButton:SkinCloseButton()
+	ArchaeologyFrameSummaryPagePrevPageButton.text:SetText('<')
+	
 end
 
 F.SkinFuncs['Blizzard_ArchaeologyUI'] = LoadSkin

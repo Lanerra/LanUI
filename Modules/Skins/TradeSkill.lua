@@ -13,6 +13,7 @@ local function LoadSkin()
 	TradeSkillFrame:Height(TradeSkillFrame:GetHeight() + 12)
 	TradeSkillRankFrame:StripTextures()
 	TradeSkillRankFrame:CreateBD()
+	TradeSkillRankFrame.backdrop:SetOutside(TradeSkillRankFrame)
 	TradeSkillRankFrame:SetStatusBarTexture(C.Media.StatusBar)
 	
 	TradeSkillCreateButton:SkinButton(true)

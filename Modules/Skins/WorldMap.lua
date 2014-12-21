@@ -21,7 +21,7 @@ local function LoadSkin()
 	WorldMapFrame.BorderFrame.Inset.backdrop:SetPoint("BOTTOMRIGHT", WorldMapFrame.BorderFrame.Inset, "BOTTOMRIGHT", -3, 2)
 
 	SkinScrollBar(QuestScrollFrameScrollBar)
-	StyleButton(QuestScrollFrame.ViewAll)
+	SkinButton(QuestScrollFrame.ViewAll)
 
 	WorldMapFrameTutorialButton:Kill()
 

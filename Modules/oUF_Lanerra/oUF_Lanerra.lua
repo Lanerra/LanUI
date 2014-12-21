@@ -96,12 +96,20 @@ local function UpdateBorder(self)
 	end
 
 	if color then
-		self.Overlay:SetBeautyBorderColor(color[1], color[2], color[3])
-		self.Overlay:SetBackdropBorderColor(color[1], color[2], color[3])
+		--self.Overlay:SetBeautyBorderColor(color[1], color[2], color[3])
+		self.backdrop:SetBackdropBorderColor(color[1], color[2], color[3])
 	else
-		self.Overlay:SetBeautyBorderColor(bc.r, bc.g, bc.b)
-		self.Overlay:SetBackdropBorderColor(bc.r, bc.g, bc.b)
+		--self.Overlay:SetBeautyBorderColor(bc.r, bc.g, bc.b)
+		self.backdrop:SetBackdropBorderColor(bc.r, bc.g, bc.b)
 	end
+	
+	--[[if color then
+		self.backdrop:SetBeautyBorderColor(color[1], color[2], color[3])
+		self.backdrop:SetBackdropBorderColor(color[1], color[2], color[3])
+	else
+		self.backdrop:SetBeautyBorderColor(bc.r, bc.g, bc.b)
+		self.backdrop:SetBackdropBorderColor(bc.r, bc.g, bc.b)
+	end]]
 end
 
 ------------------------------------------
@@ -154,15 +162,15 @@ local function PostCastStart(Castbar, unit)
     
     if (unit == 'target') then
         if (self.Castbar.interrupt) then
-            self.Castbar.Borders:SetBeautyBorderTexture(Interrupt)
-            self.Castbar.Borders:SetBeautyBorderColor(oUF.colors.uninterruptible[1], oUF.colors.uninterruptible[2], oUF.colors.uninterruptible[3])
+            --self.Castbar.Borders:SetBeautyBorderTexture(Interrupt)
+            self.Castbar.Borders.backdrop:SetBackdropBorderColor(oUF.colors.uninterruptible[1], oUF.colors.uninterruptible[2], oUF.colors.uninterruptible[3])
         else
 			if C.Media.ClassColor then
-				self.Castbar.Borders:SetBeautyBorderTexture('white')
-				self.Castbar.Borders:SetBeautyBorderColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
+				--self.Castbar.Borders:SetBeautyBorderTexture('white')
+				self.Castbar.backdrop:SetBackdropBorderColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
 			else
-				self.Castbar.Borders:SetBeautyBorderTexture('default')
-				self.Castbar.Borders:SetBeautyBorderColor(C.Media.BorderColor)
+				--self.Castbar.Borders:SetBeautyBorderTexture('default')
+				self.Castbar.backdrop:SetBackdropBorderColor(C.Media.BorderColor)
 			end
         end
     end
@@ -176,16 +184,10 @@ local function PostChannelStart(Castbar, unit)
     
     if (unit == 'target') then
         if (self.interrupt) then
-			self.Castbar.Borders:SetBeautyBorderTexture(Interrupt)
-            self.Castbar.Borders:SetBeautyBorderColor(oUF.colors.uninterruptible[1], oUF.colors.uninterruptible[2], oUF.colors.uninterruptible[3])
+			--self.Castbar.Borders:SetBeautyBorderTexture(Interrupt)
+            self.Castbar.backdrop:SetBackdropBorderColor(oUF.colors.uninterruptible[1], oUF.colors.uninterruptible[2], oUF.colors.uninterruptible[3])
         else
-			if C.Media.ClassColor then
-				self.Castbar.Borders:SetBeautyBorderTexture('white')
-				self.Castbar.Borders:SetBeautyBorderColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
-			else
-				self.Castbar.Borders:SetBeautyBorderTexture('default')
-				self.Castbar.Borders:SetBeautyBorderColor(C.Media.BorderColor)
-			end
+			self.Castbar.backdrop:SetBackdropBorderColor(C.Media.BorderColor)
         end
     end
 end
@@ -409,16 +411,16 @@ local AuraIconOverlay_SetBorderColor = function(overlay, r, g, b)
 	end
 	
 	local over = overlay:GetParent()
-	over.border:SetBeautyBorderColor(r, g, b)
+	over.border:SetBackdropBorderColor(r, g, b)
 end
 
 -- Aura Icon Creation Function
 local function PostCreateAuraIcon(iconframe, button)
 	local border = CreateFrame('Frame', nil, button)
-	border:SetAllPoints(button)
-	border:SetTemplate()
-	border:SetBeautyBorderPadding(2)
-	border:SetBackdropColor(0, 0, 0, 0)
+	border:SetOutside(button)
+	border:CreateBD()
+	--border:SetBeautyBorderPadding(2)
+	border.backdrop:SetBackdropColor(0, 0, 0, 0)
 	button.border = border
 
 	button.cd:SetReverse(true)
@@ -637,24 +639,28 @@ local Stylish = function(self, unit, isSingle)
             self.Castbar:SetStatusBarTexture(C.Media.StatusBar)
 			self.Castbar:SetScale(C.UF.CastBars.Player.Scale)
 			self.Castbar:SetStatusBarColor(unpack(C.UF.CastBars.Player.Color))
+			self.Castbar:CreateBD()
+			self.Castbar.backdrop:SetOutside(self.Castbar)
             
-            self.Castbar.Borders = CreateFrame('Frame', nil, self.Castbar)
+            --[[self.Castbar.Borders = CreateFrame('Frame', nil, self.Castbar)
             self.Castbar.Borders:SetPoint('TOPLEFT', 0, 1)
 			self.Castbar.Borders:SetPoint('BOTTOMRIGHT', 1, 0)
             self.Castbar.Borders:SetFrameStrata('HIGH')
             
-			self.Castbar.Borders:SetTemplate(true)
-			self.Castbar.Borders:SetBeautyBorderPadding(3)
-			self.Castbar.Borders:SetBackdropColor(0, 0, 0, 0)
+			self.Castbar.Borders:CreateBD()
+			--self.Castbar.Borders:SetBeautyBorderPadding(3)
+			self.Castbar.Borders.backdrop:SetOutside(self.Castbar)
+			self.Castbar.Borders.backdrop:SetParent(self.Castbar)
+			self.Castbar.Borders:SetBackdropColor(0, 0, 0, 0)]]
 			
 			self.Castbar:SetHeight(C.UF.CastBars.Player.Height)
 			self.Castbar:SetWidth(C.UF.CastBars.Player.Width)
 			self.Castbar:SetParent(self)
 			self.Castbar:SetPoint(unpack(C.UF.CastBars.Player.Position))
 			
-			self.Castbar.Bg = self.Castbar:CreateTexture('$parentCastBarBackground', 'BORDER')
+			--[[self.Castbar.Bg = self.Castbar:CreateTexture('$parentCastBarBackground', 'BORDER')
 			self.Castbar.Bg:SetAllPoints(self.Castbar)
-			self.Castbar.Bg:SetTexture(unpack(C.Media.BackdropColor))
+			self.Castbar.Bg:SetTexture(unpack(C.Media.BackdropColor))]]
 			
 			self.Castbar.Text = self.Castbar:CreateFontString('$parentCastBarText', 'OVERLAY')
 			self.Castbar.Text:SetFont(C.Media.Font, 13)
@@ -690,23 +696,23 @@ local Stylish = function(self, unit, isSingle)
 			self.Castbar:SetStatusBarColor(unpack(C.UF.CastBars.Target.Color))
 			self.Castbar:SetWidth(C.UF.CastBars.Target.Width)
 			self.Castbar:SetScale(C.UF.CastBars.Target.Scale)
+			self.Castbar:CreateBD()
+			self.Castbar.backdrop:SetOutside(self.Castbar)
 			
-            self.Castbar.Borders = CreateFrame('Frame', nil, self.Castbar)
+            --[[self.Castbar.Borders = CreateFrame('Frame', nil, self.Castbar)
             self.Castbar.Borders:SetPoint('TOPLEFT', 0, 1)
 			self.Castbar.Borders:SetPoint('BOTTOMRIGHT', 1, 0)
             self.Castbar.Borders:SetFrameStrata('HIGH')
             
-			self.Castbar.Borders:SetTemplate(true)
-			self.Castbar.Borders:SetBeautyBorderPadding(3)
-			self.Castbar.Borders:SetBackdropColor(0, 0, 0, 0)
+			self.Castbar.Borders:CreateBD()
+			--self.Castbar.Borders:SetBeautyBorderPadding(3)
+			self.Castbar.Borders.backdrop:SetOutside(self.Castbar)
+			self.Castbar.Borders.backdrop:SetParent(self.Castbar)
+			self.Castbar.Borders:SetBackdropColor(0, 0, 0, 0)]]
 			
 			self.Castbar:SetHeight(C.UF.CastBars.Target.Height)
 			self.Castbar:SetParent(self)
 			self.Castbar:SetPoint(unpack(C.UF.CastBars.Target.Position))
-			
-			self.Castbar.Bg = self.Castbar:CreateTexture('$parentCastBarBackground', 'BORDER')
-			self.Castbar.Bg:SetAllPoints(self.Castbar)
-			self.Castbar.Bg:SetTexture(unpack(C.Media.BackdropColor))
 			
 			self.Castbar.Text = self.Castbar:CreateFontString('$parentCastBarText', 'OVERLAY')
 			self.Castbar.Text:SetFont(C.Media.Font, 13)
@@ -745,11 +751,7 @@ local Stylish = function(self, unit, isSingle)
 			end
 		end
 		
-        MirrorBorder = CreateFrame('Frame', nil, _G[bar])
-        MirrorBorder:SetAllPoints(_G[bar])
-        MirrorBorder:SetFrameLevel(_G[bar]:GetFrameLevel() + 2)
-		MirrorBorder:SetTemplate(true)
-		MirrorBorder:SetBeautyBorderPadding(2)
+        _G[bar]:CreateBD()
 		
 		_G[bar..'Border']:Hide()
 		
@@ -757,11 +759,6 @@ local Stylish = function(self, unit, isSingle)
 		_G[bar]:SetScale(1.135)
 		_G[bar]:SetHeight(18)
 		_G[bar]:SetWidth(200)
-		
-		_G[bar..'Background'] = _G[bar]:CreateTexture(bar..'Background', 'BACKGROUND', _G[bar])
-		_G[bar..'Background']:SetTexture(C.Media.Backdrop)
-		_G[bar..'Background']:SetAllPoints(bar)
-		_G[bar..'Background']:SetVertexColor(unpack(C.Media.BackdropColor))
 		
 		_G[bar..'Text']:SetFont(CastingBarFrameText:GetFont(), 13)
 		_G[bar..'Text']:ClearAllPoints()
@@ -1018,11 +1015,7 @@ local Stylish = function(self, unit, isSingle)
 			EclipseBar:SetBackdrop(backdrop)
 			EclipseBar:SetBackdropColor(unpack(C.Media.BackdropColor))
 			
-			local EclipseBarBorder = CreateFrame('Frame', nil, EclipseBar)
-			EclipseBarBorder:SetAllPoints(EclipseBar)
-			EclipseBarBorder:SetTemplate()
-			EclipseBarBorder:SetBeautyBorderPadding(4)
-			EclipseBarBorder:SetBackdropColor(0, 0, 0, 0)
+			EclipseBar:CreateBD()
 
 			local LunarBar = CreateFrame('StatusBar', nil, EclipseBar)
 			LunarBar:SetPoint('LEFT', EclipseBar, 'LEFT', 0, 0)
@@ -1115,19 +1108,9 @@ local Stylish = function(self, unit, isSingle)
         end
     end
 	
-    -- Hardcore border action!	
-	if unit == 'player' and F.MyClass == 'DEATHKNIGHT' then
-		self.Overlay:Point('TOPLEFT', self.Runes[1])
-		self.Overlay:Point('BOTTOMRIGHT', self)
-	else
-		self.Overlay:ClearAllPoints()
-		self.Overlay:Point('TOPLEFT', self, 'TOPLEFT', -(F.Mult * 2), F.Mult * 2)
-		self.Overlay:Point('BOTTOMRIGHT', self, 'BOTTOMRIGHT', F.Mult * 2, -(F.Mult * 2))
-	end
-	
-	--self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
-    self.Overlay:SetTemplate(true)
-	self.Overlay:SetBeautyBorderPadding(2)
+    self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
+    --self.Overlay:SetTemplate(true)
+	--self.Overlay:SetBeautyBorderPadding(2)
     
     self.UpdateBorder = UpdateBorder
 
@@ -1144,9 +1127,18 @@ local Stylish = function(self, unit, isSingle)
 	}
 	
 	self:CreateBD()
-	self.backdrop:ClearAllPoints()
-	self.backdrop:Point('TOPLEFT', self, 'TOPLEFT', -(F.Mult * 2), F.Mult * 2)
-	self.backdrop:Point('BOTTOMRIGHT', self, 'BOTTOMRIGHT', F.Mult * 2, -(F.Mult * 2))
+	
+	-- Hardcore border action!	
+	if unit == 'player' and F.MyClass == 'DEATHKNIGHT' then
+		self.backdrop:ClearAllPoints()
+		self.backdrop:Point('TOPLEFT', self.Runes[1])
+		self.backdrop:Point('BOTTOMRIGHT', self)
+	else
+		self.backdrop:ClearAllPoints()
+		self.backdrop:Point('TOPLEFT', self, 'TOPLEFT', -(F.Mult * 2), F.Mult * 2)
+		self.backdrop:Point('BOTTOMRIGHT', self, 'BOTTOMRIGHT', F.Mult * 2, -(F.Mult * 2))
+	end
+	
     return self
 end
 
@@ -1209,8 +1201,7 @@ local function StylishGroup(self, unit)
     -- Improve border drawing
     self.Overlay = CreateFrame('Frame', nil, self)
 	self.Overlay:SetAllPoints(self)
-	self.Overlay:SetTemplate(true)
-	self.Overlay:SetBeautyBorderPadding(3)
+	--self.Overlay:SetBeautyBorderPadding(3)
 	self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
 	
 	-- Display group names
@@ -1328,8 +1319,8 @@ local function StylishGroup(self, unit)
 	self.SpellRange = true
     
     -- Hardcore border action!
-    self.Overlay:SetTemplate()
-	self.Overlay:SetBeautyBorderPadding(4)
+    self.Overlay:CreateBD()
+	--self.Overlay:SetBeautyBorderPadding(4)
     
     self.UpdateBorder = UpdateBorder
 
@@ -1345,7 +1336,8 @@ local function StylishGroup(self, unit)
 		Override = UpdateThreatHighlight,
 	}
     
-	--self:CreateBD()
+	self:CreateBD()
+	self.backdrop:SetOutside()
     return self
 end
 
@@ -1413,8 +1405,8 @@ local function StylishRaid(self, unit)
     self.Overlay = CreateFrame('Frame', nil, self)
 	self.Overlay:SetPoint('TOPLEFT')
 	self.Overlay:SetPoint('BOTTOMRIGHT', -1, -0.5)
-	self.Overlay:SetTemplate(true)
-	self.Overlay:SetBeautyBorderPadding(3)
+	--self.Overlay:CreateBD()
+	--self.Overlay:SetBeautyBorderPadding(3)
 	self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
 		
 	-- Display group names
@@ -1485,8 +1477,8 @@ local function StylishRaid(self, unit)
 	self.SpellRange = true
 	
     -- Hardcore border action!
-    self.Overlay:SetTemplate()
-	self.Overlay:SetBeautyBorderPadding(4)
+    self.Overlay:CreateBD()
+	--self.Overlay:SetBeautyBorderPadding(4)
     
     self.UpdateBorder = UpdateBorder
 
@@ -1502,7 +1494,8 @@ local function StylishRaid(self, unit)
 		Override = UpdateThreatHighlight,
 	}
     
-	--self:CreateBD()
+	self:CreateBD()
+	self.backdrop:SetOutside()
     return self
 end
 

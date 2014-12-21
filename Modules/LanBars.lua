@@ -4,6 +4,7 @@ local _G = _G
 local IsUsableAction = IsUsableAction
 local IsActionInRange = IsActionInRange
 local HasAction = HasAction
+local bc = C.Media.BorderColor
 
 -- Hide macro text
 if not C.ActionBars.Macro then
@@ -46,8 +47,12 @@ for i = 1, num do
 	button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
 	button:ClearAllPoints()
     
-	if not button.skinned then
-		button:SetTemplate(true)
+	if not button.backdrop then
+		button:CreateBD()
+		button.icon:SetTexCoord(unpack(F.TexCoords))
+		button.icon:SetInside()
+		button.icon:SetDrawLayer('BACKGROUND', 7)
+		--button.icon:SetParent(button.backdrop)
         button:SetBeautyBorderPadding(2)
 	end
     
@@ -79,8 +84,13 @@ for i = 1, num do
     button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
     button:ClearAllPoints()
     
-    if not button.skinned then
-        button:SetTemplate(true)
+    if not button.backdrop then
+        button:CreateBD()
+		button.icon:SetTexCoord(unpack(F.TexCoords))
+		button.icon:SetInside()
+		button.icon:SetDrawLayer('BACKGROUND', 7)
+		button.backdrop:SetFrameLevel(5)
+		--button.icon:SetParent(button.backdrop)
         button:SetBeautyBorderPadding(2)
     end
     
@@ -112,8 +122,12 @@ for i = 1, num do
     button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
     button:ClearAllPoints()
     
-    if not button.skinned then
-        button:SetTemplate(true)
+    if not button.backdrop then
+        button:CreateBD()
+		button.icon:SetTexCoord(unpack(F.TexCoords))
+		button.icon:SetInside()
+		button.icon:SetDrawLayer('BACKGROUND', 7)
+		--button.icon:SetParent(button.backdrop)
         button:SetBeautyBorderPadding(2)
     end
     
@@ -193,8 +207,12 @@ for i = 1, NUM_ACTIONBAR_BUTTONS do
 	button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
     button:ClearAllPoints()
 	
-    if not button.skinned then
-        button:SetTemplate(true)
+    if not button.backdrop then
+        button:CreateBD()
+		button.icon:SetTexCoord(unpack(F.TexCoords))
+		button.icon:SetInside()
+		button.icon:SetDrawLayer('BACKGROUND', 7)
+		--button.icon:SetParent(button.backdrop)
         button:SetBeautyBorderPadding(2)
     end
     
@@ -228,8 +246,12 @@ for i = 1, NUM_ACTIONBAR_BUTTONS do
 	button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
 	button:ClearAllPoints()
     
-    if not button.skinned then
-        button:SetTemplate(true)
+    if not button.backdrop then
+        button:CreateBD()
+		button.icon:SetTexCoord(unpack(F.TexCoords))
+		button.icon:SetInside()
+		button.icon:SetDrawLayer('BACKGROUND', 7)
+		--button.icon:SetParent(button.backdrop)
         button:SetBeautyBorderPadding(2)
     end
     
@@ -278,8 +300,8 @@ if button.SetPushedTexture and not button.pushed then
     button:SetPushedTexture(pushed)
 end
 
-if not button.skinned then
-	button:SetTemplate()
+if not button.backdrop then
+	button:CreateBD()
     button:SetBackdropColor(1, 0, 0, 0.5)
 end]]
 
@@ -315,8 +337,12 @@ for i = 1, 7 do
 	button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
 	button:ClearAllPoints()
     
-	if not button.skinned then
-		button:SetTemplate(true)
+	if not button.backdrop then
+		button:CreateBD()
+		--button.icon:SetTexCoord(unpack(F.TexCoords))
+		--button.icon:SetInside()
+		--button.icon:SetDrawLayer('BACKGROUND', 7)
+		--button.icon:SetParent(button.backdrop)
         button:SetBeautyBorderPadding(2)
 	end
     
@@ -346,18 +372,35 @@ ExtraActionBarFrame:EnableMouse(false)
 ExtraActionBarFrame:SetAllPoints()
 ExtraActionBarFrame.ignoreFramePositionManager = true
 
-_G['ExtraActionButton1']:SetTemplate(true)
+_G['ExtraActionButton1']:CreateBD()
 _G['ExtraActionButton1']:SetBeautyBorderPadding(2)
 _G['ExtraActionButton1']:StyleButton()
 _G['ExtraActionButton1HotKey']:Hide()
 
-local normal = ExtraActionButton1NormalTexture2 or ExtraActionButton1NormalTexture
-if normal then
-    hooksecurefunc(ExtraActionButton1, 'SetNormalTexture', function()
-        ExtraActionButton1NormalTexture:SetTexture(nil)
-        ExtraActionButton1NormalTexture2:SetTexture(nil)
-    end)
+local normal = ExtraActionButton1NormalTexture
+local normal2 = ExtraActionButton1NormalTexture2
+hooksecurefunc(ExtraActionButton1, 'SetNormalTexture', function()
+	if normal then
+		ExtraActionButton1NormalTexture:SetTexture(nil)
+	elseif normal2 then
+		ExtraActionButton1NormalTexture2:SetTexture(nil)
+	end
+end)
+
+
+local button = DraenorZoneAbilityFrame.SpellButton
+if button then
+	button:SetNormalTexture('')
+	button:StyleButton()
+	button:CreateBD()
+	button.backdrop:SetOutside(button)
+	button.Icon:SetDrawLayer('ARTWORK')
+	button.Icon:SetTexCoord(unpack(F.TexCoords))
+	button.Icon:SetInside()
+	select(2, select(1, DraenorZoneAbilityFrame:GetChildren()):GetRegions()):Hide()
+	--select(1, select(1, DraenorZoneAbilityFrame:GetChildren()):GetRegions()):CreateBD()
 end
+
 
 -- Stance Bar
 local num = NUM_STANCE_SLOTS
@@ -384,8 +427,12 @@ for i = 1, num do
 	button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
 	button:ClearAllPoints()
     
-	if not button.skinned then
-		button:SetTemplate(true)
+	if not button.backdrop then
+		button:CreateBD()
+		button.icon:SetTexCoord(unpack(F.TexCoords))
+		button.icon:SetInside()
+		button.icon:SetDrawLayer('BACKGROUND', 7)
+		--button.icon:SetParent(button.backdrop)
         button:SetBeautyBorderPadding(2)
 	end
     
@@ -410,8 +457,12 @@ for i = 1, num2 do
 	button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
 	button:ClearAllPoints()
     
-	if not button.skinned then
-		button:SetTemplate(true)
+	if not button.backdrop then
+		button:CreateBD()
+		button.icon:SetTexCoord(unpack(F.TexCoords))
+		button.icon:SetInside()
+		button.icon:SetDrawLayer('BACKGROUND', 7)
+		--button.icon:SetParent(button.backdrop)
         button:SetBeautyBorderPadding(2)
 	end
     
@@ -453,8 +504,13 @@ for i = 1, NUM_PET_ACTION_SLOTS do
 	button:SetSize(C.ActionBars.ButtonSize, C.ActionBars.ButtonSize)
 	button:ClearAllPoints()
     
-	if not button.skinned then
-		button:SetTemplate(true)
+	if not button.backdrop then
+		button:CreateBD()
+		button.icon:SetTexCoord(unpack(F.TexCoords))
+		button.icon:SetInside()
+		button.icon:SetDrawLayer('BACKGROUND', 7)
+		button.backdrop:SetOutside()
+		--button.icon:SetParent(button.backdrop)
         button:SetBeautyBorderPadding(2)
 	end
     
@@ -502,13 +558,56 @@ local function RangeUpdate(self)
         return
     end  
     
+	local Button = self
     local Name = self:GetName()
 	local Icon = self.icon
     local NormalTexture = self.normalTexture
+	local Flash	 = _G[Name.."Flash"]
     local ID = self.action
     local IsUsable, NotEnoughMana = IsUsableAction(ID)
 	local HasRange = ActionHasRange(ID)
 	local InRange = IsActionInRange(ID)
+	local Border  = _G[Name.."Border"]
+	local Normal  = _G[Name.."NormalTexture"]
+	local BtnBG = _G[Name.."FloatingBG"]
+	
+	Flash:SetTexture("")
+	Button:SetNormalTexture("")
+	
+	if Button.backdrop then
+		Button.backdrop:SetOutside()
+	end
+	
+	if Border and Button.isSkinned then
+		Border:SetTexture('')
+		if Border:IsShown() then
+			Button:SetBackdropBorderColor(.08, .70, 0)
+		else
+			Button:SetBackdropBorderColor(bc.r, bc.g, bc.b)
+		end
+	end
+	
+	if Button.isSkinned then
+		return
+	end
+	
+	if BtnBG then
+		BtnBG:Kill()
+	end
+	
+	Icon:SetTexCoord(unpack(F.TexCoords))
+	Icon:SetInside()
+	Icon:SetDrawLayer('BACKGROUND', 7)
+	
+	--[[if (Normal) then
+		Normal:ClearAllPoints()
+		Normal:SetPoint("TOPLEFT", 1, -1)
+		Normal:SetPoint("BOTTOMRIGHT", -1, 1)
+		
+		if (Button:GetChecked()) then
+			ActionButton_UpdateState(Button)
+		end
+	end]]
 
     if (not NormalTexture) or Name == 'OverrideActionBarButton1' then
         return
@@ -529,6 +628,8 @@ local function RangeUpdate(self)
         Icon:SetVertexColor(0.3, 0.3, 0.3)
         NormalTexture:SetVertexColor(0.3, 0.3, 0.3)
     end
+	
+	Button.isSkinned = true
 end
 
 hooksecurefunc("ActionButton_Update", RangeUpdate)
@@ -663,7 +764,7 @@ function Experience:Create()
 		XPBar:EnableMouse()
         XPBar:SetFrameStrata("MEDIUM")
         XPBar:SetFrameLevel(4)
-		XPBar:SetTemplate()
+		XPBar:CreateBD()
 		XPBar:SetScript("OnEnter", Experience.SetTooltip)
 		XPBar:SetScript("OnLeave", HideTooltip)
 		
@@ -730,7 +831,7 @@ XP:SetPoint('BOTTOM', BottomPanel, 'TOP', 0, 2)
 XP:SetWidth(512)
 XP:SetHeight(13)
 
-XP:SetTemplate()
+XP:CreateBD()
 
 local font = CreateFont('LanXPFont')
 font:SetFontObject(GameFontHighlightSmall)

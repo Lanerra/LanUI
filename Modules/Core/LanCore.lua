@@ -33,21 +33,13 @@ LanJanitor:SetScript("OnEvent", function(self, event)
 end)
 
 -- Kill annoying raid shit
-if not InCombatLockdown() then
-    CompactRaidFrameManager:UnregisterAllEvents()
+if CompactRaidFrameManager then
     CompactRaidFrameManager:SetParent(LanUIHider)
-    CompactRaidFrameManager:Hide()
-    CompactRaidFrameContainer:UnregisterAllEvents()
-    CompactRaidFrameContainer:SetParent(LanUIHider)
-    CompactRaidFrameContainer:Hide()
 end
 
-ShowPartyFrame = F.Dummy
-HidePartyFrame = F.Dummy
-CompactUnitFrame_UpdateAll = F.Dummy
-CompactUnitFrameProfiles_ApplyProfile = F.Dummy
-CompactRaidFrameManager_UpdateShown = F.Dummy
-CompactRaidFrameManager_UpdateOptionsFlowContainer = F.Dummy
+if CompactUnitFrameProfiles then
+    CompactUnitFrameProfiles:UnregisterAllEvents()
+end
 
 -- Fade in/out world when GameMenu is opened
 local sh = UIParent:CreateTexture(nil, 'BACKGROUND')
@@ -80,14 +72,10 @@ local function RegisterMyStyle()
             bar.candyBarBar:SetStatusBarTexture(C.Media.StatusBar)
             bar.candyBarBar:SetStatusBarColor(.25, .25, .25)
             
-            bar.Overlay = CreateFrame('Frame', nil, bar)
-            bar.Overlay:SetAllPoints(bar)
-            bar.Overlay:SetFrameLevel(bar.candyBarBar:GetFrameLevel() + 3)
-            bar.Overlay:SetTemplate()
-            bar.Overlay.backdrop:SetParent(bar)
-            bar.Overlay.backdrop:SetBeautyBorderPadding(3)
-            bar.Overlay.backdrop:SetBackdropColor(0, 0, 0, 0)
-            bar.Overlay.backdrop:SetBackdropBorderColor(0, 0, 0, 0)
+            bar:CreateBD()
+            bar.backdrop:SetOutside(bar)
+            bar.backdrop:SetBackdropColor(0, 0, 0, 0)
+            bar.backdrop:SetBackdropBorderColor(0, 0, 0, 0)
             
             bar.candyBarBackground:SetTexture(C.Media.Backdrop)
             bar.candyBarBackground:SetVertexColor(0, 0, 0, 0.5)
