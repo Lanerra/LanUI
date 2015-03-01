@@ -6,7 +6,7 @@ if (not IsAddOnLoaded('Blizzard_TimeManager')) then
     LoadAddOn('Blizzard_TimeManager')
 end
 
-TimeManagerFrameTicker:SetFont(C.Media.Font, 15, 'OUTLINE')
+TimeManagerFrameTicker:FontTemplate(C.Media.Font, 15, 'OUTLINE')
 TimeManagerFrameTicker:SetShadowOffset(0, 0)
 TimeManagerFrameTicker:SetTextColor(classColor.r, classColor.g, classColor.b)
 TimeManagerFrameTicker:SetPoint('TOPRIGHT', TimeManagerClockButton, 0, 0)
@@ -39,7 +39,7 @@ GameTimeFrame:SetHitRectInsets(0, 0, 0, 0)
 GameTimeFrame:ClearAllPoints()
 GameTimeFrame:SetPoint('TOPRIGHT', Minimap, -3.5, -3.5)
 
-GameTimeFrame:GetFontString():SetFont(C.Media.Font, 15, 'OUTLINE')
+GameTimeFrame:GetFontString():FontTemplate(C.Media.Font, 15, 'OUTLINE')
 GameTimeFrame:GetFontString():SetShadowOffset(0, 0)
 GameTimeFrame:GetFontString():SetPoint('TOPRIGHT', GameTimeFrame)
 

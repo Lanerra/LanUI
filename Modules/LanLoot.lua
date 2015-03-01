@@ -150,7 +150,7 @@ Loot:RegisterEvent('UPDATE_MASTER_LOOT_LIST')
 
 do
 	local title = Loot:CreateFontString(nil, 'OVERLAY')
-	title:SetFont(C.Media.Font, C.Media.FontSize)
+	title:FontTemplate()
 	title:SetShadowOffset(0, 0)
 	title:SetJustifyH('LEFT')
 	title:SetPoint('TOPLEFT', Loot, 'TOPLEFT', 8, -7)
@@ -279,7 +279,7 @@ do
 		local count = iconFrame:CreateFontString(nil, 'OVERLAY')
 		count:SetJustifyH('RIGHT')
 		count:SetPoint('BOTTOMRIGHT', iconFrame, 'BOTTOMRIGHT', 1, 1)
-		count:SetFont(C.Media.Font, C.Media.FontSize)
+		count:FontTemplate()
 		count:SetShadowOffset(0, 0)
 		count:SetText(1)
 		frame.count = count
@@ -288,7 +288,7 @@ do
 		name:SetJustifyH('CENTER')
 		name:SetPoint('LEFT', icon, 'RIGHT', 10, 0)
 		name:SetNonSpaceWrap(true)
-		name:SetFont(C.Media.Font, C.Media.FontSize)
+		name:FontTemplate()
 		name:SetWidth(width - buttonsize - 25)
 		name:SetHeight(C.Media.FontSize)
 		frame.name = name

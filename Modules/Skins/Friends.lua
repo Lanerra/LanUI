@@ -207,7 +207,7 @@ local function LoadSkin()
 				button:StripTextures()
 				button:SetHighlightTexture('Interface\\PaperDollInfoFrame\\UI-Character-Tab-Highlight')
 				
-				_G['ChannelButton'..i..'Text']:SetFont(C.Media.Font, 12)
+				_G['ChannelButton'..i..'Text']:FontTemplate(C.Media.Font, 12)
 			end
 		end
 	end

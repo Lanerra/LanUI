@@ -314,13 +314,13 @@ local function SkinPlate(self, nameFrame)
     if (not self.Health.Value) then
         self.Health.Value = self.Health:CreateFontString(nil, 'OVERLAY')
         self.Health.Value:SetPoint('CENTER', self.Health, 0, 0)
-        self.Health.Value:SetFont(C.Media.Font, 9)
+        self.Health.Value:FontTemplate(C.Media.Font, 9)
         self.Health.Value:SetShadowOffset(1, -1)
     end
 
     if (not self.NewName) then
         self.NewName = self:CreateFontString(nil, 'ARTWORK')
-        self.NewName:SetFont(C.Media.Font, 11, 'THINOUTLINE')
+        self.NewName:FontTemplate(C.Media.Font, 11, 'THINOUTLINE')
         self.NewName:SetShadowOffset(0, 0)
         self.NewName:SetPoint('BOTTOM', self.Health, 'TOP', 0, 2)
         self.NewName:SetSize(110, 13)
@@ -360,7 +360,7 @@ local function SkinPlate(self, nameFrame)
     if (not self.Castbar.CastTime) then
         self.Castbar.CastTime = self.Castbar:CreateFontString(nil, 'OVERLAY')
         self.Castbar.CastTime:SetPoint('RIGHT', self.Castbar, 1.6666667, 0)
-        self.Castbar.CastTime:SetFont('Fonts\\ARIALN.ttf', 16)   -- , 'THINOUTLINE')
+        self.Castbar.CastTime:FontTemplate(C.Media.Font, 16)   -- , 'THINOUTLINE')
         self.Castbar.CastTime:SetTextColor(1, 1, 1)
         self.Castbar.CastTime:SetShadowOffset(1, -1)
     end
@@ -371,7 +371,7 @@ local function SkinPlate(self, nameFrame)
         self.Castbar.Name = self.Castbar:CreateFontString(nil, 'OVERLAY')
         self.Castbar.Name:SetPoint('LEFT', self.Castbar, 1.5, 0)
         self.Castbar.Name:SetPoint('RIGHT', self.Castbar.CastTime, 'LEFT', -6, 0)
-        self.Castbar.Name:SetFont('Fonts\\ARIALN.ttf', 10)
+        self.Castbar.Name:FontTemplate(C.Media.Font, 10)
         self.Castbar.Name:SetTextColor(1, 1, 1)
         self.Castbar.Name:SetShadowOffset(1, -1)
         self.Castbar.Name:SetJustifyH('LEFT')

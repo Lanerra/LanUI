@@ -269,7 +269,7 @@ end
 RegisterStateDriver(bar5, "visibility", "[petbattle][vehicleui][overridebar][possessbar,@vehicle,exists] hide; show")
 
 -- LeaveVehicle Button
---[[local button = CreateFrame('BUTTON', 'LanLeave', ABPanel or ChatFrame1, 'SecureHandlerClickTemplate, SecureHandlerStateTemplate');
+local button = CreateFrame('BUTTON', 'LanLeave', ABPanel or ChatFrame1, 'SecureHandlerClickTemplate, SecureHandlerStateTemplate');
 table.insert(buttonList, button)
 button:SetSize(C.Media.FontSize, C.Media.FontSize)
 
@@ -303,10 +303,10 @@ end
 if not button.backdrop then
 	button:CreateBD()
     button:SetBackdropColor(1, 0, 0, 0.5)
-end]]
+end
 
 -- Show/Hide
---RegisterStateDriver(button, 'visibility', '[petbattle][overridebar][vehicleui] hide; [possessbar][@vehicle,exists] show; hide')
+RegisterStateDriver(button, 'visibility', '[petbattle][overridebar][vehicleui] hide; [possessbar][@vehicle,exists] show; hide')
 
 -- Override Bar
 local override = CreateFrame('Frame', 'LanOverride', UIParent, 'SecureHandlerStateTemplate')
@@ -387,6 +387,15 @@ hooksecurefunc(ExtraActionButton1, 'SetNormalTexture', function()
 	end
 end)
 
+F.RegisterEvent('PLAYER_ENTERING_WORLD', function()
+	F.Delay(2, function()
+		local dz = DraenorZoneAbilityFrame
+		dz:ClearAllPoints()
+		dz:Point('RIGHT', ABPanel, 'LEFT', -2, 0)
+	end)
+end)
+
+DraenorZoneAbilityFrame.ignoreFramePositionManager = true
 
 local button = DraenorZoneAbilityFrame.SpellButton
 if button then
@@ -400,7 +409,6 @@ if button then
 	select(2, select(1, DraenorZoneAbilityFrame:GetChildren()):GetRegions()):Hide()
 	--select(1, select(1, DraenorZoneAbilityFrame:GetChildren()):GetRegions()):CreateBD()
 end
-
 
 -- Stance Bar
 local num = NUM_STANCE_SLOTS

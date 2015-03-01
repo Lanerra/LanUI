@@ -18,7 +18,7 @@ for _, frame in pairs({
 	'QuestLogMicroButton',
 	'GuildMicroButton',
 	'LFDMicroButton',
-	'CompanionsMicroButton',
+	'CollectionsMicroButton',
 	'EJMicroButton',
 	'StoreMicroButton',
 	'MainMenuMicroButton',

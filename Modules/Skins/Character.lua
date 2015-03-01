@@ -168,10 +168,10 @@ local function LoadSkin()
 			object.BgMiddle:SetTexture(nil)
 
 			--object.Check:SetTexture(nil)
-			object.text:SetFont(C.Media.Font, C.Media.FontSize)
+			object.text:FontTemplate()
 			hooksecurefunc(object.text, "SetFont", function(self, font, fontSize, fontStyle)
 				if font ~= C.Media.Font then
-					self:SetFont(C.Media.Font, C.Media.FontSize)
+					self:FontTemplate()
 				end
 			end)
 		end
@@ -243,7 +243,8 @@ local function LoadSkin()
 	for i=1, 4 do
 		SkinTab(_G["CharacterFrameTab"..i])
 	end
-	
+	CharacterFrameTab1:Point('TOPLEFT', CharacterFrame, 'BOTTOMLEFT', 11, 0)
+		
 	--Buttons used to toggle between equipment manager, titles, and character stats
 	local function FixSidebarTabCoords()
 		for i=1, #PAPERDOLL_SIDEBARS do

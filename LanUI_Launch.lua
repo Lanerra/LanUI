@@ -233,6 +233,7 @@ event:RegisterEvent('UI_ERROR_MESSAGE')
 
 local Events = CreateFrame('Frame')
 Events:SetScript('OnEvent', function(self, event, ...) self[event](...) end)
+G.Events = Events
 
 local metatable = {
 	__call = function(funcs, self, ...)

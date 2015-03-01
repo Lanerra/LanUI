@@ -1,10 +1,10 @@
 local F, C, G = unpack(select(2, ...))
 
-RaidWarningFrame.slot1:SetFont(C.Media.Font, 20, 'THINOUTLINE')
-RaidWarningFrame.slot2:SetFont(C.Media.Font, 20, 'THINOUTLINE')
+RaidWarningFrame.slot1:FontTemplate(C.Media.Font, 20, 'THINOUTLINE')
+RaidWarningFrame.slot2:FontTemplate(C.Media.Font, 20, 'THINOUTLINE')
 
-RaidBossEmoteFrame.slot1:SetFont(C.Media.Font, 20, 'THINOUTLINE')
-RaidBossEmoteFrame.slot2:SetFont(C.Media.Font, 20, 'THINOUTLINE')
+RaidBossEmoteFrame.slot1:FontTemplate(C.Media.Font, 20, 'THINOUTLINE')
+RaidBossEmoteFrame.slot2:FontTemplate(C.Media.Font, 20, 'THINOUTLINE')
 
 RaidWarningFrame:ClearAllPoints() 
 RaidWarningFrame:SetPoint('CENTER', UIParent, 'CENTER', 0, 190)

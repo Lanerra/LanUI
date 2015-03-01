@@ -143,10 +143,21 @@ local function LoadSkin()
 		StartButton.overlay:SetVertexColor(0.3, 0.3, 0.3, 0.3)
 	end)]]
 
-	GarrisonMissionFrameTab1:SetPoint("BOTTOMLEFT", GarrisonMissionFrame, "BOTTOMLEFT", 11, -40)
+	GarrisonMissionFrameTab1:Point("BOTTOMLEFT", GarrisonMissionFrame, "BOTTOMLEFT", 11, -42)
 	GarrisonMissionFrameTab1:SkinTab()
 	GarrisonMissionFrameTab2:SkinTab()
-
+	
+	GarrisonMissionFrame:HookScript('OnShow', function()
+		if GarrisonMissionFrameTab4 and not GarrisonMissionFrameTab4.backdrop then
+			GarrisonMissionFrameTab3:SkinTab()
+			GarrisonMissionFrameTab4:SkinTab()
+			local MissionPage = GarrisonMissionFrame.MissionTab.MissionPage
+			
+			SkinCloseButton(MissionPage.MinimizeButton, nil, '-')
+			MissionPage.MinimizeButton:SetFrameLevel(MissionPage:GetFrameLevel() + 2)
+		end
+	end)
+	
 	GarrisonMissionFrameFollowers:StripTextures()
 	GarrisonMissionFrameFollowers:CreateBD()
 	GarrisonMissionFrameFollowers.SearchBox:SkinEditBox()

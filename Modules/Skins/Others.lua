@@ -327,6 +327,7 @@ local function LoadSkin()
 		'SocialPanelChatHoverDelay',
 		'SocialPanelGuildMemberAlert',
 		'SocialPanelChatMouseScroll',
+		'SocialPanelEnableTwitter',
 		'SocialPanelWholeChatWindowClickable',
 		-- Action bars
 		'ActionBarsPanelBottomLeft',
@@ -384,6 +385,7 @@ local function LoadSkin()
 		'CombatTextPanelAutoSelfCast',
 		'CombatTextPanelPetBattle',
 		-- Status Text
+		'StatusTextPanelDisplayDropDown',
 		'StatusTextPanelPlayer',
 		'StatusTextPanelPet',
 		'StatusTextPanelParty',
@@ -396,6 +398,12 @@ local function LoadSkin()
 		'UnitFramePanelArenaEnemyCastBar',
 		'UnitFramePanelArenaEnemyPets',
 		'UnitFramePanelFullSizeFocusFrame',
+		-- Accessibility
+		'AccessibilityPanelMovePad',
+		'AccessibilityPanelColorblindMode',
+		'AccessibilityPanelColorFilterDropDown',
+		--Locales
+		'InterfaceOptionsLanguagesPanelAudioLocaleDropDown',
 		-- Buffs & Debuffs
 		'BuffsPanelDispellableDebuffs',
 		'BuffsPanelCastableBuffs',
@@ -497,6 +505,7 @@ local function LoadSkin()
 		'AudioOptionsSoundPanelMusic',
 		'AudioOptionsSoundPanelLoopMusic',
 		'AudioOptionsSoundPanelPetBattleMusic',
+		'AudioOptionsSoundPanelDialogSounds',
 		'AudioOptionsSoundPanelAmbientSounds',
 		'AudioOptionsSoundPanelSoundInBG',
 		'AudioOptionsSoundPanelReverb',
@@ -538,6 +547,9 @@ local function LoadSkin()
 		'Graphics_ParticleDensityDropDown',
 		'Graphics_SSAODropDown',
 		'Graphics_RefractionDropDown',
+		'Graphics_DepthEffectsDropDown',
+		'Graphics_LightingQualityDropDown',
+		'Graphics_OutlineModeDropDown',
 
         'RaidGraphics_TextureResolutionDropDown',
         'RaidGraphics_FilteringDropDown',
@@ -551,11 +563,19 @@ local function LoadSkin()
         'RaidGraphics_ParticleDensityDropDown',
         'RaidGraphics_SSAODropDown',
         'RaidGraphics_RefractionDropDown',
+		'RaidGraphics_DepthEffectsDropDown',
+		'RaidGraphics_LightingQualityDropDown',
+		'RaidGraphics_OutlineModeDropDown',
 		-- Advanced
 		'Advanced_BufferingDropDown',
 		'Advanced_LagDropDown',
 		'Advanced_HardwareCursorDropDown',
 		'Advanced_GraphicsAPIDropDown',
+		"Advanced_ResampleQualityDropDown",
+		"Advanced_MultisampleAlphaTest",
+		"Advanced_PostProcessAntiAliasingDropDown",
+		"Advanced_ResampleQualityDropDown",
+		"Advanced_MultisampleAntiAliasingDropDown",
 		-- Audio
 		'AudioOptionsSoundPanelHardwareDropDown',
 		'AudioOptionsSoundPanelSoundChannelsDropDown',
@@ -581,6 +601,7 @@ local function LoadSkin()
 	    'AudioOptionsVoicePanelChatMode1KeyBindingButton',
 		'CompactUnitFrameProfilesSaveButton',
 		'CompactUnitFrameProfilesDeleteButton',
+		'InterfaceOptionsSocialPanelTwitterLoginButton',
 	}
 
 	for _, button in pairs(buttons) do
@@ -631,6 +652,7 @@ local function LoadSkin()
 		'Advanced_UIScaleSlider',
 		'Advanced_MaxFPSSlider',
 		'Advanced_MaxFPSBKSlider',
+		'Advanced_RenderScaleSlider',
 		'AudioOptionsSoundPanelMasterVolume',
 		'AudioOptionsSoundPanelSoundVolume',
 		'AudioOptionsSoundPanelMusicVolume',
@@ -648,6 +670,7 @@ local function LoadSkin()
 		'InterfaceOptionsCameraPanelFollowSpeedSlider',
 		'InterfaceOptionsMousePanelMouseSensitivitySlider',
 		'InterfaceOptionsMousePanelMouseLookSpeedSlider',
+		'InterfaceOptionsAccessibilityPanelColorblindStrengthSlider',
 		'OpacityFrameSlider',
 	}
 	Graphics_RightQuality:Kill()
@@ -656,35 +679,37 @@ local function LoadSkin()
 		_G[slider]:SkinSlideBar()
 	end
 	
-	-- mac option 
-	MacOptionsFrame:StripTextures()
-	MacOptionsFrame:SetTemplate()
-	MacOptionsButtonCompress:SkinButton()
-	MacOptionsButtonKeybindings:SkinButton()
-	MacOptionsFrameDefaults:SkinButton()
-	MacOptionsFrameOkay:SkinButton()
-	MacOptionsFrameCancel:SkinButton()
-	MacOptionsFrameMovieRecording:StripTextures()
-	MacOptionsITunesRemote:StripTextures()
-	MacOptionsFrameMisc:StripTextures()
+	-- mac option
+	if IsMacClient() then
+		MacOptionsFrame:StripTextures()
+		MacOptionsFrame:SetTemplate()
+		MacOptionsButtonCompress:SkinButton()
+		MacOptionsButtonKeybindings:SkinButton()
+		MacOptionsFrameDefaults:SkinButton()
+		MacOptionsFrameOkay:SkinButton()
+		MacOptionsFrameCancel:SkinButton()
+		MacOptionsFrameMovieRecording:StripTextures()
+		MacOptionsITunesRemote:StripTextures()
+		MacOptionsFrameMisc:StripTextures()
 
-	MacOptionsFrameResolutionDropDown:SkinDropDownBox()
-	MacOptionsFrameFramerateDropDown:SkinDropDownBox()
-	MacOptionsFrameCodecDropDown:SkinDropDownBox()
-	MacOptionsFrameQualitySlider:SkinSlideBar(10)
+		MacOptionsFrameResolutionDropDown:SkinDropDownBox()
+		MacOptionsFrameFramerateDropDown:SkinDropDownBox()
+		MacOptionsFrameCodecDropDown:SkinDropDownBox()
+		MacOptionsFrameQualitySlider:SkinSlideBar(10)
 
-	for i = 1, 11 do
-		local b = _G['MacOptionsFrameCheckButton'..i]
-		b:SkinCheckBox()
+		for i = 1, 11 do
+			local b = _G['MacOptionsFrameCheckButton'..i]
+			b:SkinCheckBox()
+		end
+
+		MacOptionsButtonKeybindings:ClearAllPoints()
+		MacOptionsButtonKeybindings:SetPoint('LEFT', MacOptionsFrameDefaults, 'RIGHT', 2, 0)
+		MacOptionsFrameOkay:ClearAllPoints()
+		MacOptionsFrameOkay:SetPoint('LEFT', MacOptionsButtonKeybindings, 'RIGHT', 2, 0)
+		MacOptionsFrameCancel:ClearAllPoints()
+		MacOptionsFrameCancel:SetPoint('LEFT', MacOptionsFrameOkay, 'RIGHT', 2, 0)
+		MacOptionsFrameCancel:SetWidth(MacOptionsFrameCancel:GetWidth() - 6)
 	end
-
-	MacOptionsButtonKeybindings:ClearAllPoints()
-	MacOptionsButtonKeybindings:SetPoint('LEFT', MacOptionsFrameDefaults, 'RIGHT', 2, 0)
-	MacOptionsFrameOkay:ClearAllPoints()
-	MacOptionsFrameOkay:SetPoint('LEFT', MacOptionsButtonKeybindings, 'RIGHT', 2, 0)
-	MacOptionsFrameCancel:ClearAllPoints()
-	MacOptionsFrameCancel:SetPoint('LEFT', MacOptionsFrameOkay, 'RIGHT', 2, 0)
-	MacOptionsFrameCancel:SetWidth(MacOptionsFrameCancel:GetWidth() - 6)
 	
 	--Addon List
 	AddonList:StripTextures()

@@ -78,7 +78,7 @@ local function Timer_OnSizeChanged(self, width, height)
     if (fontScale < MIN_SCALE) then
         self:Hide()
     else
-        self.text:SetFont(FONT_FACE, fontScale * FONT_SIZE, 'OUTLINE')
+        self.text:FontTemplate(FONT_FACE, fontScale * FONT_SIZE, 'OUTLINE')
         self.text:SetShadowColor(0, 0, 0, 0.5)
         self.text:SetShadowOffset(2, -2)
 

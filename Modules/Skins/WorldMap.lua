@@ -10,7 +10,7 @@ local function LoadSkin()
 	WorldMapFrameNavBarHomeButton:StripTextures()
 	WorldMapFrameNavBarHomeButton:SetTemplate()
 	WorldMapFrameNavBarHomeButton:SetFrameLevel(1)
-	WorldMapFrameNavBarHomeButton.text:SetFont(C.Media.Font, C.Media.FontSize)
+	WorldMapFrameNavBarHomeButton.text:FontTemplate()
 
 	SkinDropDownBox(WorldMapLevelDropDown)
 	WorldMapLevelDropDown:SetPoint("TOPLEFT", -17, 0)

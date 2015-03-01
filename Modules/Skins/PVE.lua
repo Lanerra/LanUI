@@ -171,7 +171,7 @@ PVEFrame:StripTextures()
 	for i=1, 3 do
 		SkinTab(_G['PVEFrameTab'..i])
 	end
-	PVEFrameTab1:SetPoint('BOTTOMLEFT', PVEFrame, 'BOTTOMLEFT', 19, -27)
+	PVEFrameTab1:Point('BOTTOMLEFT', PVEFrame, 'BOTTOMLEFT', 19, -32)
 	
 	SkinCloseButton(PVEFrameCloseButton)
 

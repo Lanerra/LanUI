@@ -183,6 +183,7 @@ local function LoadSkin()
 		_G[editbox]:SkinEditBox()
 		_G[editbox]:SetTextInsets(1, 1, -1, 1)
 	end
+	_G['BrowseName']:SetTextInsets(15, 15, -1, 1)
 	BrowseMaxLevel:Point('LEFT', BrowseMinLevel, 'RIGHT', 8, 0)
 	AuctionsStackSizeEntry.backdrop:SetAllPoints()
 	AuctionsNumStacksEntry.backdrop:SetAllPoints()

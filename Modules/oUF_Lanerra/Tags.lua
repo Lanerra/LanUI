@@ -57,15 +57,34 @@ end
 
 oUF.Tags.Events['LanName'] = 'UNIT_NAME_UPDATE UNIT_HEALTH'
 oUF.Tags.Methods['LanName'] = function(unit)
-    local colorA
-    local UnitName, UnitRealm =  UnitName(unit)
+    local r, g, b = 1, 1, 1
+    local colorA, colorB
+    local unitName, unitRealm = UnitName(unit)
     local _, class = UnitClass(unit)
-    
-    if (UnitRealm) and (UnitRealm ~= '') then
-        UnitName = UnitName
+
+    if (unitRealm) and (unitRealm ~= '') then
+        unitName = unitName..' (*)'
     end
 
-    colorA = {1, 1, 1}
+    for i = 1, 4 do
+        if (unit == 'party'..i) then
+            colorA = oUF.colors.class[class]
+        end
+    end
+
+    if (unit == 'player' or not UnitIsFriend('player', unit) and UnitIsPlayer(unit) and UnitClass(unit) and not unit:match('arena(%d)')) then
+        colorA = oUF.colors.class[class]
+    elseif (unit == 'targettarget' or unit == 'focustarget' or unit:match('arena(%d)target')) then
+        r, g, b = UnitSelectionColor(unit)
+    else
+        colorB = {1, 1, 1}
+    end
+
+    if (colorA) then
+        r, g, b = colorA[1], colorA[2], colorA[3]
+    elseif (colorB) then
+        r, g, b = colorB[1], colorB[2], colorB[3]
+    end
     
     if (not UnitIsConnected(unit)) then
         Name = '|cffD7BEA5'..'OFFLINE'
@@ -77,8 +96,7 @@ oUF.Tags.Methods['LanName'] = function(unit)
         Name = '|cffD7BEA5'..'GHOST'
         return Name
 	else
-        r, g, b = colorA[1], colorA[2], colorA[3]
-        return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, UnitName)
+        return format('|cff%02x%02x%02x%s|r', r*255, g*255, b*255, unitName)
     end
 end
 

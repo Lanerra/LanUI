@@ -9,8 +9,12 @@ local bordera = 1
 local template
 local bc = C.Media.BorderColor
 
+F.Texts = {}
+
+local scale = max(0.64, min(1.15, 768/F.ScreenHeight))
+
 -- Pixel perfect script of custom UI scale
-local Mult = 768/string.match(F.Resolution, '%d+x(%d+)')/C.Tweaks.UIScale
+local Mult = 768/string.match(F.Resolution, '%d+x(%d+)')/scale
 local Scale = function(x)
 	return Mult*math.floor(x/Mult+.5)
 end
@@ -240,14 +244,15 @@ local function SetTemplate(frame, nobd)
 
 		local bg = CreateFrame("Frame", nil, f)
 		bg:SetParent(f)
-		bg:SetInside()
+		bg:SetOutside()
 		bg:SetFrameLevel(lvl == 0 and 1 or lvl - 1)
 
 		bg:SetBackdrop({
-			bgFile = C.Media.Backdrop,
-			edgeFile = C.Media.Backdrop,
-			edgeSize = F.Mult,
-		})
+		  bgFile = C.Media.Backdrop, 
+		  edgeFile = C.Media.Backdrop, 
+		  tile = false, tileSize = 0, edgeSize = F.Mult, 
+		  insets = { left = 0, right = 0, top = 0, bottom = 0}
+		})	
 
 		bg:SetBackdropColor(unpack(C.Media.BackdropColor))
 		bg:SetBackdropBorderColor(bc.r, bc.g, bc.b)
@@ -255,20 +260,9 @@ local function SetTemplate(frame, nobd)
 		f.backdrop = bg
 	end
     
-    --[[if C.Media.ClassColor == true then
-        CreateBorderLight(f.backdrop or f, C.Media.BorderSize, bc.r, bc.g, bc.b)
-        SetTexture(f.backdrop or f, 'white')
-    else
-        CreateBorderLight(f.backdrop or f, C.Media.BorderSize, bc.r, bc.g, bc.b)
-        SetTexture(f.backdrop or f, 'default')
-    end
-	
-	if f.backdrop then
-		f.backdrop:SetBeautyBorderPadding(1)
-	else
-		f:SetBeautyBorderPadding(1)
-	end]]
-	f.skinned = true
+	frame.skinned = true
+	frame = nil
+	f = nil
 end
 F.SetTemplate = SetTemplate -- Compatibility, yo
 
@@ -387,6 +381,33 @@ local function StripTextures(object, kill)
 	end
 end
 
+local function FontTemplate(fs, font, fontSize, fontStyle)
+	fs.font = font
+	fs.fontSize = fontSize
+	fs.fontStyle = fontStyle
+
+	font = font or C.Media.Font
+	fontSize = fontSize or C.Media.FontSize
+	fontStyle = fontStyle or C.Media.FontStyle
+
+	if fontStyle == 'OUTLINE' then
+		if (fontSize > 10 and not fs.fontSize) then
+			fontStyle = 'MONOCHROMEOUTLINE'
+			fontSize = 10
+		end
+	end
+
+	fs:SetFont(font, fontSize, fontStyle)
+	if fontStyle then
+		fs:SetShadowColor(0, 0, 0, 0.2)
+	else
+		fs:SetShadowColor(0, 0, 0, 1)
+	end
+	fs:SetShadowOffset((F.Mult or 1), -(F.Mult or 1))
+
+	F['Texts'][fs] = true
+end
+
 -- Let's skin this bitch!
 
 local function SetModifiedBackdrop(self)
@@ -402,6 +423,8 @@ local function SetOriginalBackdrop(self)
 end
 
 local function CreateBD(frame, border)
+	if frame.backdrop then return end
+	
 	local f
 	local bdColor = C.Media.BackdropColor
 	
@@ -415,21 +438,22 @@ local function CreateBD(frame, border)
 
 	local bg = CreateFrame("Frame", nil, f)
 	bg:SetParent(f)
-	bg:SetInside()
+	bg:SetOutside()
 	bg:SetFrameLevel(lvl == 0 and 1 or lvl - 1)
 
 	bg:SetBackdrop({
-		bgFile = C.Media.Backdrop,
-		edgeFile = C.Media.Backdrop,
-		edgeSize = F.Mult,
-	})
+		  bgFile = C.Media.Backdrop, 
+		  edgeFile = C.Media.Backdrop, 
+		  tile = false, tileSize = 0, edgeSize = F.Mult, 
+		  insets = { left = 0, right = 0, top = 0, bottom = 0}
+		})	
 
 	bg:SetBackdropColor(unpack(bdColor))
 	bg:SetBackdropBorderColor(bc.r, bc.g, bc.b)
 	
-	if border then
+	--[[if border then
 		bg:SetTemplate(true)
-	end
+	end]]
 	
 	f.backdrop = bg
 end
@@ -541,10 +565,10 @@ function SkinButton(f, strip)
 end
 F.SkinButton = SkinButton -- Compatibility, yo
 
-local function SkinIconButton(b, shrinkIcon)
+function SkinIconButton(b, shrinkIcon)
 	if b.isSkinned then return; end
 
-	local icon = b.icon or b.IconTexture
+	local icon = b.icon or b.IconTexture or b.iconTexture
 	local texture
 	if b:GetName() and _G[b:GetName()..'IconTexture'] then
 		icon = _G[b:GetName()..'IconTexture']
@@ -827,25 +851,31 @@ F.SkinEditBox = SkinEditBox -- Compatibility, yo
 
 function SkinDropDownBox(frame, width)
 	local button = _G[frame:GetName().."Button"]
+	if not button then return end
+	
 	if not width then width = 155 end
 	
 	frame:StripTextures()
 	frame:Width(width)
 	
-	_G[frame:GetName().."Text"]:ClearAllPoints()
-	_G[frame:GetName().."Text"]:Point("RIGHT", button, "LEFT", -2, 0)
-
+	if(_G[frame:GetName()..'Text']) then
+		_G[frame:GetName()..'Text']:ClearAllPoints()
+		_G[frame:GetName()..'Text']:Point('RIGHT', button, 'LEFT', -2, 0)
+	end
 	
-	button:ClearAllPoints()
-	button:Point("RIGHT", frame, "RIGHT", -10, 3)
-	hooksecurefunc(button, "SetPoint", function(self, point, attachTo, anchorPoint, xOffset, yOffset, noReset)
-		if not noReset then
-			button:ClearAllPoints()
-			button:SetPoint("RIGHT", frame, "RIGHT", -10, 3, true)		
-		end
-	end)
-	
-	button:SkinNextPrevButton(button, true)
+	if button then
+		button:ClearAllPoints()
+		button:Point('RIGHT', frame, 'RIGHT', -10, 3)
+		
+		hooksecurefunc(button, 'SetPoint', function(self, point, attachTo, anchorPoint, xOffset, yOffset, noReset)
+			if not noReset then
+				button:ClearAllPoints()
+				button:SetPoint('RIGHT', frame, 'RIGHT', -10, 3, true)
+			end
+		end)
+		
+		button:SkinNextPrevButton(button)
+	end
 	
 	frame:CreateBD()
 	frame.backdrop:Point("TOPLEFT", 20, -2)
@@ -886,23 +916,29 @@ function SkinCheckBox(frame, noBackdrop)
 		end
 	end)
 	
-	hooksecurefunc(frame, "SetNormalTexture", function(self, texPath)
-		if texPath ~= "" then
-			self:SetNormalTexture("");
-		end
-	end)
+	if frame.SetNormalTexture then
+		hooksecurefunc(frame, "SetNormalTexture", function(self, texPath)
+			if texPath ~= "" then
+				self:SetNormalTexture("");
+			end
+		end)
+	end
 	
-	hooksecurefunc(frame, "SetPushedTexture", function(self, texPath)
-		if texPath ~= "" then
-			self:SetPushedTexture("");
-		end
-	end)	
+	if frame.SetPushedTexture then
+		hooksecurefunc(frame, "SetPushedTexture", function(self, texPath)
+			if texPath ~= "" then
+				self:SetPushedTexture("");
+			end
+		end)
+	end
 	
-	hooksecurefunc(frame, "SetHighlightTexture", function(self, texPath)
-		if texPath ~= "" then
-			self:SetHighlightTexture("");
-		end
-	end)
+	if frame.SetHighlightTexture then
+		hooksecurefunc(frame, "SetHighlightTexture", function(self, texPath)
+			if texPath ~= "" then
+				self:SetHighlightTexture("");
+			end
+		end)
+	end
 end
 F.SkinCheckBox = SkinCheckBox -- Compatibility, yo
 
@@ -913,7 +949,7 @@ function SkinCloseButton(f, point, text)
 	
 	if not f.text then
 		f.text = f:CreateFontString(nil, 'OVERLAY')
-		f.text:SetFont(C.Media.Font, 16, 'OUTLINE')
+		f.text:FontTemplate(C.Media.Font, 16, 'OUTLINE')
 		f.text:SetText(text)
 		f.text:SetJustifyH('CENTER')
 		f.text:SetPoint('CENTER', f, 'CENTER')
@@ -965,6 +1001,7 @@ local function addapi(object)
 	if not object.SetInside then mt.SetInside = SetInside end
 	if not object.SetTemplate then mt.SetTemplate = SetTemplate end
 	if not object.CreateBackdrop then mt.CreateBackdrop = CreateBackdrop end
+	if not object.FontTemplate then mt.FontTemplate = FontTemplate end
 	if not object.StripTextures then mt.StripTextures = StripTextures end
 	if not object.Kill then mt.Kill = Kill end
 	if not object.StyleButton then mt.StyleButton = StyleButton end

@@ -31,7 +31,7 @@ f:RegisterEvent('MERCHANT_SHOW')
 f:SetTemplate()
 
 f.Text = f:CreateFontString(nil, 'OVERLAY')
-f.Text:SetFont('Fonts\\ARIALN.ttf', 13)
+f.Text:FontTemplate(C.Media.Font, 13)
 f.Text:SetPoint('CENTER', f)
 f.Text:SetParent(f)
 f.Text:SetJustifyH('CENTER')
@@ -102,7 +102,7 @@ f:SetScript('OnEvent', function(event)
 		if (curr and max and max ~= 0) then
             if (not itemSlot.Text) then
                 itemSlot.Text = itemSlot:CreateFontString(nil, 'OVERLAY')
-                itemSlot.Text:SetFont(NumberFontNormal:GetFont(), 15, 'THINOUTLINE')
+                itemSlot.Text:FontTemplate(NumberFontNormal:GetFont(), 15, 'THINOUTLINE')
                 itemSlot.Text:SetPoint('BOTTOM', itemSlot, 0, 1)
             end
 

@@ -33,7 +33,7 @@ ConsolidatedBuffsIcon:SetAlpha(0)
 	
 ConsolidatedBuffsCount:ClearAllPoints()
 ConsolidatedBuffsCount:SetPoint('CENTER', ConsolidatedBuffsIcon)
-ConsolidatedBuffsCount:SetFont(C.Media.Font, 16, 'OUTLINE')
+ConsolidatedBuffsCount:FontTemplate(C.Media.Font, 16, 'OUTLINE')
 ConsolidatedBuffsCount:SetShadowOffset(0, 0)
 
 ConsolidatedBuffsTooltip:SetScale(1.2)
@@ -168,7 +168,7 @@ for i = 1, 3 do
     local duration = _G['TempEnchant'..i..'Duration']
     duration:ClearAllPoints()
     duration:SetPoint('BOTTOM', button, 'BOTTOM', 0, -2)
-    duration:SetFont(C.Media.Font, C.Buffs.DurationSize,'OUTLINE')
+    duration:FontTemplate(C.Media.Font, C.Buffs.DurationSize,'OUTLINE')
     duration:SetShadowOffset(0, 0)
     duration:SetDrawLayer('OVERLAY')
 
@@ -198,7 +198,7 @@ hooksecurefunc('AuraButton_Update', function(self, index)
     if (duration) then
         duration:ClearAllPoints()
         duration:SetPoint('BOTTOM', button, 'BOTTOM', 0, -2)
-        duration:SetFont(C.Media.Font, C.Buffs.DurationSize,'OUTLINE')
+        duration:FontTemplate(C.Media.Font, C.Buffs.DurationSize, 'OUTLINE')
         duration:SetShadowOffset(0, 0)
         duration:SetDrawLayer('OVERLAY')
     end
@@ -207,7 +207,7 @@ hooksecurefunc('AuraButton_Update', function(self, index)
     if (count) then
         count:ClearAllPoints()
         count:SetPoint('TOPRIGHT', button)
-        count:SetFont(C.Media.Font, C.Buffs.CountSize, 'OUTLINE')
+        count:FontTemplate(C.Media.Font, C.Buffs.CountSize, 'OUTLINE')
         count:SetShadowOffset(0, 0)
         count:SetDrawLayer('OVERLAY')
     end

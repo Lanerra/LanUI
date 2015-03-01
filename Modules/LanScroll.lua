@@ -275,7 +275,7 @@ function LanScroll:AddText(text, sticky, scrollarea, blink)
         t.blink = false
         t.blinking = false
     end
-    t.text:SetFont(sticky and LanScroll.scroll_area_frames[scrollarea..'sticky'].font_face or LanScroll.scroll_area_frames[scrollarea].font_face, t.fontSize, sticky and LanScroll.scroll_area_frames[scrollarea..'sticky'].font_flags or LanScroll.scroll_area_frames[scrollarea].font_flags)
+    t.text:FontTemplate(sticky and LanScroll.scroll_area_frames[scrollarea..'sticky'].font_face or LanScroll.scroll_area_frames[scrollarea].font_face, t.fontSize, sticky and LanScroll.scroll_area_frames[scrollarea..'sticky'].font_flags or LanScroll.scroll_area_frames[scrollarea].font_flags)
     t.text:SetText(text)
     t.direction = destination_area.direction
     t.inuse = true

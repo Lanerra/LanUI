@@ -59,7 +59,7 @@ local function StyleBubble(frame)
 		if region:GetObjectType() == 'Texture' then
 			region:SetTexture(nil)
 		elseif region:GetObjectType() == 'FontString' then
-			region:SetFont(C.Media.Font, 13)
+			region:FontTemplate(C.Media.Font, 13)
 			region:SetShadowOffset(Scale, -Scale)
             region:SetDrawLayer('OVERLAY')
             
@@ -257,7 +257,7 @@ for i = 1, NUM_CHAT_WINDOWS do
     _G['ChatFrame'..i..'ButtonFrame']:Kill()
     
     local tabText = _G['ChatFrame'..i..'TabText']
-    tabText:SetFont(C.Media.Font, 12)
+    tabText:FontTemplate(C.Media.Font, 12)
     tabText:SetShadowOffset(0, 0)   -- (1, -1)
     tabText:SetJustifyH('CENTER')
     tabText:SetPoint('CENTER', 0, 5)

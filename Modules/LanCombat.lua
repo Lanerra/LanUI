@@ -74,7 +74,7 @@ LanCombat.frame.columns = {}
 for i = 1, 3 do
     local smf = CreateFrame('ScrollingMessageFrame', nil, LanCombat.frame)
     smf:SetMaxLines(1000)
-    smf:SetFont(Media.SCTFont, 9)
+    smf:FontTemplate(Media.SCTFont, 9)
     smf:SetSpacing(2)
     smf:SetFading(true)
     smf:SetFadeDuration(5)

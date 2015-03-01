@@ -19,17 +19,17 @@ local function LoadSkin()
 		self.AbilityName:ClearAllPoints()
 		self.AbilityName:SetPoint('BOTTOM', self, 0, -28)
 		self.AbilityName.scrollTime = nil
-		self.AbilityName:SetFont(C.Media.Font, 18, 'OUTLINE')
+		self.AbilityName:FontTemplate(C.Media.Font, 18, 'OUTLINE')
 		
 		self.TimeLeft.NumberText:ClearAllPoints()
 		self.TimeLeft.NumberText:SetPoint('BOTTOM', self, 4, -58)
 		self.TimeLeft.NumberText.scrollTime = nil
-		self.TimeLeft.NumberText:SetFont(C.Media.Font, 18, 'OUTLINE')
+		self.TimeLeft.NumberText:FontTemplate(C.Media.Font, 18, 'OUTLINE')
 		
 		self.TimeLeft.SecondsText:ClearAllPoints()
 		self.TimeLeft.SecondsText:SetPoint('BOTTOM', self, 0, -80)
 		self.TimeLeft.SecondsText.scrollTime = nil
-		self.TimeLeft.SecondsText:SetFont(C.Media.Font, 18, 'OUTLINE')
+		self.TimeLeft.SecondsText:FontTemplate(C.Media.Font, 18, 'OUTLINE')
 		
 		-- always stop shake animation on start
 		if self.Anim:IsPlaying() then

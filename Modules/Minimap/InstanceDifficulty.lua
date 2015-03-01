@@ -45,7 +45,7 @@ end
 
 local f = Minimap
 f.InstanceText = f:CreateFontString(nil, 'OVERLAY')
-f.InstanceText:SetFont(C.Media.Font, 15, 'OUTLINE')
+f.InstanceText:FontTemplate(C.Media.Font, 15, 'OUTLINE')
 f.InstanceText:SetPoint('TOP', Minimap, 0, -3.5)
 f.InstanceText:SetTextColor(1, 1, 1)
 f.InstanceText:Show()

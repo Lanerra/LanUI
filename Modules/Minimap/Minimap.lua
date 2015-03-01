@@ -15,7 +15,7 @@ hooksecurefunc(MiniMapMailFrame, 'Show', function()
 end)
 
 MiniMapMailFrame.Text = MiniMapMailFrame:CreateFontString(nil, 'OVERLAY')
-MiniMapMailFrame.Text:SetFont(C.Media.Font, 15, 'OUTLINE')
+MiniMapMailFrame.Text:FontTemplate(C.Media.Font, 15, 'OUTLINE')
 MiniMapMailFrame.Text:SetPoint('BOTTOMRIGHT', MiniMapMailFrame)
 MiniMapMailFrame.Text:SetTextColor(1, 0, 1)
 MiniMapMailFrame.Text:SetText('N')
@@ -35,7 +35,7 @@ hooksecurefunc('EyeTemplate_StartAnimating', function(self)
 end)
 
 QueueStatusMinimapButton.Text = QueueStatusMinimapButton:CreateFontString(nil, 'OVERLAY')
-QueueStatusMinimapButton.Text:SetFont(C.Media.Font, 15, 'OUTLINE')
+QueueStatusMinimapButton.Text:FontTemplate(C.Media.Font, 15, 'OUTLINE')
 QueueStatusMinimapButton.Text:SetPoint('TOP', QueueStatusMinimapButton)
 QueueStatusMinimapButton.Text:SetTextColor(1, 0.4, 0)
 QueueStatusMinimapButton.Text:SetText('Q')
@@ -159,7 +159,7 @@ end
 
 if C.Minimap.Mouseover.ZoneText then
     local MainZone = Minimap:CreateFontString(nil, 'OVERLAY')
-    MainZone:SetFont('Fonts\\ARIALN.ttf', 16, 'THINOUTLINE')
+    MainZone:FontTemplate(C.Media.Font, 16, 'THINOUTLINE')
     MainZone:SetPoint('TOP', Minimap, 0, -22)
     MainZone:SetTextColor(1, 1, 1)
     MainZone:SetAlpha(0)
@@ -167,7 +167,7 @@ if C.Minimap.Mouseover.ZoneText then
     MainZone:SetJustifyV('BOTTOM')
 
     local SubZone = Minimap:CreateFontString(nil, 'OVERLAY')
-    SubZone:SetFont('Fonts\\ARIALN.ttf', 13, 'THINOUTLINE')
+    SubZone:FontTemplate(C.Media.Font, 13, 'THINOUTLINE')
     SubZone:SetPoint('TOP', MainZone, 'BOTTOM', 0, -1)
     SubZone:SetTextColor(1, 1, 1)
     SubZone:SetAlpha(0)

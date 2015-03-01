@@ -14,7 +14,7 @@ GoldFrame:SetFrameLevel(3)
 GoldFrame:SetPoint('BOTTOM', UIParent, 0, 3)
 
 local Gold = GoldFrame:CreateFontString(nil, "OVERLAY")
-Gold:SetFont(C.Media.Font, 8)
+Gold:FontTemplate(C.Media.Font, 8)
 Gold:SetParent(GoldFrame)
 Gold:SetHeight(12)
 Gold:SetWidth(40)

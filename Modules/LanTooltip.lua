@@ -120,7 +120,7 @@ end
 
 local function GetItemLevel(unit)
     local total, item = 0, 0
-    local slots = {
+    for i, v in pairs({
         'Head',
         'Neck',
         'Shoulder',
@@ -137,26 +137,19 @@ local function GetItemLevel(unit)
         'Trinket1',
         'MainHand',
         'SecondaryHand',
-    }
-    
-    for i = 1, #slots do
-        local slot = GetInventoryItemLink(unit, GetInventorySlotInfo(('%sSlot'):format(slots[i])))
-        
-        if slot then
-            local ILVL = select(4, GetItemInfo(slot))
-            
-            if ILVL then
-                item = item + 1
-                total = total + ILVL
-            end
+    }) do
+        local slot = GetInventoryItemLink(unit, GetInventorySlotInfo(v..'Slot'))
+        if (slot ~= nil) then
+            item = item + 1
+            total = total + select(4, GetItemInfo(slot))
         end
     end
-    
-    if total < 1 then
-        return '...'
+
+    if (item > 0) then
+        return floor(total / item + 0.5)
     end
-    
-    return floor(total / item)
+
+    return 0
 end
  
     -- Make sure we get a correct unit
@@ -423,13 +416,8 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
         end
 
             -- Show player item lvl
-        ILVL = tonumber(ilvl)
-        
-        if ILVL > 1 then
-            GameTooltip:AddLine(STAT_AVERAGE_ITEM_LEVEL .. ': ' .. '|cffFFFFFF'..ILVL..'|r')
-        elseif not ILVL then
-            ChatFrame1:AddMessage(ilvl)
-            return
+        if ilvl > 1 then
+            GameTooltip:AddLine(STAT_AVERAGE_ITEM_LEVEL .. ': ' .. '|cffFFFFFF'..ilvl..'|r')
         end
     end
 end)
@@ -468,35 +456,37 @@ end)
 
 GameTooltip:RegisterEvent('INSPECT_READY')
 GameTooltip:SetScript('OnEvent', function(self, event, GUID)
-    if not self:IsShown() then
+    if (not self:IsShown()) then
         return
     end
 
     local _, unit = self:GetUnit()
 
-    if not unit then
+    if (not unit) then
         return
     end
 
-    if self.blockInspectRequests then
+    if (self.blockInspectRequests) then
         self.inspectRequestSent = false
     end
 
-    if UnitGUID(unit) ~= GUID or not self.inspectRequestSent then
-        if not self.blockInspectRequests then
+    if (UnitGUID(unit) ~= GUID or not self.inspectRequestSent) then
+        if (not self.blockInspectRequests) then
             ClearInspectPlayer()
         end
         return
     end
 
+    local _, _, _, icon = GetSpecializationInfoByID(GetInspectSpecialization(unit))
     local ilvl = GetItemLevel(unit)
     local now = GetTime()
 
     local matchFound
     for index, _ in pairs(self.inspectCache) do
         local inspectCache = self.inspectCache[index]
-        if inspectCache.GUID == GUID then
+        if (inspectCache.GUID == GUID) then
             inspectCache.itemLevel = ilvl
+            inspectCache.specIcon = icon and ' |T'..icon..':0|t' or ''
             inspectCache.lastUpdate = math.floor(now)
             matchFound = true
         end
@@ -512,14 +502,14 @@ GameTooltip:SetScript('OnEvent', function(self, event, GUID)
         table.insert(self.inspectCache, GUIDInfo)
     end
 
-    if #self.inspectCache > 30 then
+    if (#self.inspectCache > 30) then
         table.remove(self.inspectCache, 1)
     end
 
     self.inspectRefresh = true
     GameTooltip:SetUnit('mouseover')
 
-    if not self.blockInspectRequests then
+    if (not self.blockInspectRequests) then
         ClearInspectPlayer()
     end
     self.inspectRequestSent = false
@@ -544,7 +534,7 @@ end)
 local bar = GameTooltipStatusBar
 bar.Text = bar:CreateFontString(nil, 'OVERLAY')
 bar.Text:SetPoint('CENTER', bar, 0, 1)
-bar.Text:SetFont(C.Media.Font, C.Media.FontSize, 'THINOUTLINE')
+bar.Text:FontTemplate(C.Media.Font, C.Media.FontSize, 'THINOUTLINE')
 bar.Text:SetShadowOffset(0, 0)
 
 local function GetHealthTag(text, cur, max)

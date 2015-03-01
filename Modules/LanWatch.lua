@@ -3,6 +3,11 @@ local F, C, G = unpack(select(2, ...))
 local font = C.Media.Font
 local texture = C.Media.Backdrop
 local cc = F.PlayerColor
+OBJECTIVE_TRACKER_COLOR['Header'] = { r = cc.r, g = cc.g, b = cc.b }
+
+-- Finally found how this damned thing sorts quests
+-- ObjectiveTrackerFrame.MODULES[4].usedBlocks[37227].lines[1].Text:GetText()
+ObjectiveTrackerFrame:CreateBD()
 
 -- Hide Quest Tracker based on zone
 function UpdateHideState()
@@ -64,6 +69,10 @@ function UpdatePlayerLocation()
 	self:UpdateHideState()
 end
 
+F.RegisterEvent('PLAYER_ENTERING_WORLD', function()
+	ObjectiveTrackerFrame:Height(480)
+end)
+
 hooksecurefunc(QUEST_TRACKER_MODULE, "SetBlockHeader", function(_, block)
 	local item = block.itemButton
 
@@ -80,12 +89,12 @@ hooksecurefunc(QUEST_TRACKER_MODULE, "SetBlockHeader", function(_, block)
 
 		item.HotKey:ClearAllPoints()
 		item.HotKey:SetPoint("BOTTOMRIGHT", 0, 2)
-		item.HotKey:SetFont(C.Media.Font, C.Media.FontSize)
+		item.HotKey:FontTemplate(C.Media.Font, C.Media.FontSize)
 		item.HotKey:SetShadowOffset(F.Mult or 1, -(F.Mult or 1))
 
 		item.Count:ClearAllPoints()
 		item.Count:SetPoint("TOPLEFT", 1, -1)
-		item.Count:SetFont(C.Media.Font, C.Media.FontSize)
+		item.Count:FontTemplate(C.Media.Font, C.Media.FontSize)
 		item.Count:SetShadowOffset(F.Mult or 1, -(F.Mult or 1))
 
 		item.skinned = true
@@ -93,19 +102,31 @@ hooksecurefunc(QUEST_TRACKER_MODULE, "SetBlockHeader", function(_, block)
 end)
 
 F.RegisterEvent('PLAYER_LOGIN', function(self, event)
-	local origSet = ObjectiveTrackerFrame.SetPoint
-	local origClear = ObjectiveTrackerFrame.ClearAllPoints
+	local track = ObjectiveTrackerFrame
+	local origSet = track.SetPoint
+	local origClear = track.ClearAllPoints
+	local bd = track.backdrop
 
 	origClear(ObjectiveTrackerFrame)
 	origSet(ObjectiveTrackerFrame, 'TOPRIGHT', MinimapCluster, 'BOTTOMRIGHT', 0, 0)
-
-	ObjectiveTrackerFrame:SetHeight(F.ScreenHeight / 2)
-
-	select(1, ObjectiveTrackerBlocksFrame:GetChildren()):Hide()
-	select(1, ObjectiveTrackerBlocksFrame:GetChildren()).Show = F.Dummy
-
+	
 	WorldMapPlayerUpper:EnableMouse(false)
 	WorldMapPlayerLower:EnableMouse(false)
+end)
+
+hooksecurefunc('ObjectiveTracker_CheckAndHideHeader', function()
+	local track = ObjectiveTrackerFrame
+	local bd = track.backdrop
+
+	track.MODULES[4].Header:Hide()
+	track.MODULES[4].Header.Show = track.MODULES[4].Header.Hide
+	
+	bd:ClearAllPoints()
+	bd:Point('TOPLEFT', track.MODULES[4].firstBlock, -2, 6)
+	bd:Point('BOTTOMRIGHT', track.MODULES[4].lastBlock, 6, -4)
+	track.HeaderMenu.MinimizeButton:SetParent(track.backdrop)
+	track.HeaderMenu.MinimizeButton:ClearAllPoints()
+	track.HeaderMenu.MinimizeButton:Point('TOPRIGHT', track.backdrop, -4, -4)
 end)
 
 G.Misc.ObjectiveTracker = ObjectiveTracker

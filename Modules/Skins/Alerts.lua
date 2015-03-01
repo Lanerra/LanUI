@@ -253,10 +253,10 @@ local function LoadSkin()
 				_G["AchievementAlertFrame"..i.."GuildBanner"]:Kill()
 				_G["AchievementAlertFrame"..i.."GuildBorder"]:Kill()
 				-- Text
-				_G["AchievementAlertFrame"..i.."Unlocked"]:SetFont(C.Media.Font, C.Media.FontSize)
+				_G["AchievementAlertFrame"..i.."Unlocked"]:FontTemplate()
 				_G["AchievementAlertFrame"..i.."Unlocked"]:SetShadowOffset(F.Mult or 1, -(F.Mult or 1))
 				_G["AchievementAlertFrame"..i.."Unlocked"]:SetTextColor(1, 1, 1)
-				_G["AchievementAlertFrame"..i.."Name"]:SetFont(C.Media.Font, C.Media.FontSize)
+				_G["AchievementAlertFrame"..i.."Name"]:FontTemplate()
 				_G["AchievementAlertFrame"..i.."Name"]:SetShadowOffset(F.Mult or 1, -(F.Mult or 1))
 
 				-- Icon

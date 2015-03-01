@@ -11,6 +11,7 @@ C['Media'] = {
     ['Font'] = [[Interface\Addons\LanUI\Media\Expressway.ttf]], -- Default font
     ['SCTFont'] = [[Interface\Addons\LanUI\Media\HOOGE.ttf]], -- Scrolling Combat Text Font
     ['FontSize'] = 15, -- Default font size
+    ['FontStyle'] = '',
     ['StatusBar'] = [[Interface\Addons\LanUI\Media\StatusBar]], -- Default statusbar
     ['BuffBorder'] = [[Interface\Addons\LanUI\Media\textureNormal]], -- Buff border texture
     ['DebuffBorder'] = [[Interface\Addons\LanUI\Media\textureDebuff]], -- Debuff border texture
@@ -177,10 +178,10 @@ C['UF'] = {
                 Percent = true,
                 Deficit = false,
                 Current = false,
-                ClassColor = true,
+                ClassColor = false,
             },
             HidePower = true, -- Reserved for future use
-            Healer = false, -- Center frames in the UI and adjust size for better visibility?
+            Healer = true, -- Center frames in the UI and adjust size for better visibility?
             ShowBuffs = false,
         },
         Raid = {

@@ -14,7 +14,7 @@ if (C.Tweaks.StatsFrame) then
     statstext:SetPoint('CENTER', statsframe)
     statstext:SetHeight(10) 
     statstext:SetWidth(160)
-    statstext:SetFont(C.Media.Font, 18, 'THINOUTLINE')
+    statstext:FontTemplate(C.Media.Font, 18, 'THINOUTLINE')
     statstext:SetTextColor(F.PlayerColor.r, F.PlayerColor.g, F.PlayerColor.b)
 
     local colorlag = function(number)
@@ -48,5 +48,5 @@ if (C.Tweaks.StatsFrame) then
         end
     end)
 
-    LanFunc.Skin(statsframe, 12, 1)
+    statsframe:CreateBD()
 end

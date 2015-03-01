@@ -1,6 +1,6 @@
-## Interface: 60000
+## Interface: 60100
 ## Title: |cff0099ffLan|rUI
-## Version: 0.9.5b
+## Version: 0.9.6b
 ## Author: Lanerra
 ## Notes: Lightweight UI Modification by |cff0099ffLanerra|r
 

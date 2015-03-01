@@ -8,6 +8,7 @@ local isHealer = (F.MyClass == 'DRUID' or F.MyClass == 'PALADIN' or F.MyClass ==
 local PlayerUnits = { player = true, pet = true, vehicle = true }
 local fontstrings = {}
 local PowerBarColor = PowerBarColor
+local colors = oUF.colors
 
 -------------------------------------------------
 -- Kill some unneeded settings
@@ -83,33 +84,24 @@ end
 -- Border update function
 local function UpdateBorder(self)
 	local threat, debuff, dispellable = self.threatLevel, self.debuffType, self.debuffDispellable
-
+	local class = self.unit
+	
 	local color
 	if debuff and dispellable then
-		color = oUF.colors.debuff[debuff]
+		color = colors.debuff[debuff]
 	elseif threat and threat > 1 then
-		color = oUF.colors.threat[threat]
-	elseif debuff then
-		color = oUF.colors.debuff[debuff]
+		color = colors.threat[threat]
+	elseif debuff and not ns.config.dispelFilter then
+		color = colors.debuff[debuff]
 	elseif threat and threat > 0 then
-		color = oUF.colors.threat[threat]
+		color = colors.threat[threat]
+	else
+		color = {bc.r, bc.g, bc.b}
 	end
 
 	if color then
-		--self.Overlay:SetBeautyBorderColor(color[1], color[2], color[3])
 		self.backdrop:SetBackdropBorderColor(color[1], color[2], color[3])
-	else
-		--self.Overlay:SetBeautyBorderColor(bc.r, bc.g, bc.b)
-		self.backdrop:SetBackdropBorderColor(bc.r, bc.g, bc.b)
 	end
-	
-	--[[if color then
-		self.backdrop:SetBeautyBorderColor(color[1], color[2], color[3])
-		self.backdrop:SetBackdropBorderColor(color[1], color[2], color[3])
-	else
-		self.backdrop:SetBeautyBorderColor(bc.r, bc.g, bc.b)
-		self.backdrop:SetBackdropBorderColor(bc.r, bc.g, bc.b)
-	end]]
 end
 
 ------------------------------------------
@@ -163,7 +155,7 @@ local function PostCastStart(Castbar, unit)
     if (unit == 'target') then
         if (self.Castbar.interrupt) then
             --self.Castbar.Borders:SetBeautyBorderTexture(Interrupt)
-            self.Castbar.Borders.backdrop:SetBackdropBorderColor(oUF.colors.uninterruptible[1], oUF.colors.uninterruptible[2], oUF.colors.uninterruptible[3])
+            self.Castbar.backdrop:SetBackdropBorderColor(oUF.colors.uninterruptible[1], oUF.colors.uninterruptible[2], oUF.colors.uninterruptible[3])
         else
 			if C.Media.ClassColor then
 				--self.Castbar.Borders:SetBeautyBorderTexture('white')
@@ -461,7 +453,7 @@ local function PostUpdateAuraIcon(iconframe, unit, button, index, offset)
 				child.text:ClearAllPoints()
 				child.text:SetPoint('CENTER', button, 'TOP', 0, 2)
 
-				child.text:SetFont(C.Media.Font, unit:match('^party') and 14 or 18)
+				child.text:FontTemplate(C.Media.Font, unit:match('^party') and 14 or 18)
 				child.text.SetFont = F.Dummy
 
 				child.text:SetTextColor(1, 0.8, 0)
@@ -494,16 +486,15 @@ local function UpdateDispelHighlight(element, debuffType, canDispel)
 end
 
 -- Threat highlighting function
-local function UpdateThreatHighlight(element, status)
-	if not status then
-		status = 0
-	end
-
-	local frame = element.__owner
+local function UpdateThreatHighlight(frame, event, unit)
+	if not unit or not frame:IsShown() then return end
+	
+	local status = UnitThreatSituation(unit) or 0
+	
+	status = status > 1 and 3 or 0
+	
 	if frame.threatLevel == status then return end
-
 	frame.threatLevel = status
-
 	frame:UpdateBorder()
 end
 
@@ -554,13 +545,13 @@ local Stylish = function(self, unit, isSingle)
 	self.Health:SetPoint('LEFT')
 	self.Health:SetPoint('RIGHT')
 	
-	self:SetBackdrop(backdrop)
-	self:SetBackdropColor(unpack(C.Media.BackdropColor))
+	--self:SetBackdrop(backdrop)
+	--self:SetBackdropColor(unpack(C.Media.BackdropColor))
 	
 	if (unit == 'player') then
 		--local info = self.Health:CreateFontString('$parentInfo', 'OVERLAY', 'GameFontHighlightSmall')
 		local info = self.Health:CreateFontString('$parentInfo', 'OVERLAY')
-        info:SetFont(C.Media.Font, C.UF.Media.FontSize)
+        info:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
 		info:SetPoint('CENTER', self.Health)
 		info.frequentUpdates = .25
 		self:Tag(info, '[LanThreat] |cffff0000[LanPvPTime]|r')
@@ -568,7 +559,7 @@ local Stylish = function(self, unit, isSingle)
 	
 	-- Setup our health text
 	self.Health.Value = self.Health:CreateFontString('$parentHealthValue', 'OVERLAY')
-	self.Health.Value:SetFont(C.Media.Font, C.UF.Media.FontSize)
+	self.Health.Value:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
 	self.Health.Value:SetShadowOffset(1, -1)
 	self.Health.Value:SetTextColor(1, 1, 1)
 	
@@ -600,7 +591,7 @@ local Stylish = function(self, unit, isSingle)
 	
 	-- Now, the power bar's text
 	self.Power.Value = self.Power:CreateFontString('$parentPowerValue', 'OVERLAY')
-	self.Power.Value:SetFont(C.Media.Font, C.UF.Media.FontSize)
+	self.Power.Value:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
 	self.Power.Value:SetShadowOffset(1, -1)
     if (unit == 'target') then
         self.Power.Value:SetPoint('TOPRIGHT', self.Power, 'BOTTOMRIGHT', 0, -5)
@@ -663,7 +654,7 @@ local Stylish = function(self, unit, isSingle)
 			self.Castbar.Bg:SetTexture(unpack(C.Media.BackdropColor))]]
 			
 			self.Castbar.Text = self.Castbar:CreateFontString('$parentCastBarText', 'OVERLAY')
-			self.Castbar.Text:SetFont(C.Media.Font, 13)
+			self.Castbar.Text:FontTemplate(C.Media.Font, 13)
 			self.Castbar.Text:SetShadowOffset(1, -1)
 			self.Castbar.Text:SetPoint('LEFT', self.Castbar, 'LEFT', 2, 0)
 			self.Castbar.Text:SetHeight(C.UF.Media.FontSize)
@@ -675,7 +666,7 @@ local Stylish = function(self, unit, isSingle)
 			end
 			
 			self.Castbar.Time = self.Castbar:CreateFontString('$parentCastBarTime', 'OVERLAY')
-			self.Castbar.Time:SetFont(C.Media.Font, 13)
+			self.Castbar.Time:FontTemplate(C.Media.Font, 13)
 			self.Castbar.Time:SetShadowOffset(1, -1)
 			self.Castbar.Time:SetPoint('RIGHT', self.Castbar, 'RIGHT', -2, 0)
 			self.Castbar.Time:SetParent(self.Castbar)
@@ -715,7 +706,7 @@ local Stylish = function(self, unit, isSingle)
 			self.Castbar:SetPoint(unpack(C.UF.CastBars.Target.Position))
 			
 			self.Castbar.Text = self.Castbar:CreateFontString('$parentCastBarText', 'OVERLAY')
-			self.Castbar.Text:SetFont(C.Media.Font, 13)
+			self.Castbar.Text:FontTemplate(C.Media.Font, 13)
 			self.Castbar.Text:SetShadowOffset(1, -1)
 			self.Castbar.Text:SetPoint('LEFT', self.Castbar, 'LEFT', 2, 0)
 			self.Castbar.Text:SetHeight(C.UF.Media.FontSize)
@@ -723,7 +714,7 @@ local Stylish = function(self, unit, isSingle)
 			self.Castbar.Text:SetJustifyH('LEFT')
 			
 			self.Castbar.Time = self.Castbar:CreateFontString('$parentCastBarTime', 'OVERLAY')
-			self.Castbar.Time:SetFont(C.Media.Font, 13)
+			self.Castbar.Time:FontTemplate(C.Media.Font, 13)
 			self.Castbar.Time:SetShadowOffset(1, -1)
 			self.Castbar.Time:SetPoint('RIGHT', self.Castbar, 'RIGHT', -2, 0)
 			self.Castbar.CustomTimeText = function(self, duration)
@@ -760,7 +751,7 @@ local Stylish = function(self, unit, isSingle)
 		_G[bar]:SetHeight(18)
 		_G[bar]:SetWidth(200)
 		
-		_G[bar..'Text']:SetFont(CastingBarFrameText:GetFont(), 13)
+		_G[bar..'Text']:FontTemplate(CastingBarFrameText:GetFont(), 13)
 		_G[bar..'Text']:ClearAllPoints()
 		_G[bar..'Text']:SetPoint('CENTER', MirrorTimer1StatusBar)
 		
@@ -771,7 +762,7 @@ local Stylish = function(self, unit, isSingle)
 	-- Display the names
 	if (unit ~= 'player') then
 		local name = self.Health:CreateFontString('$parentName', 'OVERLAY')
-		name:SetFont(C.Media.Font, C.UF.Media.FontSize)
+		name:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
 		name:SetShadowOffset(1, -1)
 		name:SetTextColor(1, 1, 1)
 		name:SetWidth(130)
@@ -852,7 +843,7 @@ local Stylish = function(self, unit, isSingle)
 	if (unit == 'player') then
 		self.Status = self.Health:CreateFontString(nil, 'OVERLAY')
         self.Status:SetParent(self.Overlay)
-        self.Status:SetFont(C.Media.Font, C.UF.Media.FontSize)
+        self.Status:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
 		self.Status:SetPoint('LEFT', self.Health, 'TOPLEFT', 2, 2)
 		self.Status:SetDrawLayer('OVERLAY', 7)
 
@@ -1033,7 +1024,7 @@ local Stylish = function(self, unit, isSingle)
 
 			local EclipseBarText = EclipseBarBorder:CreateFontString(nil, 'OVERLAY')
 			EclipseBarText:SetPoint('CENTER', EclipseBarBorder, 'CENTER', 0, 0)
-			EclipseBarText:SetFont(C.Media.Font, C.UF.Media.FontSize, 'OUTLINE')
+			EclipseBarText:FontTemplate(C.Media.Font, C.UF.Media.FontSize, 'OUTLINE')
 			self:Tag(EclipseBarText, '[pereclipse]%')
 
 			self.EclipseBar = EclipseBar
@@ -1043,7 +1034,7 @@ local Stylish = function(self, unit, isSingle)
 		if (F.MyClass == 'WARLOCK') then
 			local Shards = self:CreateFontString(nil, 'OVERLAY')
 			Shards:SetPoint('CENTER', self, 'RIGHT', 17, -2)
-			Shards:SetFont(C.Media.Font, 24, 'OUTLINE')
+			Shards:FontTemplate(C.Media.Font, 24, 'OUTLINE')
 			Shards:SetJustifyH('CENTER')
 			self:Tag(Shards, '[LanShards]')
 		end
@@ -1052,7 +1043,7 @@ local Stylish = function(self, unit, isSingle)
 		if (F.MyClass == 'PALADIN') then
 			local HolyPower = self:CreateFontString(nil, 'OVERLAY')
 			HolyPower:SetPoint('CENTER', self, 'RIGHT', 17, -2)
-			HolyPower:SetFont(C.Media.Font, 24, 'OUTLINE')
+			HolyPower:FontTemplate(C.Media.Font, 24, 'OUTLINE')
 			HolyPower:SetJustifyH('CENTER')
 			self:Tag(HolyPower, '[LanHolyPower]')
 		end
@@ -1061,7 +1052,7 @@ local Stylish = function(self, unit, isSingle)
 		if (F.MyClass == 'ROGUE') or (F.MyClass == 'DRUID') then
 			local ComboPoints = self:CreateFontString(nil, 'OVERLAY')
 			ComboPoints:SetPoint('CENTER', self, 'RIGHT', 17, -2)
-			ComboPoints:SetFont(C.Media.Font, 24, 'OUTLINE')
+			ComboPoints:FontTemplate(C.Media.Font, 24, 'OUTLINE')
 			ComboPoints:SetJustifyH('CENTER')
 			self:Tag(ComboPoints, '[LanCombo]')
 		end
@@ -1070,7 +1061,7 @@ local Stylish = function(self, unit, isSingle)
 		if (F.MyClass == 'MONK') then
 			local Chi = self:CreateFontString(nil, 'OVERLAY')
 			Chi:SetPoint('CENTER', self, 'RIGHT', 17, 0)
-			Chi:SetFont(C.Media.Font, 24, 'OUTLINE')
+			Chi:FontTemplate(C.Media.Font, 24, 'OUTLINE')
 			Chi:SetJustifyH('CENTER')
 			self:Tag(Chi, '[LanChi]')
 		end
@@ -1111,6 +1102,8 @@ local Stylish = function(self, unit, isSingle)
     self.Overlay:SetFrameLevel(self.Health:GetFrameLevel() + (self.Power and 3 or 2))
     --self.Overlay:SetTemplate(true)
 	--self.Overlay:SetBeautyBorderPadding(2)
+
+	self:CreateBD()	
     
     self.UpdateBorder = UpdateBorder
 
@@ -1125,8 +1118,6 @@ local Stylish = function(self, unit, isSingle)
 	self.ThreatHighlight = {
 		Override = UpdateThreatHighlight,
 	}
-	
-	self:CreateBD()
 	
 	-- Hardcore border action!	
 	if unit == 'player' and F.MyClass == 'DEATHKNIGHT' then
@@ -1175,28 +1166,23 @@ local function StylishGroup(self, unit)
 	self.Health:SetPoint('TOPRIGHT')
 	self.Health:SetPoint('BOTTOMLEFT', 0, -1)
 	
-	self:SetBackdrop(backdrop)
-	self:SetBackdropColor(0, 0, 0, .5)
+	--self:SetBackdrop(backdrop)
+	--self:SetBackdropColor(0, 0, 0, .5)
 	
 	self.Health.PostUpdate = UpdateGroupHealth
 	
 	if (C.UF.Units.Party.Health.ClassColor) then
 		self.Health.colorClass = true
+	else
+		self.Health:SetStatusBarColor(0.25, 0.25, 0.25)
 	end
 	
 	self.Health.Smooth = true
     self.Health.frequentUpdates = 0.3
 	
-	-- Health bar background display for group frames
-	self.Health.Background = self.Health:CreateTexture('$parentHealthBackground', 'BORDER')
-	self.Health.Background:SetAllPoints(self.Health)
-	
-	-- Background Color
-	self.Health.Background:SetTexture(.08, .08, .08)
-	
 	-- Health value settings
 	self.Health.Value = self.Health:CreateFontString('$parentHealthValue', 'OVERLAY')
-	self.Health.Value:SetFont(C.Media.Font, C.UF.Media.FontSize)
+	self.Health.Value:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
     
     -- Improve border drawing
     self.Overlay = CreateFrame('Frame', nil, self)
@@ -1207,7 +1193,7 @@ local function StylishGroup(self, unit)
 	-- Display group names
 	self.Name = self.Health:CreateFontString('$parentName', 'OVERLAY')
 	self.Name:SetPoint('LEFT', self.Health, 5, 1)
-	self.Name:SetFont(C.Media.Font, 13)
+	self.Name:FontTemplate(C.Media.Font, 13)
 	self.Name:SetShadowOffset(1, -1)
     self.Name.frequentUpdates = 0.3
     
@@ -1244,7 +1230,7 @@ local function StylishGroup(self, unit)
 	
 	if unit == 'party' or unit == 'target' then
 		self.Status = self.Overlay:CreateFontString(nil, 'OVERLAY')
-        self.Status:SetFont(C.Media.Font, C.UF.Media.FontSize)
+        self.Status:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
 		self.Status:SetPoint('RIGHT', self.Health, 'BOTTOMRIGHT', -2, 0)
 		self.Status:SetDrawLayer('OVERLAY', 7)
 
@@ -1319,9 +1305,15 @@ local function StylishGroup(self, unit)
 	self.SpellRange = true
     
     -- Hardcore border action!
-    self.Overlay:CreateBD()
+    --self.Overlay:CreateBD()
 	--self.Overlay:SetBeautyBorderPadding(4)
     
+	self:CreateBD()
+	
+	self.backdrop:ClearAllPoints()
+	self.backdrop:Point('TOPLEFT', self, 'TOPLEFT', -(F.Mult * 2), F.Mult * 2)
+	self.backdrop:Point('BOTTOMRIGHT', self, 'BOTTOMRIGHT', F.Mult * 2, -(F.Mult * 3))
+	
     self.UpdateBorder = UpdateBorder
 
     -- Dispel highlight support
@@ -1335,9 +1327,7 @@ local function StylishGroup(self, unit)
 	self.ThreatHighlight = {
 		Override = UpdateThreatHighlight,
 	}
-    
-	self:CreateBD()
-	self.backdrop:SetOutside()
+
     return self
 end
 
@@ -1378,8 +1368,8 @@ local function StylishRaid(self, unit)
 	self.Health:SetPoint('TOPRIGHT')
 	self.Health:SetPoint('BOTTOMLEFT', 0, -1)
 	
-	self:SetBackdrop(backdrop)
-	self:SetBackdropColor(unpack(C.Media.BackdropColor))
+	--self:SetBackdrop(backdrop)
+	--self:SetBackdropColor(unpack(C.Media.BackdropColor))
 	
 	self.Health.PostUpdate = UpdateRaidHealth
 	
@@ -1390,16 +1380,9 @@ local function StylishRaid(self, unit)
 	self.Health.Smooth = true
     self.Health.frequentUpdates = 0.3
 	
-	-- Health bar background display for group frames
-	self.Health.Background = self.Health:CreateTexture('$parentHealthBackground', 'BORDER')
-	self.Health.Background:SetAllPoints(self.Health)
-	
-	-- Background Color
-	self.Health.Background:SetTexture(.08, .08, .08)
-	
 	-- Health value settings
 	self.Health.Value = self.Health:CreateFontString('$parentHealthValue', 'OVERLAY')
-	self.Health.Value:SetFont(C.Media.Font, C.UF.Media.FontSize)
+	self.Health.Value:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
     
     -- Improve border drawing
     self.Overlay = CreateFrame('Frame', nil, self)
@@ -1413,14 +1396,14 @@ local function StylishRaid(self, unit)
     if (C.UF.Units.Raid.Healer) then
 		self.Name = self.Health:CreateFontString('$parentName', 'OVERLAY')
 		self.Name:SetPoint('CENTER')
-		self.Name:SetFont(C.Media.Font, 13)
+		self.Name:FontTemplate(C.Media.Font, 13)
 		self.Name:SetShadowOffset(1, -1)
 		self.Name:SetJustifyH('CENTER')
 		self:Tag(self.Name, '|cffffffff[LanRaidName]|r')
 	else
 		self.Name = self.Health:CreateFontString('$parentName', 'OVERLAY')
 		self.Name:SetPoint('CENTER')
-		self.Name:SetFont(C.Media.Font, 13)
+		self.Name:FontTemplate(C.Media.Font, 13)
 		self.Name:SetShadowOffset(1, -1)
 		self:Tag(self.Name, '|cffffffff[LanName]|r')
 		self.Health:SetOrientation('HORIZONTAL')
@@ -1455,7 +1438,7 @@ local function StylishRaid(self, unit)
 	
 	-- Status Icons Display
     self.Status = self.Overlay:CreateFontString(nil, 'OVERLAY')
-    self.Status:SetFont(C.Media.Font, C.UF.Media.FontSize)
+    self.Status:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
     self.Status:SetPoint('RIGHT', self.Health, 'BOTTOMRIGHT', -2, 0)
 	self.Status:SetDrawLayer('OVERLAY', 7)
 
@@ -1477,10 +1460,16 @@ local function StylishRaid(self, unit)
 	self.SpellRange = true
 	
     -- Hardcore border action!
-    self.Overlay:CreateBD()
+    --self.Overlay:CreateBD()
 	--self.Overlay:SetBeautyBorderPadding(4)
     
-    self.UpdateBorder = UpdateBorder
+	self:CreateBD()
+	
+	self.backdrop:ClearAllPoints()
+	self.backdrop:Point('TOPLEFT', self, 'TOPLEFT', -(F.Mult * 2), F.Mult * 2)
+	self.backdrop:Point('BOTTOMRIGHT', self, 'BOTTOMRIGHT', F.Mult * 2, -(F.Mult * 3))
+	
+	self.UpdateBorder = UpdateBorder
 
     -- Dispel highlight support
     self.DispelHighlight = {
@@ -1493,9 +1482,7 @@ local function StylishRaid(self, unit)
 	self.ThreatHighlight = {
 		Override = UpdateThreatHighlight,
 	}
-    
-	self:CreateBD()
-	self.backdrop:SetOutside()
+	
     return self
 end
 
@@ -1536,7 +1523,7 @@ oUF:Factory(function(self)
 			nil,
 			'party',
 			'showParty', true,
-			'showPlayer', true,
+			'showPlayer', false,
 			'yOffset', -10
 		)
 		group:SetPoint(unpack(C.UF.Units.Party.Position))

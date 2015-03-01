@@ -21,6 +21,8 @@ local function LoadSkin()
 			_G['MerchantFrameTab'..i]:Point('LEFT', _G['MerchantFrameTab'..i - 1], 'RIGHT', 4, 0)
 		end
 	end
+	
+	MerchantFrameTab1:Point('BOTTOMLEFT', MerchantFrame, 0, -32)
 
 	-- skin icons / merchant slots
 	for i = 1, 12 do

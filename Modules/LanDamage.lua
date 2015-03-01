@@ -16,7 +16,7 @@ local defaults = {
 	backdrop_color = C.Media.BackdropColor,
 	border_color = {0, 0, 0, 0},
 	border_size = 2,
-	font_style = '',
+	font_style = 'OUTLINE',
 	font_size = 13,
 	hidetitle = false,
 	barcolor = {0.4, 0.4, 0.4, 1},
@@ -118,7 +118,7 @@ end
 
 local CreateFS = CreateFS or function(frame)
 	local fstring = frame:CreateFontString(nil, 'OVERLAY')
-	fstring:SetFont(font, dmconf.font_size, dmconf.font_style)
+	fstring:FontTemplate(font, dmconf.font_size, dmconf.font_style)
 	fstring:SetShadowOffset(1, -1)
 	return fstring
 end
@@ -360,8 +360,8 @@ local UpdateWindow = function()
 		v:SetWidth(MainFrame:GetWidth())
 		v:SetHeight(dmconf.barheight)
 		v:SetPoint('TOP', 0, -(dmconf.barheight + dmconf.spacing) * (i-1))
-		v.left:SetFont(font, dmconf.font_size, dmconf.font_style)
-		v.right:SetFont(font, dmconf.font_size, dmconf.font_style)
+		v.left:FontTemplate(font, dmconf.font_size, dmconf.font_style)
+		v.right:FontTemplate(font, dmconf.font_size, dmconf.font_style)
 	end
 	
 	UpdateBars()
