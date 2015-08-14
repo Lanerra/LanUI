@@ -184,7 +184,7 @@ Loot:SetToplevel(true)
 Loot:SetFrameLevel(10)
 
 local close = CreateFrame('Button', 'LootCloseButton', Loot, 'UIPanelCloseButton')
-F.SkinCloseButton(close, Loot)
+close:SkinCloseButton(Loot)
 close:SetWidth(14)
 close:SetHeight(14)
 

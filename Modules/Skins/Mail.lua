@@ -3,97 +3,91 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	MailFrame:StripTextures(true)
-	MailFrame:SetTemplate()
-	MailFrame:SetWidth(360)
-	MailFrameCloseButton:SkinCloseButton()
-	MailFrameInset:StripTextures()
-	InboxFrame:StripTextures()
+	MailFrame:SetTemplate("Transparent")
+	--MailFrame:SetWidth(360)
 
 	for i = 1, INBOXITEMS_TO_DISPLAY do
-		local bg = _G['MailItem'..i]
+		local bg = _G["MailItem"..i]
 		bg:StripTextures()
-		bg:CreateBD()
-		bg.backdrop:Point('TOPLEFT', 2, 1)
-		bg.backdrop:Point('BOTTOMRIGHT', -2, 2)
-		
-		local b = _G['MailItem'..i..'Button']
+		bg:CreateBackdrop("Default")
+		bg.backdrop:Point("TOPLEFT", 2, 1)
+		bg.backdrop:Point("BOTTOMRIGHT", -2, 2)
+
+		local b = _G["MailItem"..i.."Button"]
 		b:StripTextures()
-		b:CreateBD()
+		b:SetTemplate("Default", true)
 		b:StyleButton()
 
-		local t = _G['MailItem'..i..'ButtonIcon']
-		t:SetTexCoord(.08, .92, .08, .92)
-		t:ClearAllPoints()
-		t:Point('TOPLEFT', 2, -2)
-		t:Point('BOTTOMRIGHT', -2, 2)
+		local t = _G["MailItem"..i.."ButtonIcon"]
+		t:SetTexCoord(unpack(F.TexCoords))
+		t:SetInside()
 	end
 
-	--InboxCloseButton:SkinCloseButton()
-	InboxPrevPageButton:SkinNextPrevButton()
-	InboxNextPageButton:SkinNextPrevButton()
+	HandleCloseButton(MailFrameCloseButton)
+	HandleNextPrevButton(InboxPrevPageButton)
+	HandleNextPrevButton(InboxNextPageButton)
 
 	MailFrameTab1:StripTextures()
 	MailFrameTab2:StripTextures()
-	MailFrameTab1:SkinTab()
-	MailFrameTab2:SkinTab()
-	MailFrameTab2:Point('LEFT', MailFrameTab1, 'RIGHT', 4, 0)
+	HandleTab(MailFrameTab1)
+	HandleTab(MailFrameTab2)
 
 	-- send mail
 	SendMailScrollFrame:StripTextures(true)
-	SendMailScrollFrame:SetTemplate()
+	SendMailScrollFrame:SetTemplate("Default")
 
-	SendMailScrollFrameScrollBar:SkinScrollBar()
+	HandleScrollBar(SendMailScrollFrameScrollBar)
 
-	SendMailNameEditBox:SkinEditBox()
-	SendMailNameEditBox:SetHeight(20)
-	SendMailSubjectEditBox:SkinEditBox()
-	SendMailSubjectEditBox:ClearAllPoints()
-	SendMailSubjectEditBox:SetPoint('TOPLEFT', SendMailNameEditBox, 'BOTTOMLEFT', 0, -8)
-	SendMailMoneyGold:SkinEditBox()
-	SendMailMoneySilver:SkinEditBox()
-	SendMailMoneyCopper:SkinEditBox()
-	SendMailMoneyBg:StripTextures()
+	HandleEditBox(SendMailNameEditBox)
+	HandleEditBox(SendMailSubjectEditBox)
+	HandleEditBox(SendMailMoneyGold)
+	HandleEditBox(SendMailMoneySilver)
+	HandleEditBox(SendMailMoneyCopper)
+	SendMailMoneyBg:Kill()
 	SendMailMoneyInset:StripTextures()
+	SendMailNameEditBox.backdrop:Point("BOTTOMRIGHT", 2, 4)
+	SendMailSubjectEditBox.backdrop:Point("BOTTOMRIGHT", 2, 0)
 	SendMailFrame:StripTextures()
 
 	local function MailFrameSkin()
-		for i = 1, ATTACHMENTS_MAX_SEND do				
-			local b = _G['SendMailAttachment'..i]
+		for i = 1, ATTACHMENTS_MAX_SEND do
+			local b = _G["SendMailAttachment"..i]
 			if not b.skinned then
 				b:StripTextures()
-				b:SetTemplate()
+				b:SetTemplate("Default", true)
 				b:StyleButton()
 				b.skinned = true
 			end
 			local t = b:GetNormalTexture()
 			if t then
-				t:SetTexCoord(.08, .92, .08, .92)
-				t:ClearAllPoints()
-				t:Point('TOPLEFT', 2, -2)
-				t:Point('BOTTOMRIGHT', -2, 2)
+				t:SetTexCoord(unpack(F.TexCoords))
+				t:SetInside()
 			end
 		end
 	end
-	hooksecurefunc('SendMailFrame_Update', MailFrameSkin)
+	hooksecurefunc("SendMailFrame_Update", MailFrameSkin)
 
-	SendMailMailButton:SkinButton()
-	SendMailCancelButton:SkinButton()
+	HandleButton(SendMailMailButton)
+	HandleButton(SendMailCancelButton)
 
 	-- open mail (cod)
 	OpenMailFrame:StripTextures(true)
-	OpenMailFrame:SetTemplate()
-	OpenMailFrameInset:StripTextures()
+	OpenMailFrame:SetTemplate("Transparent")
+	OpenMailFrameInset:Kill()
 
-	OpenMailFrameCloseButton:SkinCloseButton()
-	OpenMailReportSpamButton:SkinButton()
-	OpenMailReplyButton:SkinButton()
-	OpenMailDeleteButton:SkinButton()
-	OpenMailCancelButton:SkinButton()
+	HandleCloseButton(OpenMailFrameCloseButton)
+	HandleButton(OpenMailReportSpamButton)
+	HandleButton(OpenMailReplyButton)
+	HandleButton(OpenMailDeleteButton)
+	HandleButton(OpenMailCancelButton)
+
+	InboxFrame:StripTextures()
+	MailFrameInset:Kill()
 
 	OpenMailScrollFrame:StripTextures(true)
-	OpenMailScrollFrame:SetTemplate(true)
+	OpenMailScrollFrame:SetTemplate("Default")
 
-	OpenMailScrollFrameScrollBar:SkinScrollBar()
+	HandleScrollBar(OpenMailScrollFrameScrollBar)
 
 	SendMailBodyEditBox:SetTextColor(1, 1, 1)
 	OpenMailBodyText:SetTextColor(1, 1, 1)
@@ -101,39 +95,33 @@ local function LoadSkin()
 	OpenMailArithmeticLine:Kill()
 
 	OpenMailLetterButton:StripTextures()
-	OpenMailLetterButton:SetTemplate(true)
+	OpenMailLetterButton:SetTemplate("Default", true)
 	OpenMailLetterButton:StyleButton()
-	OpenMailLetterButtonIconTexture:SetTexCoord(.08, .92, .08, .92)						
-	OpenMailLetterButtonIconTexture:ClearAllPoints()
-	OpenMailLetterButtonIconTexture:Point('TOPLEFT', 2, -2)
-	OpenMailLetterButtonIconTexture:Point('BOTTOMRIGHT', -2, 2)
+	OpenMailLetterButtonIconTexture:SetTexCoord(unpack(F.TexCoords))
+	OpenMailLetterButtonIconTexture:SetInside()
 
 	OpenMailMoneyButton:StripTextures()
-	OpenMailMoneyButton:SetTemplate(true)
+	OpenMailMoneyButton:SetTemplate("Default", true)
 	OpenMailMoneyButton:StyleButton()
-	OpenMailMoneyButtonIconTexture:SetTexCoord(.08, .92, .08, .92)						
-	OpenMailMoneyButtonIconTexture:ClearAllPoints()
-	OpenMailMoneyButtonIconTexture:Point('TOPLEFT', 2, -2)
-	OpenMailMoneyButtonIconTexture:Point('BOTTOMRIGHT', -2, 2)
+	OpenMailMoneyButtonIconTexture:SetTexCoord(unpack(F.TexCoords))
+	OpenMailMoneyButtonIconTexture:SetInside()
 
-	for i = 1, ATTACHMENTS_MAX_SEND do				
-		local b = _G['OpenMailAttachmentButton'..i]
+	for i = 1, ATTACHMENTS_MAX_SEND do
+		local b = _G["OpenMailAttachmentButton"..i]
 		b:StripTextures()
-		b:SetTemplate(true)
+		b:SetTemplate("Default", true)
 		b:StyleButton()
-		
-		local t = _G['OpenMailAttachmentButton'..i..'IconTexture']
+
+		local t = _G["OpenMailAttachmentButton"..i.."IconTexture"]
 		if t then
-			t:SetTexCoord(.08, .92, .08, .92)
-			t:ClearAllPoints()
-			t:Point('TOPLEFT', 2, -2)
-			t:Point('BOTTOMRIGHT', -2, 2)
-		end				
+			t:SetTexCoord(unpack(F.TexCoords))
+			t:SetInside()
+		end
 	end
 
-	OpenMailReplyButton:Point('RIGHT', OpenMailDeleteButton, 'LEFT', -2, 0)
-	OpenMailDeleteButton:Point('RIGHT', OpenMailCancelButton, 'LEFT', -2, 0)
-	SendMailMailButton:Point('RIGHT', SendMailCancelButton, 'LEFT', -2, 0)
+	OpenMailReplyButton:Point("RIGHT", OpenMailDeleteButton, "LEFT", -2, 0)
+	OpenMailDeleteButton:Point("RIGHT", OpenMailCancelButton, "LEFT", -2, 0)
+	SendMailMailButton:Point("RIGHT", SendMailCancelButton, "LEFT", -2, 0)
 end
 
 tinsert(F.SkinFuncs['LanUI'], LoadSkin)

@@ -438,12 +438,8 @@ end)
 -- Cinematic Handling
 F.RegisterEvent('CINEMATIC_START', function(boolean)
     SetCVar('Sound_EnableMusic', 1)
-    SetCVar('Sound_EnableAmbience', 1)
-    SetCVar('Sound_EnableSFX', 1)
 end)
 
 F.RegisterEvent('CINEMATIC_STOP', function()
-    --SetCVar('Sound_EnableMusic', 0)
-    SetCVar('Sound_EnableAmbience', 1)
-    SetCVar('Sound_EnableSFX', 1)
+    SetCVar('Sound_EnableMusic', 0)
 end)

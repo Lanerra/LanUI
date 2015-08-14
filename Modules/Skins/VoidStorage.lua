@@ -7,45 +7,42 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	local StripAllTextures = {
-		'VoidStorageBorderFrame',
-		'VoidStorageDepositFrame',
-		'VoidStorageWithdrawFrame',
-		'VoidStorageCostFrame',
-		'VoidStorageStorageFrame',
-		'VoidStoragePurchaseFrame',
-		'VoidItemSearchBox',
+		"VoidStorageBorderFrame",
+		"VoidStorageDepositFrame",
+		"VoidStorageWithdrawFrame",
+		"VoidStorageCostFrame",
+		"VoidStorageStorageFrame",
+		"VoidStoragePurchaseFrame",
+		"VoidItemSearchBox",
 	}
 
 	for _, object in pairs(StripAllTextures) do
 		_G[object]:StripTextures()
 	end
 
+
 	for i=1, 2 do
 		local tab = VoidStorageFrame["Page"..i]
-		local normTex = tab:GetNormalTexture()
-		local texture = normTex:GetTexture()
-		tab:StripTextures()
-
+		tab:DisableDrawLayer("BACKGROUND")
 		tab:StyleButton(nil, true)
-		tab:SetNormalTexture(texture)
-		normTex:SetTexCoord(unpack(F.TexCoords))
-		normTex:SetInside()
+		tab:GetNormalTexture():SetTexCoord(unpack(F.TexCoords))
+		tab:GetNormalTexture():SetInside()
 		tab:SetTemplate()
 	end
 
 	VoidStoragePurchaseFrame:SetFrameStrata('DIALOG')
-	VoidStorageFrame:SetTemplate()
-	VoidStoragePurchaseFrame:SetTemplate()
+	VoidStorageFrame:SetTemplate("Transparent")
+	VoidStoragePurchaseFrame:SetTemplate("Default")
 	VoidStorageFrameMarbleBg:Kill()
 	VoidStorageFrameLines:Kill()
 	select(2, VoidStorageFrame:GetRegions()):Kill()
 
-	StyleButton(VoidStoragePurchaseButton)
-	StyleButton(VoidStorageHelpBoxButton)
-	StyleButton(VoidStorageTransferButton)
+	HandleButton(VoidStoragePurchaseButton)
+	HandleButton(VoidStorageHelpBoxButton)
+	HandleButton(VoidStorageTransferButton)
 
-	SkinCloseButton(VoidStorageBorderFrame.CloseButton)
-	VoidItemSearchBox:CreateBD()
+	HandleCloseButton(VoidStorageBorderFrame.CloseButton)
+	VoidItemSearchBox:CreateBackdrop("Overlay")
 	VoidItemSearchBox.backdrop:Point("TOPLEFT", 10, -1)
 	VoidItemSearchBox.backdrop:Point("BOTTOMRIGHT", 4, 1)
 
@@ -60,9 +57,11 @@ local function LoadSkin()
 
 		button_d:StyleButton()
 		button_d:SetTemplate()
+		button_d.IconBorder:SetAlpha(0)
 
 		button_w:StyleButton()
 		button_w:SetTemplate()
+		button_w.IconBorder:SetAlpha(0)
 
 		icon_d:SetTexCoord(unpack(F.TexCoords))
 		icon_d:SetInside()
@@ -82,7 +81,45 @@ local function LoadSkin()
 
 		icon:SetTexCoord(unpack(F.TexCoords))
 		icon:SetInside()
+		button.IconBorder:SetAlpha(0)
 	end
+
+	hooksecurefunc("VoidStorage_ItemsUpdate", function(doDeposit, doContents)
+		local self = VoidStorageFrame;
+		if ( doDeposit ) then
+			for i=1, 9 do
+				local button = _G["VoidStorageDepositButton"..i]
+				local _, _, quality = GetVoidTransferDepositInfo(i);
+				if (quality and quality > LE_ITEM_QUALITY_COMMON and BAG_ITEM_QUALITY_COLORS[quality]) then
+					button:SetBackdropBorderColor(BAG_ITEM_QUALITY_COLORS[quality].r, BAG_ITEM_QUALITY_COLORS[quality].g, BAG_ITEM_QUALITY_COLORS[quality].b);
+				else
+					button:SetTemplate()
+				end
+			end
+		end
+
+		if ( doContents ) then
+			for i=1, 9 do
+				local button = _G["VoidStorageWithdrawButton"..i]
+				local _, _, quality = GetVoidTransferWithdrawalInfo(i);
+				if (quality and quality > LE_ITEM_QUALITY_COMMON and BAG_ITEM_QUALITY_COLORS[quality]) then
+					button:SetBackdropBorderColor(BAG_ITEM_QUALITY_COLORS[quality].r, BAG_ITEM_QUALITY_COLORS[quality].g, BAG_ITEM_QUALITY_COLORS[quality].b);
+				else
+					button:SetTemplate()
+				end
+			end
+
+			for i = 1, 80 do
+				local button = _G["VoidStorageStorageButton"..i]
+				local _, _, _, _, _, quality = GetVoidItemInfo(self.page, i);
+				if (quality and quality > LE_ITEM_QUALITY_COMMON and BAG_ITEM_QUALITY_COLORS[quality]) then
+					button:SetBackdropBorderColor(BAG_ITEM_QUALITY_COLORS[quality].r, BAG_ITEM_QUALITY_COLORS[quality].g, BAG_ITEM_QUALITY_COLORS[quality].b);
+				else
+					button:SetTemplate()
+				end
+			end
+		end
+	end)
 end
 
 F.SkinFuncs['Blizzard_VoidStorageUI'] = LoadSkin

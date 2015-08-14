@@ -2,63 +2,41 @@ local F, C, G = unpack(select(2, ...))
 local bc = C.Media.BorderColor
 
 local function LoadSkin()
-	-- Glyph Tab
-	GlyphFrame:CreateBD(true)
-	GlyphFrame.backdrop:Point('TOPLEFT', GlyphFrame, 'TOPLEFT', 3, 2)
-	GlyphFrame.backdrop:Point('BOTTOMRIGHT', GlyphFrame, 'BOTTOMRIGHT', -3, 0)
-	GlyphFrameSearchBox:SkinEditBox()
-	GlyphFrameFilterDropDown:SkinDropDownBox(212)
+	GlyphFrame.background:ClearAllPoints()
+	GlyphFrame.background:SetAllPoints(PlayerTalentFrameInset)
 
-	GlyphFrameBackground:SetPoint('TOPLEFT', 5, 0)
-	GlyphFrameBackground:SetPoint('BOTTOMRIGHT', -5, 2)
+	GlyphFrame:HookScript('OnShow', function()
+		PlayerTalentFrameInset.backdrop:Show()
+	end)
 
-	for i = 1, 6 do
-		_G['GlyphFrameGlyph'..i]:SetFrameLevel(_G['GlyphFrameGlyph'..i]:GetFrameLevel() + 5)
+	GlyphFrame:HookScript('OnHide', function()
+		PlayerTalentFrameInset.backdrop:Hide()
+	end)
+
+	GlyphFrameSideInset:StripTextures()
+
+	GlyphFrameClearInfoFrame:CreateBackdrop('Default')
+	GlyphFrameClearInfoFrame.icon:SetTexCoord(unpack(F.TexCoords))
+	GlyphFrameClearInfoFrame:Width(GlyphFrameClearInfoFrame:GetWidth() - 2)
+	GlyphFrameClearInfoFrame:Height(GlyphFrameClearInfoFrame:GetHeight() - 2)
+	GlyphFrameClearInfoFrame.icon:Size(GlyphFrameClearInfoFrame:GetSize())
+	GlyphFrameClearInfoFrame:Point('TOPLEFT', GlyphFrame, 'BOTTOMLEFT', 6, -10)
+
+	HandleDropDownBox(GlyphFrameFilterDropDown, 212)
+	HandleEditBox(GlyphFrameSearchBox)
+	HandleScrollBar(GlyphFrameScrollFrameScrollBar, 5)
+
+	for i=1, 10 do
+		local button = _G["GlyphFrameScrollFrameButton"..i]
+		local icon = _G["GlyphFrameScrollFrameButton"..i.."Icon"]
+
+		button:StripTextures()
+		HandleButton(button)
+		icon:SetTexCoord(unpack(F.TexCoords))
 	end
 
-	for i = 1, 2 do
-		_G['GlyphFrameHeader'..i]:StripTextures()
-	end
-
-	local function Glyphs(self, first, i)
-		local button = _G['GlyphFrameScrollFrameButton'..i]
-		local icon = _G['GlyphFrameScrollFrameButton'..i..'Icon']
-
-		if first then
-			button:StripTextures()
-		end
-
-		if icon then
-			icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-			button:SkinButton()
-		end
-	end
-
-	for i = 1, 10 do
-		Glyphs(nil, true, i)
-	end
-
-	GlyphFrameClearInfoFrame:SetTemplate()
-	GlyphFrameClearInfoFrameIcon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-	GlyphFrameClearInfoFrameIcon:Point('TOPLEFT', 2, -2)
-	GlyphFrameClearInfoFrameIcon:Point('BOTTOMRIGHT', -2, 2)
-
-	GlyphFrameLevelOverlay1:SetParent(GlyphFrame.backdrop)
-	GlyphFrameLevelOverlayText1:SetParent(GlyphFrame.backdrop)
-	GlyphFrameLevelOverlay2:SetParent(GlyphFrame.backdrop)
-	GlyphFrameLevelOverlayText2:SetParent(GlyphFrame.backdrop)
-
-	GlyphFrameScrollFrameScrollBar:SkinScrollBar()
-
-	local StripAllTextures = {
-		'GlyphFrameScrollFrame',
-		'GlyphFrameSideInset',
-		'GlyphFrameScrollFrameScrollChild'
-	}
-
-	for _, object in pairs(StripAllTextures) do
-		_G[object]:StripTextures()
-	end
+	GlyphFrameHeader1:StripTextures()
+	GlyphFrameHeader2:StripTextures()
 end
 
 F.SkinFuncs['Blizzard_GlyphUI'] = LoadSkin

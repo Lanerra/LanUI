@@ -312,9 +312,14 @@ RegisterStateDriver(button, 'visibility', '[petbattle][overridebar][vehicleui] h
 local override = CreateFrame('Frame', 'LanOverride', UIParent, 'SecureHandlerStateTemplate')
 override:SetWidth(num * C.ActionBars.ButtonSize + (num - 1) * C.ActionBars.ButtonSpacing + 2 * C.ActionBars.ButtonSpacing)
 override:SetHeight(C.ActionBars.ButtonSize + 2 * C.ActionBars.ButtonSpacing)
-override:SetPoint('BOTTOM', LanBar2, 'TOP')
 
-override:SetScale(0.8)
+if ABPanel and ABPanel:IsShown() then
+	override:SetPoint('CENTER', ABPanel, 32, 0)
+else
+	override:SetPoint('BOTTOM', LanBar2, 'TOP')
+end
+
+override:SetScale(1.2)
 
 OverrideActionBar:SetParent(override)
 OverrideActionBar:EnableMouse(false)
@@ -324,6 +329,7 @@ local leaveButtonPlaced = false
 
 for i = 1, 7 do
 	local button = _G['OverrideActionBarButton'..i]
+	local HK = _G['OverrideActionBarButton'..i..'HotKey']
 	if not button and not leaveButtonPlaced then
 		button = OverrideActionBar.LeaveButton
 		leaveButtonPlaced = true
@@ -353,6 +359,11 @@ for i = 1, 7 do
 		button:SetPoint('LEFT', previous, 'RIGHT', C.ActionBars.ButtonSpacing, 0)
 	end
     
+	if HK then
+		HK:SetAlpha(0)
+		HK:Hide()
+	end
+	
     button:StyleButton()
 end
 
@@ -513,13 +524,11 @@ for i = 1, NUM_PET_ACTION_SLOTS do
 	button:ClearAllPoints()
     
 	if not button.backdrop then
-		button:CreateBD()
+		button:CreateBackdrop()
 		button.icon:SetTexCoord(unpack(F.TexCoords))
 		button.icon:SetInside()
 		button.icon:SetDrawLayer('BACKGROUND', 7)
-		button.backdrop:SetOutside()
 		--button.icon:SetParent(button.backdrop)
-        button:SetBeautyBorderPadding(2)
 	end
     
 	if i == 1 then
@@ -578,6 +587,25 @@ local function RangeUpdate(self)
 	local Border  = _G[Name.."Border"]
 	local Normal  = _G[Name.."NormalTexture"]
 	local BtnBG = _G[Name.."FloatingBG"]
+	local FO = _G[Name..'FlyoutBorder']
+	local FOS = _G[Name..'FlyoutBorderShadow']
+	
+	if FO then
+		FO:SetTexture('')
+		FOS:SetTexture('')
+	end
+	
+	SpellFlyout:StripTextures()
+	
+	for i = 1, 10 do
+		local SF = _G['SpellFlyoutButton'..i]
+		local SFI = _G['SpellFlyoutButton'..i..'Icon']
+		
+		if SF and not SF.backdrop then
+			SF:SkinButton()
+			SFI:SetTexCoord(unpack(F.TexCoords))
+		end
+	end
 	
 	Flash:SetTexture("")
 	Button:SetNormalTexture("")
@@ -782,11 +810,11 @@ function Experience:Create()
 		RestedBar:SetFrameLevel(XPBar:GetFrameLevel() - 1)
 		RestedBar:SetAlpha(.5)
 		
-        XPBar:Size(512, 10)
-        XPBar:Point('BOTTOM', BottomPanel, 'TOP', 0, 4)
+        XPBar:Size(380, 10)
+        XPBar:Point('BOTTOM', BottomPanel, 'TOP', 0, 5)
 		XPBar.backdrop:ClearAllPoints()
 		XPBar.backdrop:Point('TOPLEFT', XPBar, -3, 2)
-		XPBar.backdrop:Point('BOTTOMRIGHT', XPBar, 3, -3)
+		XPBar.backdrop:Point('BOTTOMRIGHT', XPBar, 3, -2)
 		
 		self["XPBar"..i] = XPBar
 		self["RestedBar"..i] = RestedBar

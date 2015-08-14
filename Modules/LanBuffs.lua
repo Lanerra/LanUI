@@ -163,7 +163,7 @@ for i = 1, 3 do
     button:SetHeight(C.Buffs.Size)
 
     local icon = _G['TempEnchant'..i..'Icon']
-    icon:SetTexCoord(0.03, 0.97, 0.03, 0.97)
+    icon:SetTexCoord(unpack(F.TexCoords))
 
     local duration = _G['TempEnchant'..i..'Duration']
     duration:ClearAllPoints()
@@ -191,7 +191,7 @@ hooksecurefunc('AuraButton_Update', function(self, index)
         
     local icon = _G[self..index..'Icon']
     if (icon) then
-        icon:SetTexCoord(0.03, 0.97, 0.03, 0.97)
+        icon:SetTexCoord(unpack(F.TexCoords))
     end
         
     local duration = _G[self..index..'Duration']

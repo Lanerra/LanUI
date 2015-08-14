@@ -3,30 +3,25 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	ItemUpgradeFrame:StripTextures()
-	ItemUpgradeFrame:SetTemplate()
+	ItemUpgradeFrame:SetTemplate('Transparent')
+	--ItemUpgradeFrameShadows:Kill()
+	--ItemUpgradeFrameInset:Kill()
 
-	ItemUpgradeFrameCloseButton:SkinCloseButton()
-	
-	ItemUpgradeFrame.ItemButton:StripTextures()
-	ItemUpgradeFrame.ItemButton:SetTemplate()
-	ItemUpgradeFrame.ItemButton.backdrop:SetOutside()
-	ItemUpgradeFrame.ItemButton:StyleButton()
-	ItemUpgradeFrame.ItemButton.IconTexture:ClearAllPoints()
-	ItemUpgradeFrame.ItemButton.IconTexture:Point('TOPLEFT', 2, -2)
-	ItemUpgradeFrame.ItemButton.IconTexture:Point('BOTTOMRIGHT', -2, 2)
+	HandleCloseButton(ItemUpgradeFrameCloseButton)
+
+	HandleItemButton(ItemUpgradeFrame.ItemButton, true)
 
 	hooksecurefunc('ItemUpgradeFrame_Update', function()
 		if GetItemUpgradeItemInfo() then
 			ItemUpgradeFrame.ItemButton.IconTexture:SetAlpha(1)
-			ItemUpgradeFrame.ItemButton.IconTexture:SetTexCoord(.1,.9,.1,.9)
+			ItemUpgradeFrame.ItemButton.IconTexture:SetTexCoord(unpack(F.TexCoords))
 		else
 			ItemUpgradeFrame.ItemButton.IconTexture:SetAlpha(0)
 		end
 	end)
 
 	ItemUpgradeFrameMoneyFrame:StripTextures()
-	ItemUpgradeFrameUpgradeButton:StripTextures()
-	ItemUpgradeFrameUpgradeButton:SkinButton()
+	HandleButton(ItemUpgradeFrameUpgradeButton, true)
 	ItemUpgradeFrame.FinishedGlow:Kill()
 	ItemUpgradeFrame.ButtonFrame:DisableDrawLayer('BORDER')
 end

@@ -3,38 +3,41 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	ItemSocketingFrame:StripTextures()
-	ItemSocketingFrame:SetTemplate()
+	ItemSocketingFrame:SetTemplate("Transparent")
+	ItemSocketingFrameInset:Kill()
 	ItemSocketingScrollFrame:StripTextures()
-
+	ItemSocketingScrollFrame:CreateBackdrop("Transparent")
+	HandleScrollBar(ItemSocketingScrollFrameScrollBar, 2)
 	for i = 1, MAX_NUM_SOCKETS  do
-		local button = _G['ItemSocketingSocket'..i]
-		local button_bracket = _G['ItemSocketingSocket'..i..'BracketFrame']
-		local button_bg = _G['ItemSocketingSocket'..i..'Background']
-		local button_icon = _G['ItemSocketingSocket'..i..'IconTexture']
+		local button = _G[("ItemSocketingSocket%d"):format(i)]
+		local button_bracket = _G[("ItemSocketingSocket%dBracketFrame"):format(i)]
+		local button_bg = _G[("ItemSocketingSocket%dBackground"):format(i)]
+		local button_icon = _G[("ItemSocketingSocket%dIconTexture"):format(i)]
 		button:StripTextures()
 		button:StyleButton(false)
-		button:SetTemplate(true)
+		button:SetTemplate("Default", true)
 		button_bracket:Kill()
 		button_bg:Kill()
-		button_icon:SetTexCoord(.08, .92, .08, .92)
-		button_icon:ClearAllPoints()
-		button_icon:Point('TOPLEFT', 2, -2)
-		button_icon:Point('BOTTOMRIGHT', -2, 2)
-		ItemSocketingFrame:HookScript('OnUpdate', function(self)
-			gemColor = GetSocketTypes(i)
+		button_icon:SetTexCoord(unpack(F.TexCoords))
+		button_icon:SetInside()
+	end
+
+	hooksecurefunc("ItemSocketingFrame_Update", function()
+		local numSockets = GetNumSockets();
+		for i=1, numSockets do
+			local button = _G[("ItemSocketingSocket%d"):format(i)]
+			local gemColor = GetSocketTypes(i)
 			local color = GEM_TYPE_INFO[gemColor]
 			button:SetBackdropColor(color.r, color.g, color.b, 0.15)
-			button:SetBeautyBorderColor(color.r, color.g, color.b)
-		end)
-	end
-	
+			button:SetBackdropBorderColor(color.r, color.g, color.b)
+		end
+	end)
+
 	ItemSocketingFramePortrait:Kill()
 	ItemSocketingSocketButton:ClearAllPoints()
-	ItemSocketingSocketButton:Point('BOTTOMRIGHT', ItemSocketingFrame, 'BOTTOMRIGHT', -5, 5)
-	ItemSocketingSocketButton:SkinButton()
-	ItemSocketingFrameCloseButton:SkinCloseButton()
-	ItemSocketingScrollFrameScrollBar:SkinScrollBar()
-	ItemSocketingFrameInset:StripTextures()
+	ItemSocketingSocketButton:Point("BOTTOMRIGHT", ItemSocketingFrame, "BOTTOMRIGHT", -5, 5)
+	HandleButton(ItemSocketingSocketButton)
+	HandleCloseButton(ItemSocketingFrameCloseButton)
 end
 
 F.SkinFuncs['Blizzard_ItemSocketingUI'] = LoadSkin

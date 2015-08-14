@@ -3,15 +3,13 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	PetitionFrame:StripTextures(true)
-	PetitionFrame:SetTemplate()
-	PetitionFrameInset:StripTextures()
-
-	PetitionFrameRequestButton:SkinButton()
-	PetitionFrameRequestButton:Width(110)
-	PetitionFrameRenameButton:SkinButton()
-	PetitionFrameCancelButton:SkinButton()
-	PetitionFrameSignButton:SkinButton()
-	PetitionFrameCloseButton:SkinCloseButton()
+	PetitionFrame:SetTemplate("Transparent")
+	PetitionFrameInset:Kill()
+	HandleButton(PetitionFrameSignButton)
+	HandleButton(PetitionFrameRequestButton)
+	HandleButton(PetitionFrameRenameButton)
+	HandleButton(PetitionFrameCancelButton)
+	HandleCloseButton(PetitionFrameCloseButton)
 
 	PetitionFrameCharterTitle:SetTextColor(1, 1, 0)
 	PetitionFrameCharterName:SetTextColor(1, 1, 1)
@@ -20,17 +18,13 @@ local function LoadSkin()
 	PetitionFrameMemberTitle:SetTextColor(1, 1, 0)
 
 	for i=1, 9 do
-		_G['PetitionFrameMemberName'..i]:SetTextColor(1, 1, 1)
+		_G["PetitionFrameMemberName"..i]:SetTextColor(1, 1, 1)
 	end
 
 	PetitionFrameInstructions:SetTextColor(1, 1, 1)
 
-	PetitionFrameRenameButton:Point('LEFT', PetitionFrameRequestButton, 'RIGHT', 3, 0)
-	PetitionFrameRenameButton:Point('RIGHT', PetitionFrameCancelButton, 'LEFT', -3, 0)
-	PetitionFrame:Height(PetitionFrame:GetHeight() - 80)
-
-	PetitionFrameCancelButton:Point('BOTTOMRIGHT', PetitionFrame, 'BOTTOMRIGHT', -40, 20)
-	PetitionFrameRequestButton:Point('BOTTOMLEFT', PetitionFrame, 'BOTTOMLEFT', 22, 20)
+	PetitionFrameRenameButton:Point("LEFT", PetitionFrameRequestButton, "RIGHT", 3, 0)
+	PetitionFrameRenameButton:Point("RIGHT", PetitionFrameCancelButton, "LEFT", -3, 0)
 end
 
 tinsert(F.SkinFuncs['LanUI'], LoadSkin)

@@ -131,7 +131,9 @@ f:SetScript('OnEvent', function(event)
             r, g, b = 0, 1, 0
         end
         
-        f.Text:SetTextColor(r, g, b)
-        f.Text:SetText(string.format('%d%%', (overAll/total)*100))
+        if overAll ~= 0 then
+            f.Text:SetTextColor(r, g, b)
+            f.Text:SetText(string.format('%d%%', (overAll/total)*100))
+        end
     end
 end)

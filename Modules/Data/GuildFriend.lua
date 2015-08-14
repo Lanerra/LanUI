@@ -150,11 +150,9 @@ end
 local f = CreateFrame('Frame', nil, Minimap)
 f:SetFrameStrata('BACKGROUND')
 f:SetFrameLevel(Minimap:GetFrameLevel() - 1)
-f:SetHeight(30)
+f:Height(30)
 f:SetAlpha(cfg.Tab.AlphaNoMouseover)
 f:SetTemplate()
-f:SetBackdrop({bgFile = C.Media.Backdrop})
-f:SetBackdropColor(unpack(C.Media.BackdropColor))
 f.parent = Minimap
 
 -- The guild button
@@ -295,14 +293,14 @@ end
 
 local function SlideUp()
     f.mod = 1
-    f.limit = cfg.Tab.ShowBelowMinimap and -6 or 21
+    f.limit = cfg.Tab.ShowBelowMinimap and -6 or 22
     f.speed = 200
     f:SetScript('OnUpdate', SlideFrame)
 end
 
 local function SlideDown()
     f.mod = -1
-    f.limit = cfg.Tab.ShowBelowMinimap and -21 or 6
+    f.limit = cfg.Tab.ShowBelowMinimap and -22 or 6
     f.speed = -200
     f:SetScript('OnUpdate', SlideFrame)
 end

@@ -3,11 +3,11 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	TaxiFrame:StripTextures()
-	TaxiFrame.TitleText:SetAlpha(0)
-	TaxiRouteMap:CreateBD(true)
-	TaxiFrame.CloseButton:SkinCloseButton()
-	TaxiFrame.CloseButton:ClearAllPoints()
-	TaxiFrame.CloseButton:SetPoint('TOPRIGHT', 0, -20)
+	TaxiFrame:CreateBackdrop("Transparent")
+	TaxiRouteMap:CreateBackdrop("Default")
+	TaxiRouteMap.backdrop.backdropTexture:Hide()
+
+	HandleCloseButton(TaxiFrame.CloseButton)
 end
 
 tinsert(F.SkinFuncs['LanUI'], LoadSkin)

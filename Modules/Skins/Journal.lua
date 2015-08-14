@@ -3,52 +3,30 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	EncounterJournal:StripTextures(true)
-	
-	EncounterJournal.backdrop = EncounterJournal:CreateTexture(nil, 'BACKGROUND')
-	EncounterJournal.backdrop:SetDrawLayer('BACKGROUND', -7)
-	EncounterJournal.backdrop:SetTexture(0, 0, 0, 0.5)
-	EncounterJournal.backdrop:Point('TOPLEFT', EncounterJournal, 'TOPLEFT')
-	EncounterJournal.backdrop:Point('BOTTOMRIGHT', EncounterJournal, 'BOTTOMRIGHT')
-	EncounterJournal:SetTemplate(true)
-	
-	EncounterJournalNavBar:StripTextures(true)
-	EncounterJournalNavBar:SetPoint('TOPLEFT', EncounterJournal, 7, -22)
-	EncounterJournalNavBarOverlay:StripTextures(true)
-	
-	EncounterJournalNavBarHomeButton:SkinButton(true)
-	EncounterJournalNavBarHomeButton:ClearAllPoints()
-	EncounterJournalNavBarHomeButton:Point('LEFT', EncounterJournalNavBar)
-	
-	if EncounterJournalNavBarButton2 then
-		EncounterJournalNavBarButton2:Point('LEFT', EncounterJournalNavBarHomeButton, 'RIGHT', 4, 0)
-	end
-	
-	EncounterJournalSearchBox:SkinEditBox()
-	EncounterJournalCloseButton:SkinCloseButton()
-	
-	EncounterJournalInset:StripTextures(true)
-	EncounterJournal:HookScript('OnShow', function()
-		if not EncounterJournalEncounterFrameInfo.backdrop then									
-			EncounterJournalEncounterFrameInfo:CreateBD(true)
-			EncounterJournalEncounterFrameInfo.backdrop:SetFrameStrata('BACKGROUND')
-			EncounterJournalEncounterFrameInfo.backdrop:SetFrameLevel(0)
-		end
-		
-		EncounterJournalEncounterFrameInfoBossTab:SetTemplate()
-		EncounterJournalEncounterFrameInfoBossTab:ClearAllPoints()
-		EncounterJournalEncounterFrameInfoBossTab:Point('TOPRIGHT', EncounterJournalEncounterFrame, 'TOPRIGHT', 69, 20)
-		
-		EncounterJournalEncounterFrameInfoLootTab:SetTemplate()
-		EncounterJournalEncounterFrameInfoLootTab:ClearAllPoints()
-		EncounterJournalEncounterFrameInfoLootTab:Point('TOP', EncounterJournalEncounterFrameInfoBossTab, 'BOTTOM', 0, -4)
-		
+	EncounterJournal:CreateBackdrop('Transparent')
 
-		EncounterJournalEncounterFrameInfoModelTab:SetTemplate()
-		EncounterJournalEncounterFrameInfoModelTab:ClearAllPoints()
-		EncounterJournalEncounterFrameInfoModelTab:Point('TOP', EncounterJournalEncounterFrameInfoLootTab, 'BOTTOM', 0, -4)		
-	end)
+	EncounterJournalNavBar:StripTextures(true)
+	EncounterJournalNavBarOverlay:StripTextures(true)
+
+	EncounterJournalNavBar:CreateBackdrop("Default")
+	EncounterJournalNavBar.backdrop:Point("TOPLEFT", -2, 0)
+	EncounterJournalNavBar.backdrop:SetPoint("BOTTOMRIGHT")
+	HandleButton(EncounterJournalNavBarHomeButton, true)
+
+	HandleEditBox(EncounterJournalSearchBox)
+	HandleCloseButton(EncounterJournalCloseButton)
+	HandleDropDownBox(EncounterJournalInstanceSelectTierDropDown)
+
+	EncounterJournalInset:StripTextures(true)
 	
-	EncounterJournalInstanceSelectScrollFrameScrollBar:SkinScrollBar()
+	EncounterJournalInstanceSelect:CreateBackdrop('Default')
+	EncounterJournalEncounterFrameInfo:CreateBackdrop('Default')
+
+	HandleScrollBar(EncounterJournalInstanceSelectScrollFrameScrollBar, 4)
+	HandleScrollBar(EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollBar, 4)
+	HandleScrollBar(EncounterJournalEncounterFrameInfoLootScrollFrameScrollBar, 4)
+	HandleScrollBar(EncounterJournalEncounterFrameInstanceFrameLoreScrollFrameScrollBar, 4)
+	HandleScrollBar(EncounterJournalEncounterFrameInfoBossesScrollFrameScrollBar, 4)
 
 	EncounterJournalEncounterFrameInfoBossTab:GetNormalTexture():SetTexture(nil)
 	EncounterJournalEncounterFrameInfoBossTab:GetPushedTexture():SetTexture(nil)
@@ -58,63 +36,63 @@ local function LoadSkin()
 	EncounterJournalEncounterFrameInfoLootTab:GetNormalTexture():SetTexture(nil)
 	EncounterJournalEncounterFrameInfoLootTab:GetPushedTexture():SetTexture(nil)
 	EncounterJournalEncounterFrameInfoLootTab:GetDisabledTexture():SetTexture(nil)
-	EncounterJournalEncounterFrameInfoLootTab:GetHighlightTexture():SetTexture(nil)	
-	
-	EncounterJournalInstanceSelect:StripTextures()
-	EncounterJournalInstanceSelectDungeonTab:SkinTab()
-	EncounterJournalInstanceSelectDungeonTab:SetFrameStrata('HIGH')
-	EncounterJournalInstanceSelectRaidTab.grayBox:StripTextures()
-	EncounterJournalInstanceSelectRaidTab:SkinTab()
-	EncounterJournalInstanceSelectRaidTab:Enable()
-	EncounterJournalInstanceSelectRaidTab:SetFrameStrata('HIGH')
-	EncounterJournal.instanceSelect.bg:SetAlpha(0)
-	EncounterJournalInstanceSelectScrollDownButton:SkinCloseButton()
-	EncounterJournalInstanceSelectScrollDownButton.t:SetText(' V')
-	EncounterJournalInstanceSelectScrollDownButton.t:SetPoint('CENTER')
-	EncounterJournalInstanceSelectScrollDownButton:SetTemplate()
-	EncounterJournalInstanceSelectScrollDownButton:Size(18,21)
-	
-	local function SkinDungeons()
-		-- why the fuck button 1 is not named the same as 2+
-		local b1 = EncounterJournalInstanceSelectScrollFrameScrollChildInstanceButton1
-		if b1 and not b1.isSkinned then 
-			b1:CreateBD()
-			b1.backdrop:SetBackdropColor(0,0,0,0)
-			b1:StyleButton()
-			b1.isSkinned = true
-			b1.bgImage:SetTexCoord(0.08,.6,0.08,.6)
-			b1.bgImage:SetDrawLayer('OVERLAY')
-			
-			b1:HookScript('OnClick', function()
-				EncounterJournalNavBarButton2:Point('LEFT', EncounterJournalNavBarHomeButton, 'RIGHT', 4, 0)
-			end)
-		end
+	EncounterJournalEncounterFrameInfoLootTab:GetHighlightTexture():SetTexture(nil)
 
-		for i = 1, 100 do
-			local b = _G['EncounterJournalInstanceSelectScrollFrameinstance'..i]
-			if b and not b.isSkinned then
-				b:CreateBD()
-				b.backdrop:SetBackdropColor(0,0,0,0)
-				b:StyleButton()
-				b.isSkinned = true
-				b.bgImage:SetTexCoord(0.08,.6,0.08,.6)
-				b.bgImage:SetDrawLayer('OVERLAY')
-			end
-			
-			if b then
-				b:HookScript('OnClick', function()
-					EncounterJournalNavBarButton2:Point('LEFT', EncounterJournalNavBarHomeButton, 'RIGHT', 4, 0)
-				end)
-			end
+	EncounterJournalEncounterFrameInfoModelTab:GetNormalTexture():SetTexture(nil)
+	EncounterJournalEncounterFrameInfoModelTab:GetPushedTexture():SetTexture(nil)
+	EncounterJournalEncounterFrameInfoModelTab:GetDisabledTexture():SetTexture(nil)
+	EncounterJournalEncounterFrameInfoModelTab:GetHighlightTexture():SetTexture(nil)
+
+	EncounterJournalEncounterFrameInfoOverviewTab:GetNormalTexture():SetTexture(nil)
+	EncounterJournalEncounterFrameInfoOverviewTab:GetPushedTexture():SetTexture(nil)
+	EncounterJournalEncounterFrameInfoOverviewTab:GetDisabledTexture():SetTexture(nil)
+	EncounterJournalEncounterFrameInfoOverviewTab:GetHighlightTexture():SetTexture(nil)
+
+	EncounterJournalEncounterFrameInfoOverviewTab:Point('TOPLEFT', EncounterJournalEncounterFrameInfo, 'TOPRIGHT', C.Media.PixelPerfect and -3 or 0, -35)
+	EncounterJournalEncounterFrameInfoOverviewTab.SetPoint = F.Dummy
+
+	EncounterJournalEncounterFrameInfoBossTab:CreateBackdrop('Default')
+	EncounterJournalEncounterFrameInfoBossTab.backdrop:Point('TOPLEFT', 11, -8)
+	EncounterJournalEncounterFrameInfoBossTab.backdrop:Point('BOTTOMRIGHT', -6, 8)
+	EncounterJournalEncounterFrameInfoLootTab:CreateBackdrop('Default')
+	EncounterJournalEncounterFrameInfoLootTab.backdrop:Point('TOPLEFT', 11, -8)
+	EncounterJournalEncounterFrameInfoLootTab.backdrop:Point('BOTTOMRIGHT', -6, 8)
+	EncounterJournalEncounterFrameInfoModelTab:CreateBackdrop('Default')
+	EncounterJournalEncounterFrameInfoModelTab.backdrop:Point('TOPLEFT', 11, -8)
+	EncounterJournalEncounterFrameInfoModelTab.backdrop:Point('BOTTOMRIGHT', -6, 8)
+	EncounterJournalEncounterFrameInfoOverviewTab:CreateBackdrop('Default')
+	EncounterJournalEncounterFrameInfoOverviewTab.backdrop:Point('TOPLEFT', 11, -8)
+	EncounterJournalEncounterFrameInfoOverviewTab.backdrop:Point('BOTTOMRIGHT', -6, 8)
+
+	EncounterJournalEncounterFrameInfoBossTab.backdrop.backdropTexture:SetVertexColor(189/255, 159/255, 88/255)
+	EncounterJournalEncounterFrameInfoLootTab.backdrop.backdropTexture:SetVertexColor(189/255, 159/255, 88/255)
+	EncounterJournalEncounterFrameInfoModelTab.backdrop.backdropTexture:SetVertexColor(189/255, 159/255, 88/255)
+	EncounterJournalEncounterFrameInfoOverviewTab.backdrop.backdropTexture:SetVertexColor(189/255, 159/255, 88/255)
+	
+	--Suggestions
+	for i = 1, AJ_MAX_NUM_SUGGESTIONS do
+		local suggestion = EncounterJournal.suggestFrame["Suggestion"..i];
+
+		if i == 1 then
+			HandleButton(suggestion.button)
+			HandleNextPrevButton(suggestion.prevButton)
+			HandleNextPrevButton(suggestion.nextButton)
+		else
+			HandleButton(suggestion.centerDisplay.button)
 		end
 	end
-	SkinDungeons()
-	hooksecurefunc('EncounterJournal_ListInstances', SkinDungeons)
-	
-	EncounterJournalEncounterFrameInfoLootScrollFrameScrollBar:SkinScrollBar()
-	EncounterJournalEncounterFrameInfoDetailsScrollFrameScrollBar:SkinScrollBar()
-	EncounterJournalEncounterFrameInstanceFrameLoreScrollFrameScrollBar:SkinScrollBar()
-	EncounterJournalEncounterFrameInfoBossesScrollFrameScrollBar:SkinScrollBar()
+
+	--Suggestion Reward Tooltips
+
+	local tooltip = EncounterJournalTooltip
+	local item1 = tooltip.Item1
+	local item2 = tooltip.Item2
+
+	EncounterJournalTooltip:SetTemplate("Transparent")
+	HandleIcon(item1.icon)
+	HandleIcon(item2.icon)
+	item1.IconBorder:SetTexture(nil)
+	item2.IconBorder:SetTexture(nil)
 end
 
 F.SkinFuncs['Blizzard_EncounterJournal'] = LoadSkin

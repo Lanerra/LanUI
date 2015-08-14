@@ -1,8 +1,8 @@
 local F, C, G = unpack(select(2, ...))
 
-local Mult = 768/string.match(F.Resolution, '%d+x(%d+)')/F.TrueScale
+local Mult = 768 / string.match(F.Resolution, '%d+x(%d+)') / F.TrueScale
 local Scale = function(x)
-	return Mult*math.floor(x/Mult+.5)
+	return Mult * math.floor(x / Mult + .5)
 end
 
 C['FirstTime'] = false -- How sweet! Fresh meat!
@@ -10,7 +10,7 @@ C['FirstTime'] = false -- How sweet! Fresh meat!
 C['Media'] = {
     ['Font'] = [[Interface\Addons\LanUI\Media\Expressway.ttf]], -- Default font
     ['SCTFont'] = [[Interface\Addons\LanUI\Media\HOOGE.ttf]], -- Scrolling Combat Text Font
-    ['FontSize'] = 15, -- Default font size
+    ['FontSize'] = 11, -- Default font size
     ['FontStyle'] = '',
     ['StatusBar'] = [[Interface\Addons\LanUI\Media\StatusBar]], -- Default statusbar
     ['BuffBorder'] = [[Interface\Addons\LanUI\Media\textureNormal]], -- Buff border texture
@@ -18,10 +18,12 @@ C['Media'] = {
     ['OverlayBorder'] = [[Interface\Addons\LanUI\Media\textureOverlay]], -- Overlay border for other elements
     ['Backdrop'] = [[Interface\BUTTONS\WHITE8X8]], -- Background texture for panels/skinning
     ['Glow'] = [[Interface\AddOns\LanUI\Media\glowTex]], -- Texture used for glows
-    ['BackdropColor'] = {0, 0, 0, 0.5}, -- Background color for panels/skinning
+    ['BackdropColor'] = {0.1, 0.1, 0.1}, -- Background color for panels/skinning
+    ['BackdropFadeColor'] = {0.06, 0.06, 0.06, 0.5},
     ['BorderColor'] = {1, 1, 1}, -- Border color
     ['BorderSize'] = 12, -- Border size
     ['ClassColor'] = true, -- Class color our borders?
+    ['PixelPerfect'] = true,
 }
 
 C['ActionBars'] = {
@@ -107,7 +109,7 @@ C['UF'] = {
         ClassColorHealth = false
     },
     Media = {
-        FontSize = 15,
+        FontSize = 10,
         BorderSize = 12,
         BorderColor = { 1, 1, 1 },
         BackdropColor = { 0, 0, 0, 0.5 },

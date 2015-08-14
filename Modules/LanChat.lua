@@ -63,7 +63,7 @@ local function StyleBubble(frame)
 			region:SetShadowOffset(Scale, -Scale)
             region:SetDrawLayer('OVERLAY')
             
-            frame:SetTemplate()
+            frame:CreateBackdrop('Transparent')
             region:SetParent(frame.backdrop)
 		end
 	end
@@ -146,13 +146,10 @@ end
 for i = 1, NUM_CHAT_WINDOWS do
     _G['ChatFrame'..i..'EditBox']:SetAltArrowKeyMode(false)
     _G['ChatFrame'..i..'EditBox']:SetBackdrop({
-        bgFile = 'Interface\\Buttons\\WHITE8x8',
-        insets = { 
-            left = 3, 
-            right = 3, 
-            top = 2, 
-            bottom = 2 
-        },
+        bgFile = C.Media.Backdrop, 
+        edgeFile = C.Media.Backdrop, 
+        tile = false, tileSize = 0, edgeSize = F.Mult, 
+        insets = { left = 0, right = 0, top = 0, bottom = 0}
     })
     
     _G['ChatFrame'..i..'EditBox']:SetBackdropColor(0, 0, 0, 0.5)
@@ -162,14 +159,12 @@ for i = 1, NUM_CHAT_WINDOWS do
     end
     
     ChatFrame1EditBox:ClearAllPoints() 
-    ChatFrame1EditBox:SetPoint('BOTTOMLEFT', ChatFrame1, 'TOPLEFT', -7, 4) 
-    ChatFrame1EditBox:SetPoint('BOTTOMRIGHT', ChatFrame1, 'TOPRIGHT', 7, 4)  
+    ChatFrame1EditBox:Point('BOTTOMLEFT', ChatFrame1, 'TOPLEFT', -6, 8) 
+    ChatFrame1EditBox:Point('BOTTOMRIGHT', ChatFrame1, 'TOPRIGHT', 6, 8)
     
     ChatFrame2EditBox:ClearAllPoints() 
-    ChatFrame2EditBox:SetPoint('BOTTOMLEFT', ChatFrame2, 'TOPLEFT', -7, 26) 
-    ChatFrame2EditBox:SetPoint('BOTTOMRIGHT', ChatFrame2, 'TOPRIGHT', 7, 26) 
-    
-    _G['ChatFrame'..i..'EditBox']:CreateBeautyBorder(12, 1, 1, 1, -2, -1, -2, -1, -2, -1, -2, -1)
+    ChatFrame2EditBox:Point('BOTTOMLEFT', ChatFrame2, 'TOPLEFT', -7, 26) 
+    ChatFrame2EditBox:Point('BOTTOMRIGHT', ChatFrame2, 'TOPRIGHT', 7, 26) 
 end
 
 hooksecurefunc('ChatEdit_UpdateHeader', function(editbox)
@@ -178,26 +173,21 @@ hooksecurefunc('ChatEdit_UpdateHeader', function(editbox)
 		if ( type == 'CHANNEL' ) then
 			local id = GetChannelName(editbox:GetAttribute('channelTarget'))
 			if id == 0 then	
-				ChatFrame1EditBox:SetBeautyBorderColor(1, 1, 1)
+				ChatFrame1EditBox:SetBackdropBorderColor(1, 1, 1)
 				ChatFrame1EditBox:SetBackdropColor(1/10, 1/10, 1/10, 0.5)
-                SetTexture(ChatFrame1EditBox, 'white')
 			else 
-				ChatFrame1EditBox:SetBeautyBorderColor(ChatTypeInfo[type..id].r, ChatTypeInfo[type..id].g, ChatTypeInfo[type..id].b)
+				ChatFrame1EditBox:SetBackdropBorderColor(ChatTypeInfo[type..id].r, ChatTypeInfo[type..id].g, ChatTypeInfo[type..id].b)
 				ChatFrame1EditBox:SetBackdropColor(ChatTypeInfo[type..id].r/10, ChatTypeInfo[type..id].g/10, ChatTypeInfo[type..id].b/10, 0.75)
-                SetTexture(ChatFrame1EditBox, 'white')
 			end
 		elseif (type == 'SAY') then
-            ChatFrame1EditBox:SetBeautyBorderColor(1, 1, 1)
+            ChatFrame1EditBox:SetBackdropBorderColor(1, 1, 1)
             ChatFrame1EditBox:SetBackdropColor(0, 0, 0, 0.5)
-            SetTexture(ChatFrame1EditBox, 'default')
         else
-			ChatFrame1EditBox:SetBeautyBorderColor(ChatTypeInfo[type].r, ChatTypeInfo[type].g, ChatTypeInfo[type].b)
-            SetTexture(ChatFrame1EditBox, 'white')
+			ChatFrame1EditBox:SetBackdropBorderColor(ChatTypeInfo[type].r, ChatTypeInfo[type].g, ChatTypeInfo[type].b)
 		end
 	else
-		ChatFrame1EditBox:SetBeautyBorderColor(1, 1, 1)
+		ChatFrame1EditBox:SetBackdropBorderColor(1, 1, 1)
 		ChatFrame1EditBox:SetBackdropColor(0, 0, 0, 0.5)
-        SetTexture(ChatFrame1EditBox, 'default')
 	end
 end)
 
@@ -346,14 +336,14 @@ for i = 1, NUM_CHAT_WINDOWS do
     _G['ChatFrame'..i..'Background']:Kill()
     
 	local chatframe = _G[("ChatFrame%d"):format(i)]
-    chatframe:SetFading(0)
+    chatframe:SetFading(false)
     
     local x = CreateFrame('Frame', _G['ChatHolder'..i], chat)
     x:SetPoint('TOPLEFT', chat, -5, 5)
     x:SetPoint('BOTTOMRIGHT', chat, 5, -7)
     x:SetSize(425, C.Chat.ChatHeight)
     x:SetFrameStrata('BACKGROUND')
-    x:SetTemplate()
+    x:SetTemplate('Transparent')
 end
 
 -- tab text colors for the tabs

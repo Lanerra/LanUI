@@ -73,7 +73,7 @@ DurabilityFrame:UnregisterAllEvents()
 
     -- Bigger minimap
 
-MinimapCluster:SetScale(1.1)
+MinimapCluster:SetScale(1.11)
 MinimapCluster:EnableMouse(false)
 
     -- New position
@@ -89,8 +89,6 @@ end
 
 Minimap:SetMaskTexture(C.Media.Backdrop)
 Minimap:SetTemplate()
-Minimap.backdrop:SetOutside()
-Minimap.backdrop:SetBeautyBorderPadding(2)
 
     -- Enable mousewheel zooming
 

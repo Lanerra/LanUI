@@ -3,226 +3,229 @@ local bc = C.Media.BorderColor
 
 local function LoadSkin()
 	GuildFrame:StripTextures(true)
-	GuildFrame:SetTemplate()
+	GuildFrame:SetTemplate("Transparent")
 	--GuildLevelFrame:Kill()
-	
-	GuildMemberDetailCloseButton:SkinCloseButton()
-	GuildFrameCloseButton:SkinCloseButton()
-	GuildInfoFrameApplicantsContainerScrollBar:SkinScrollBar()
-	
+
+	HandleCloseButton(GuildMemberDetailCloseButton)
+	HandleCloseButton(GuildFrameCloseButton)
+	HandleScrollBar(GuildInfoFrameApplicantsContainerScrollBar)
 	local striptextures = {
-		'GuildFrameInset',
-		'GuildFrameBottomInset',
-		'GuildAllPerksFrame',
-		'GuildMemberDetailFrame',
-		'GuildMemberNoteBackground',
-		'GuildInfoFrameInfo',
-		'GuildLogContainer',
-		'GuildLogFrame',
-		'GuildRewardsFrame',
-		'GuildMemberOfficerNoteBackground',
-		'GuildTextEditContainer',
-		'GuildTextEditFrame',
-		'GuildRecruitmentRolesFrame',
-		'GuildRecruitmentAvailabilityFrame',
-		'GuildRecruitmentInterestFrame',
-		'GuildRecruitmentLevelFrame',
-		'GuildRecruitmentCommentFrame',
-		'GuildRecruitmentCommentInputFrame',
-		'GuildInfoFrameApplicantsContainer',
-		'GuildInfoFrameApplicants',
-		'GuildNewsBossModel',
-		'GuildNewsBossModelTextFrame',
-		'GuildInfoFrameApplicantsContainerScrollBar',
+		"GuildFrameInset",
+		"GuildFrameBottomInset",
+		"GuildAllPerksFrame",
+		"GuildMemberDetailFrame",
+		"GuildMemberNoteBackground",
+		"GuildInfoFrameInfo",
+		"GuildLogContainer",
+		"GuildLogFrame",
+		"GuildRewardsFrame",
+		"GuildMemberOfficerNoteBackground",
+		"GuildTextEditContainer",
+		"GuildTextEditFrame",
+		"GuildRecruitmentRolesFrame",
+		"GuildRecruitmentAvailabilityFrame",
+		"GuildRecruitmentInterestFrame",
+		"GuildRecruitmentLevelFrame",
+		"GuildRecruitmentCommentFrame",
+		"GuildRecruitmentCommentInputFrame",
+		"GuildInfoFrameApplicantsContainer",
+		"GuildInfoFrameApplicants",
+		"GuildNewsBossModel",
+		"GuildNewsBossModelTextFrame",
 	}
 	GuildRewardsFrameVisitText:ClearAllPoints()
-	GuildRewardsFrameVisitText:SetPoint('TOP', GuildRewardsFrame, 'TOP', 0, 30)
+	GuildRewardsFrameVisitText:SetPoint("TOP", GuildRewardsFrame, "TOP", 0, 30)
 	for _, frame in pairs(striptextures) do
 		_G[frame]:StripTextures()
 	end
-	
-	GuildNewsBossModel:CreateBD(true)
-	GuildNewsBossModelTextFrame:CreateBD(true)
-	GuildNewsBossModelTextFrame.backdrop:Point('TOPLEFT', GuildNewsBossModel.backdrop, 'BOTTOMLEFT', 0, -1)
-	GuildNewsBossModel:Point('TOPLEFT', GuildFrame, 'TOPRIGHT', 4, -43)
-	
+
+	GuildNewsBossModel:CreateBackdrop("Transparent")
+	GuildNewsBossModelTextFrame:CreateBackdrop("Default")
+	GuildNewsBossModelTextFrame.backdrop:Point("TOPLEFT", GuildNewsBossModel.backdrop, "BOTTOMLEFT", 0, -1)
+	GuildNewsBossModel:Point("TOPLEFT", GuildFrame, "TOPRIGHT", 4, -43)
+
 	local buttons = {
-		'GuildMemberRemoveButton',
-		'GuildMemberGroupInviteButton',
-		'GuildAddMemberButton',
-		'GuildViewLogButton',
-		'GuildControlButton',
-		'GuildRecruitmentListGuildButton',
-		'GuildTextEditFrameAcceptButton',
-		'GuildRecruitmentInviteButton',
-		'GuildRecruitmentMessageButton',
-		'GuildRecruitmentDeclineButton',
+		"GuildMemberRemoveButton",
+		"GuildMemberGroupInviteButton",
+		"GuildAddMemberButton",
+		"GuildViewLogButton",
+		"GuildControlButton",
+		"GuildRecruitmentListGuildButton",
+		"GuildTextEditFrameAcceptButton",
+		"GuildRecruitmentInviteButton",
+		"GuildRecruitmentMessageButton",
+		"GuildRecruitmentDeclineButton",
 	}
-	
+
 	for i, button in pairs(buttons) do
 		if i == 1 then
-			_G[button]:SkinButton()
+			HandleButton(_G[button])
 		else
-			_G[button]:SkinButton(true)
+			HandleButton(_G[button], true)
 		end
 	end
-	
+
 	local checkbuttons = {
-		'Quest', 
-		'Dungeon',
-		'Raid',
-		'PvP',
-		'RP',
-		'Weekdays',
-		'Weekends',
-		'LevelAny',
-		'LevelMax',
+		"Quest",
+		"Dungeon",
+		"Raid",
+		"PvP",
+		"RP",
+		"Weekdays",
+		"Weekends",
+		"LevelAny",
+		"LevelMax",
 	}
-	
+
 	for _, frame in pairs(checkbuttons) do
-		_G['GuildRecruitment'..frame..'Button']:SkinCheckBox()
+		HandleCheckBox(_G["GuildRecruitment"..frame.."Button"])
 	end
-	
-	GuildRecruitmentTankButton:GetChildren():SkinCheckBox()
-	GuildRecruitmentHealerButton:GetChildren():SkinCheckBox()
-	GuildRecruitmentDamagerButton:GetChildren():SkinCheckBox()
-	
-	GuildPerksContainerScrollBar:SkinScrollBar()
-	
+
+	HandleCheckBox(GuildRecruitmentTankButton:GetChildren())
+	HandleCheckBox(GuildRecruitmentHealerButton:GetChildren())
+	HandleCheckBox(GuildRecruitmentDamagerButton:GetChildren())
+
+	for i=1,5 do
+		HandleTab(_G["GuildFrameTab"..i])
+	end
+
+	HandleScrollBar(GuildPerksContainerScrollBar, 4)
+
 	GuildFactionBar:StripTextures()
 	GuildFactionBar.progress:SetTexture(C.Media.StatusBar)
-	GuildFactionBar.progress:SetSize(180, 16)
-	GuildFactionBar:CreateBD(true)
-	GuildFactionBar.backdrop:SetOutside()
-	GuildFactionBar.backdrop:SetBeautyBorderPadding(2)
-	GuildFactionBar.backdrop:Point('TOPLEFT', GuildFactionBar, 'TOPLEFT', -1, -1)
-	GuildFactionBar.backdrop:Point('BOTTOMRIGHT', GuildFactionBar, 'BOTTOMRIGHT', -1, -1)
-	
+	GuildFactionBar:CreateBackdrop("Default")
+	GuildFactionBar.backdrop:Point("TOPLEFT", GuildFactionBar.progress, "TOPLEFT", -2, 2)
+	GuildFactionBar.backdrop:Point("BOTTOMRIGHT", GuildFactionBar, "BOTTOMRIGHT", 1, C.Media.PixelPerfect and 1 or 0)
+
+
 	--Roster
-	GuildRosterContainerScrollBar:SkinScrollBar()
-	GuildRosterShowOfflineButton:SkinCheckBox()
-	
-	
+	HandleScrollBar(GuildRosterContainerScrollBar, 5)
+	HandleCheckBox(GuildRosterShowOfflineButton)
+
+
 	for i=1, 4 do
-		_G['GuildRosterColumnButton'..i]:StripTextures(true)
+		_G["GuildRosterColumnButton"..i]:StripTextures(true)
 	end
-	
-	GuildRosterViewDropdown:SkinDropDownBox(200)
-	
+
+	HandleDropDownBox(GuildRosterViewDropdown, 200)
+
 	for i=1, 14 do
-		_G['GuildRosterContainerButton'..i..'HeaderButton']:SkinButton(true)
+		HandleButton(_G["GuildRosterContainerButton"..i.."HeaderButton"], true)
 	end
-	
+
 	--Detail Frame
-	GuildMemberDetailFrame:CreateBD()
-	GuildMemberNoteBackground:CreateBD()
-	GuildMemberOfficerNoteBackground:CreateBD()
+	GuildMemberDetailFrame:SetTemplate("Transparent")
+	GuildMemberNoteBackground:SetTemplate("Transparent")
+	GuildMemberOfficerNoteBackground:SetTemplate("Transparent")
 	GuildMemberRankDropdown:SetFrameLevel(GuildMemberRankDropdown:GetFrameLevel() + 5)
-	GuildMemberRankDropdown:SkinDropDownBox(175)
+	HandleDropDownBox(GuildMemberRankDropdown, 175)
 
 	--News
 	GuildNewsFrame:StripTextures()
 	for i=1, 17 do
-		_G['GuildNewsContainerButton'..i].header:Kill()
+		if _G["GuildNewsContainerButton"..i] then
+			_G["GuildNewsContainerButton"..i].header:Kill()
+		end
 	end
-	
+
 	GuildNewsFiltersFrame:StripTextures()
-	GuildNewsFiltersFrame:SetTemplate()
-	GuildNewsFiltersFrameCloseButton:SkinCloseButton()
-	
+	GuildNewsFiltersFrame:SetTemplate("Transparent")
+	HandleCloseButton(GuildNewsFiltersFrameCloseButton)
+
 	for i=1, 6 do
-		_G['GuildNewsFilterButton'..i]:SkinCheckBox()
+		HandleCheckBox(_G["GuildNewsFilterButton"..i])
 	end
-	
-	GuildNewsFiltersFrame:Point('TOPLEFT', GuildFrame, 'TOPRIGHT', 4, -20)
-	GuildNewsContainerScrollBar:SkinScrollBar()
-	
+
+	GuildNewsFiltersFrame:Point("TOPLEFT", GuildFrame, "TOPRIGHT", 4, -20)
+	HandleScrollBar(GuildNewsContainerScrollBar, 4)
+
 	--Info Frame
-	GuildInfoDetailsFrameScrollBar:SkinScrollBar()
-	GuildInfoFrameInfoMOTDScrollFrameScrollBar:SkinScrollBar()
-	
+	HandleScrollBar(GuildInfoDetailsFrameScrollBar, 4)
+
 	for i=1, 3 do
-		_G['GuildInfoFrameTab'..i]:StripTextures()
+		_G["GuildInfoFrameTab"..i]:StripTextures()
 	end
-		
-	GuildRecruitmentCommentInputFrame:SetTemplate()
-	
+
+	local backdrop1 = CreateFrame("Frame", nil, GuildInfoFrameInfo)
+	backdrop1:SetTemplate("Transparent")
+	backdrop1:SetFrameLevel(GuildInfoFrameInfo:GetFrameLevel() - 1)
+	backdrop1:Point("TOPLEFT", GuildInfoFrameInfo, "TOPLEFT", 2, -22)
+	backdrop1:Point("BOTTOMRIGHT", GuildInfoFrameInfo, "BOTTOMRIGHT", 0, 200)
+
+	local backdrop2 = CreateFrame("Frame", nil, GuildInfoFrameInfo)
+	backdrop2:SetTemplate("Transparent")
+	backdrop2:SetFrameLevel(GuildInfoFrameInfo:GetFrameLevel() - 1)
+	backdrop2:Point("TOPLEFT", GuildInfoFrameInfo, "TOPLEFT", 2, -158)
+	backdrop2:Point("BOTTOMRIGHT", GuildInfoFrameInfo, "BOTTOMRIGHT", 0, 118)
+
+	local backdrop3 = CreateFrame("Frame", nil, GuildInfoFrameInfo)
+	backdrop3:SetTemplate("Transparent")
+	backdrop3:SetFrameLevel(GuildInfoFrameInfo:GetFrameLevel() - 1)
+	backdrop3:Point("TOPLEFT", GuildInfoFrameInfo, "TOPLEFT", 2, -233)
+	backdrop3:Point("BOTTOMRIGHT", GuildInfoFrameInfo, "BOTTOMRIGHT", 0, 3)
+
+	GuildRecruitmentCommentInputFrame:SetTemplate("Transparent")
+
 	for _, button in next, GuildInfoFrameApplicantsContainer.buttons do
 		button.selectedTex:Kill()
 		button:GetHighlightTexture():Kill()
 		button:SetBackdrop(nil)
 	end
-	
+
 	--Text Edit Frame
-	GuildTextEditFrame:SetTemplate()
-	GuildTextEditScrollFrameScrollBar:SkinScrollBar()
-	GuildTextEditContainer:SetTemplate(true)
-	for i = 1, GuildTextEditFrame:GetNumChildren() do
+	GuildTextEditFrame:SetTemplate("Transparent")
+	HandleScrollBar(GuildTextEditScrollFrameScrollBar, 5)
+	GuildTextEditContainer:SetTemplate("Transparent")
+	for i=1, GuildTextEditFrame:GetNumChildren() do
 		local child = select(i, GuildTextEditFrame:GetChildren())
-		local point = select(1, child:GetPoint())
-		if point == 'TOPRIGHT' then
-			child:SkinCloseButton()
-		else
-			child:SkinButton(true)
+		if child:GetName() == "GuildTextEditFrameCloseButton" and child:GetWidth() < 33 then
+			HandleCloseButton(child)
+		elseif child:GetName() == "GuildTextEditFrameCloseButton" then
+			HandleButton(child, true)
 		end
 	end
 
 	--Guild Log
-	GuildLogScrollFrameScrollBar:SkinScrollBar()
-	GuildLogFrame:SetTemplate()
+	HandleScrollBar(GuildLogScrollFrameScrollBar, 4)
+	GuildLogFrame:SetTemplate("Transparent")
 
-	for i = 1, GuildLogFrame:GetNumChildren() do
+	--Blizzard has two buttons with the same name, this is a fucked up way of determining that it isn't the other button
+	for i=1, GuildLogFrame:GetNumChildren() do
 		local child = select(i, GuildLogFrame:GetChildren())
-		local point = select(1, child:GetPoint())
-		if point == 'TOPRIGHT' then
-			child:SkinCloseButton()
-		else
-			child:SkinButton(true)
+		if child:GetName() == "GuildLogFrameCloseButton" and child:GetWidth() < 33 then
+			HandleCloseButton(child)
+		elseif child:GetName() == "GuildLogFrameCloseButton" then
+			HandleButton(child, true)
 		end
 	end
-	
+
+	--Perks
+	for i=1, 9 do
+		local button = _G["GuildPerksContainerButton"..i]
+		button:DisableDrawLayer("BACKGROUND")
+		button:DisableDrawLayer("BORDER")
+
+		button.icon:SetTexCoord(unpack(F.TexCoords))
+		button:CreateBackdrop()
+		button.backdrop:SetOutside(button.icon)
+	end
+
 	--Rewards
-	GuildRewardsContainerScrollBar:SkinScrollBar()
-	
+	HandleScrollBar(GuildRewardsContainerScrollBar, 5)
+
 	for i=1, 8 do
-		local button = _G['GuildRewardsContainerButton'..i]
+		local button = _G["GuildRewardsContainerButton"..i]
 		button:StripTextures()
-		
+
 		if button.icon then
-			button.icon:SetTexCoord(.08, .92, .08, .92)
+			button.icon:SetTexCoord(unpack(F.TexCoords))
 			button.icon:ClearAllPoints()
-			button.icon:Point('TOPLEFT', 2, -2)
-			button:CreateBD(true)
-			button.backdrop:Point('TOPLEFT', button.icon, 'TOPLEFT', -2, 2)
-			button.backdrop:Point('BOTTOMRIGHT', button.icon, 'BOTTOMRIGHT', 2, -2)
+			button.icon:Point("TOPLEFT", 2, -2)
+			button:CreateBackdrop("Default")
+			button.backdrop:SetOutside(button.icon)
 			button.icon:SetParent(button.backdrop)
 		end
-	end
-	
-	for i=1,5 do
-		_G['GuildFrameTab'..i]:SkinTab()
-		
-		GuildFrameTab1:Point('BOTTOMLEFT', GuildFrame, 5, -29)
-		if i ~= 1 then
-			_G['GuildFrameTab'..i]:Point('LEFT', _G['GuildFrameTab'..i - 1], 'RIGHT', 4, 0)
-		end
-		_G['GuildFrameTab'..i].SetPoint = F.Dummy
-
-		_G['GuildFrameTab'..i]:SetWidth(56)
-		_G['GuildFrameTab'..i].SetWidth = F.Dummy
-		_G['GuildFrameTab'..i].SetSize = F.Dummy
 	end
 end
 
 F.SkinFuncs['Blizzard_GuildUI'] = LoadSkin
-
-local function LoadSecondarySkin()
-	GuildInviteFrame:StripTextures()
-	GuildInviteFrame:SetTemplate()
-	GuildInviteFrameDeclineButton:StripTextures()
-	GuildInviteFrameDeclineButton:SkinButton()
-	GuildInviteFrameJoinButton:StripTextures()
-	GuildInviteFrameJoinButton:SkinButton()
-end
-
-tinsert(F.SkinFuncs['LanUI'], LoadSecondarySkin)

@@ -7,7 +7,7 @@ OBJECTIVE_TRACKER_COLOR['Header'] = { r = cc.r, g = cc.g, b = cc.b }
 
 -- Finally found how this damned thing sorts quests
 -- ObjectiveTrackerFrame.MODULES[4].usedBlocks[37227].lines[1].Text:GetText()
-ObjectiveTrackerFrame:CreateBD()
+ObjectiveTrackerFrame:CreateBackdrop('Transparent')
 
 -- Hide Quest Tracker based on zone
 function UpdateHideState()

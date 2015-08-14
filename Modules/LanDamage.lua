@@ -10,14 +10,14 @@ local defaults = {
 	barheight = 12,
 	spacing = 1,
 	maxbars = 12,
-	width = 161,
+	width = 175,
 	maxfights = 5,
 	reportstrings = 10,
 	backdrop_color = C.Media.BackdropColor,
 	border_color = {0, 0, 0, 0},
 	border_size = 2,
-	font_style = 'OUTLINE',
-	font_size = 13,
+	font_style = 'THINOUTLINE',
+	font_size = 12,
 	hidetitle = false,
 	barcolor = {0.4, 0.4, 0.4, 1},
 	classcolorbar = true,
@@ -898,12 +898,12 @@ local OnEvent = function(self, event, ...)
 			local Backdrop = CreateFrame('Frame', nil, MainFrame)
 			
 			if dmconf.hidetitle then
-				Backdrop:SetPoint('TOPLEFT', MainFrame, 0, 4)
+				Backdrop:SetPoint('TOPLEFT', MainFrame, 1, 4)
 			else
-				Backdrop:SetPoint('TOP', MainFrame.title, 0, 2)
+				Backdrop:SetPoint('TOPLEFT', MainFrame, 2, 16)
 			end
 			
-			Backdrop:SetPoint('BOTTOMRIGHT', MainFrame, 0, -4)
+			Backdrop:SetPoint('BOTTOMRIGHT', MainFrame, -2, -2.5)
 			Backdrop:SetFrameStrata('BACKGROUND')
 			Backdrop:EnableMouse(true)
 			Backdrop:RegisterForDrag('LeftButton')
@@ -919,7 +919,8 @@ local OnEvent = function(self, event, ...)
 				MainFrame:StopMovingOrSizing() 
 			end)
 			
-			Backdrop:SetTemplate()
+			Backdrop:SetTemplate('Transparent')
+			LanDamageFrame.BD = Backdrop
 		end
 	elseif event == 'GROUP_ROSTER_UPDATE' or event == 'PLAYER_ENTERING_WORLD' then
 		CheckRoster()

@@ -25,35 +25,16 @@ GameTooltipHeaderText:SetFont(C.Media.Font, 17)
 GameTooltipText:SetFont(C.Media.Font, 15)
 GameTooltipTextSmall:SetFont(C.Media.Font, 15)
 
-GameTooltipStatusBar:SetHeight(7)
-GameTooltipStatusBar:SetBackdrop({bgFile = C.Media.Backdrop})
-GameTooltipStatusBar:SetBackdropColor(0, 0, 0, 0.5)
+GameTooltipStatusBar:Height(9)
+GameTooltipStatusBar:SetTemplate('Transparent')
 
 local function ApplyTooltipStyle(self)
-    local bgsize, bsize
-    if self == ConsolidatedBuffsTooltip then
-        bgsize = 1
-        bsize = 8
-    elseif self == FriendsTooltip then
-        FriendsTooltip:SetScale(1.1)
-
-        bgsize = 1
-        bsize = 9
-    else
-        bgsize = 3
-        bsize = 12
-    end
-    
-    self:SetBackdrop({
-        bgFile = C.Media.Backdrop,
-    })
-
-    self:HookScript('OnShow', function(self)
-        self:SetBackdropColor(0, 0, 0, 0.5)
-    end)
-
     self:StripTextures()
-    self:SetTemplate()
+    self:SetTemplate('Transparent')
+    
+    self:HookScript('OnShow', function(self)
+        self:SetBackdropColor(C.Media.BackdropFadeColor)
+    end)
 end
 
 for _, tooltip in pairs({
@@ -81,7 +62,7 @@ for _, tooltip in pairs({
     ApplyTooltipStyle(tooltip)
 end
 
-    -- Item quality border, we use our beautycase functions
+    -- Item quality border
 
 for _, tooltip in pairs({
     GameTooltip,
@@ -91,29 +72,24 @@ for _, tooltip in pairs({
     ShoppingTooltip2,
     ShoppingTooltip3,
 }) do
-    --if tooltip.beautyBorder then
-        tooltip:HookScript('OnTooltipSetItem', function(self)
-            local name, item = self:GetItem()
-            if item then
-                local quality = select(3, GetItemInfo(item))
-                if quality then
-                    local r, g, b = GetItemQualityColor(quality)
-                    --self:SetBeautyBorderTexture('white')
-                    self.backdrop:SetBackdropBorderColor(r, g, b)
-                end
+    tooltip:HookScript('OnTooltipSetItem', function(self)
+        local name, item = self:GetItem()
+        if item then
+            local quality = select(3, GetItemInfo(item))
+            if quality then
+                local r, g, b = GetItemQualityColor(quality)
+                self:SetBackdropBorderColor(r, g, b)
             end
-        end)
+        end
+    end)
 
-        tooltip:HookScript('OnTooltipCleared', function(self)
-            if C.Media.ClassColor then
-                --self:SetBeautyBorderTexture('white')
-                self.backdrop:SetBackdropBorderColor(bc.r, bc.g, bc.b)
-            else
-                --self:SetBeautyBorderTexture('default')
-                self.backdrop:SetBackdropBorderColor(1, 1, 1)
-            end
-        end)
-    --end
+    tooltip:HookScript('OnTooltipCleared', function(self)
+        if C.Media.ClassColor then
+            self:SetBackdropBorderColor(bc.r, bc.g, bc.b)
+        else
+            self:SetBackdropBorderColor(1, 1, 1)
+        end
+    end)
 end
 
     -- Itemlvl (by Gsuz) - http://www.tukui.org/forums/topic.php?id=10151
@@ -403,7 +379,7 @@ GameTooltip:HookScript('OnTooltipSetUnit', function(self, ...)
             local r, g, b = UnitSelectionColor(unit)
 
             --self:SetBeautyBorderTexture('white')
-            self.backdrop:SetBackdropBorderColor(r, g, b)
+            self:SetBackdropBorderColor(r, g, b)
         --end
 
             -- Dead or ghost recoloring
@@ -431,10 +407,10 @@ GameTooltip:HookScript('OnTooltipCleared', function(self)
     --if self.beautyBorder then
         if C.Media.ClassColor then
             --self:SetBeautyBorderTexture('white')
-            self.backdrop:SetBackdropBorderColor(bc.r, bc.g, bc.b)
+            self:SetBackdropBorderColor(bc.r, bc.g, bc.b)
         else
             --self:SetBeautyBorderTexture('default')
-            self.backdrop:SetBackdropBorderColor(1, 1, 1)
+            self:SetBackdropBorderColor(1, 1, 1)
         end
     --end
 end)
@@ -446,7 +422,8 @@ hooksecurefunc('GameTooltip_SetDefaultAnchor', function(self, parent)
         self:SetOwner(parent, 'ANCHOR_NONE')
         
         if (not ChatFrame3:IsShown()) then
-            self:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -5.35, 27.35)
+            self:SetOwner(parent, 'ANCHOR_CURSOR')
+            --self:SetPoint('BOTTOMRIGHT', UIParent, 'BOTTOMRIGHT', -5.35, 27.35)
         else
             self:SetPoint('BOTTOMRIGHT', ChatFrame3, 'TOPRIGHT', 4, 7)
         end

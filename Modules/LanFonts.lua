@@ -12,59 +12,59 @@ end
 
 LanFonts:RegisterEvent('ADDON_LOADED')
 LanFonts:SetScript('OnEvent', function(self, event, addon)
-	if addon ~= 'LanUI' then return end
-	
-	local Font     = C.Media.Font
+    if addon ~= 'LanUI' then return end
 
-	UIDROPDOWNMENU_DEFAULT_TEXT_HEIGHT = 12
-	CHAT_FONT_HEIGHTS = {12, 13, 14, 15, 16, 17, 18, 19, 20}
+    local NORMAL     = C.Media.Font
+    local DAMAGE    = C.Media.SCTFont
+    local MONOCHROME = 'MONOCHROME'
 
-	UNIT_NAME_FONT     = Font
-	NAMEPLATE_FONT     = Font
-	DAMAGE_TEXT_FONT   = Font
-	STANDARD_TEXT_FONT = Font
+    CHAT_FONT_HEIGHTS = {12, 13, 14, 15, 16, 17, 18, 19, 20}
 
-	-- Base fonts
-    SetFont(GameTooltipHeader,                    Font, 12)
-	SetFont(NumberFont_OutlineThick_Mono_Small,   Font, 12, "OUTLINE")
-	SetFont(SystemFont_Shadow_Large_Outline,	  Font, 20, "OUTLINE")
-	SetFont(NumberFont_Outline_Huge,              Font, 28, "MONOCHROMETHICKOUTLINE", 28)
-	SetFont(NumberFont_Outline_Large,             Font, 15, "MONOCHROMEOUTLINE")
-	SetFont(NumberFont_Outline_Med,               Font, 12 * 1.1, "OUTLINE")
-	SetFont(NumberFont_Shadow_Med,                Font, 12) --chat editbox uses this
-	SetFont(NumberFont_Shadow_Small,              Font, 12)
-	SetFont(QuestFont,                            Font, 12)
-	SetFont(QuestFont_Large,                      Font, 14)
-	SetFont(SystemFont_Large,                     Font, 15)
-	SetFont(GameFontNormalMed3,		       		  Font, 15)
-	SetFont(SystemFont_Shadow_Huge1,			  Font, 20, "MONOCHROMEOUTLINE") -- Raid Warning, Boss emote frame too
-	SetFont(SystemFont_Med1,                      Font, 12)
-	SetFont(SystemFont_Med3,                      Font, 12 * 1.1)
-	SetFont(SystemFont_OutlineThick_Huge2,        Font, 20, "MONOCHROMETHICKOUTLINE")
-	SetFont(SystemFont_Outline_Small,             Font, 12, "OUTLINE")
-	SetFont(SystemFont_Shadow_Large,              Font, 15)
-	SetFont(SystemFont_Shadow_Med1,               Font, 12)
-	SetFont(SystemFont_Shadow_Med3,               Font, 12 * 1.1)
-	SetFont(SystemFont_Shadow_Outline_Huge2,      Font, 20, "MONOCHROMEOUTLINE")
-	SetFont(SystemFont_Shadow_Small,              Font, 12 * 0.9)
-	SetFont(SystemFont_Small,                     Font, 12)
-	SetFont(SystemFont_Tiny,                      Font, 12)
-	SetFont(Tooltip_Med,                          Font, 12)
-	SetFont(Tooltip_Small,                        Font, 12)
-	SetFont(ZoneTextString,						  Font, 32, "MONOCHROMEOUTLINE")
-	SetFont(SubZoneTextString,					  Font, 25, "MONOCHROMEOUTLINE")
-	SetFont(PVPInfoTextString,					  Font, 22, "MONOCHROMEOUTLINE")
-	SetFont(PVPArenaTextString,					  Font, 22, "MONOCHROMEOUTLINE")
-	SetFont(CombatTextFont,                       Font, 100, "OUTLINE") -- Font here just increase the font quality.
-	SetFont(FriendsFont_Normal,                   Font, 12)
-	SetFont(FriendsFont_Small,                    Font, 12)
-	SetFont(FriendsFont_Large,                    Font, 12)
-	SetFont(FriendsFont_UserText,                 Font, 12)
+    UNIT_NAME_FONT     = NORMAL
+    DAMAGE_TEXT_FONT   = DAMAGE
+    STANDARD_TEXT_FONT = NORMAL
 
-	SetFont = nil
-	self:SetScript('OnEvent', nil)
-	self:UnregisterAllEvents()
-	self = nil
+    -- Base fonts
+    SetFont(GameTooltipHeader,                  NORMAL, C.Media.FontSize)
+    SetFont(NumberFont_OutlineThick_Mono_Small, DAMAGE, C.Media.FontSize, "OUTLINE")
+    SetFont(SystemFont_Shadow_Large_Outline,	DAMAGE, 20, "OUTLINE")
+    SetFont(NumberFont_Outline_Huge,            DAMAGE, 28, MONOCHROME.."THICKOUTLINE", 28)
+    SetFont(NumberFont_Outline_Large,           DAMAGE, 15, MONOCHROME.."OUTLINE")
+    SetFont(NumberFont_Outline_Med,             DAMAGE, C.Media.FontSize*1.1, "OUTLINE")
+    SetFont(NumberFont_Shadow_Med,              NORMAL, C.Media.FontSize) --chat editbox uses this
+    SetFont(NumberFont_Shadow_Small,            NORMAL, C.Media.FontSize)
+    SetFont(QuestFont,                          NORMAL, C.Media.FontSize)
+    SetFont(QuestFont_Large,                    NORMAL, 14)
+    SetFont(SystemFont_Large,                   NORMAL, 15)
+    SetFont(GameFontNormalMed3,					NORMAL, 15)
+    SetFont(SystemFont_Shadow_Huge1,			NORMAL, 20, MONOCHROME.."OUTLINE") -- Raid Warning, Boss emote frame too
+    SetFont(SystemFont_Med1,                    NORMAL, C.Media.FontSize)
+    SetFont(SystemFont_Med3,                    NORMAL, C.Media.FontSize*1.1)
+    SetFont(SystemFont_OutlineThick_Huge2,      NORMAL, 20, MONOCHROME.."THICKOUTLINE")
+    SetFont(SystemFont_Outline_Small,           DAMAGE, C.Media.FontSize, "OUTLINE")
+    SetFont(SystemFont_Shadow_Large,            NORMAL, 15)
+    SetFont(SystemFont_Shadow_Med1,             NORMAL, C.Media.FontSize)
+    SetFont(SystemFont_Shadow_Med3,             NORMAL, C.Media.FontSize*1.1)
+    SetFont(SystemFont_Shadow_Outline_Huge2,    NORMAL, 20, MONOCHROME.."OUTLINE")
+    SetFont(SystemFont_Shadow_Small,            NORMAL, C.Media.FontSize*0.9)
+    SetFont(SystemFont_Small,                   NORMAL, C.Media.FontSize)
+    SetFont(SystemFont_Tiny,                    NORMAL, C.Media.FontSize)
+    SetFont(Tooltip_Med,                        NORMAL, C.Media.FontSize)
+    SetFont(Tooltip_Small,                      NORMAL, C.Media.FontSize)
+    SetFont(ZoneTextString,						NORMAL, 32, MONOCHROME.."OUTLINE")
+    SetFont(SubZoneTextString,					NORMAL, 25, MONOCHROME.."OUTLINE")
+    SetFont(PVPInfoTextString,					NORMAL, 22, MONOCHROME.."OUTLINE")
+    SetFont(PVPArenaTextString,					NORMAL, 22, MONOCHROME.."OUTLINE")
+    SetFont(CombatTextFont,                     DAMAGE, 200, "OUTLINE") -- number here just increase the font quality.
+    SetFont(FriendsFont_Normal, NORMAL, C.Media.FontSize)
+    SetFont(FriendsFont_Small, NORMAL, C.Media.FontSize)
+    SetFont(FriendsFont_Large, NORMAL, C.Media.FontSize)
+    SetFont(FriendsFont_UserText, NORMAL, C.Media.FontSize)
+
+    SetFont = nil
+    self:SetScript('OnEvent', nil)
+    self:UnregisterAllEvents()
+    self = nil
 end)
 
 G.Misc.Fonts = LanFonts

@@ -1,6 +1,6 @@
-## Interface: 60100
+## Interface: 60200
 ## Title: |cff0099ffLan|rUI
-## Version: 0.9.6b
+## Version: 0.9.7b
 ## Author: Lanerra
 ## Notes: Lightweight UI Modification by |cff0099ffLanerra|r
 
@@ -62,6 +62,7 @@ Modules\Skins\Binding.lua
 Modules\Skins\Calendar.lua
 Modules\Skins\Character.lua
 Modules\Skins\ColorPicker.lua
+Modules\Skins\DeathRecap.lua
 Modules\Skins\DebugTools.lua
 Modules\Skins\DressUp.lua
 Modules\Skins\Friends.lua

@@ -8,8 +8,7 @@ if C.Panels.ABPanel == true then
     ABPanel:SetHeight((C.ActionBars.ButtonSize) + (C.ActionBars.ButtonSpacing * 3))
     ABPanel:SetFrameStrata('BACKGROUND')
     
-    ABPanel:SetTemplate()
-    ABPanel.backdrop:SetOutside()
+    ABPanel:SetTemplate('Transparent')
     
     for i = 1, 12 do
         _G['ActionButton'..i]:SetFrameStrata('HIGH')
@@ -26,7 +25,7 @@ if C.Panels.BP == true then
     BottomPanel:SetHeight(24)
     BottomPanel:SetWidth(2000)
 
-    BottomPanel:SetTemplate()
+    BottomPanel:SetTemplate('Transparent')
 end
 
 if C.Panels.TP == true then
@@ -35,8 +34,8 @@ if C.Panels.TP == true then
     TopPanel:SetPoint('TOP', 0, 2)
     TopPanel:SetFrameLevel(0)
     TopPanel:SetFrameStrata('LOW')
-    TopPanel:SetHeight(18)
+    TopPanel:SetHeight(24)
     TopPanel:SetWidth(2000)
 
-    TopPanel:SetTemplate()
+    TopPanel:SetTemplate('Transparent')
 end

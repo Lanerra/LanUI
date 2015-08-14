@@ -91,7 +91,7 @@ local function UpdateBorder(self)
 		color = colors.debuff[debuff]
 	elseif threat and threat > 1 then
 		color = colors.threat[threat]
-	elseif debuff and not ns.config.dispelFilter then
+	elseif debuff then
 		color = colors.debuff[debuff]
 	elseif threat and threat > 0 then
 		color = colors.threat[threat]
@@ -551,7 +551,7 @@ local Stylish = function(self, unit, isSingle)
 	if (unit == 'player') then
 		--local info = self.Health:CreateFontString('$parentInfo', 'OVERLAY', 'GameFontHighlightSmall')
 		local info = self.Health:CreateFontString('$parentInfo', 'OVERLAY')
-        info:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
+        info:FontTemplate(C.Media.SCTFont, C.UF.Media.FontSize)
 		info:SetPoint('CENTER', self.Health)
 		info.frequentUpdates = .25
 		self:Tag(info, '[LanThreat] |cffff0000[LanPvPTime]|r')
@@ -559,7 +559,7 @@ local Stylish = function(self, unit, isSingle)
 	
 	-- Setup our health text
 	self.Health.Value = self.Health:CreateFontString('$parentHealthValue', 'OVERLAY')
-	self.Health.Value:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
+	self.Health.Value:FontTemplate(C.Media.SCTFont, C.UF.Media.FontSize)
 	self.Health.Value:SetShadowOffset(1, -1)
 	self.Health.Value:SetTextColor(1, 1, 1)
 	
@@ -591,7 +591,7 @@ local Stylish = function(self, unit, isSingle)
 	
 	-- Now, the power bar's text
 	self.Power.Value = self.Power:CreateFontString('$parentPowerValue', 'OVERLAY')
-	self.Power.Value:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
+	self.Power.Value:FontTemplate(C.Media.SCTFont, C.UF.Media.FontSize)
 	self.Power.Value:SetShadowOffset(1, -1)
     if (unit == 'target') then
         self.Power.Value:SetPoint('TOPRIGHT', self.Power, 'BOTTOMRIGHT', 0, -5)
@@ -654,7 +654,7 @@ local Stylish = function(self, unit, isSingle)
 			self.Castbar.Bg:SetTexture(unpack(C.Media.BackdropColor))]]
 			
 			self.Castbar.Text = self.Castbar:CreateFontString('$parentCastBarText', 'OVERLAY')
-			self.Castbar.Text:FontTemplate(C.Media.Font, 13)
+			self.Castbar.Text:FontTemplate(C.Media.SCTFont, 10)
 			self.Castbar.Text:SetShadowOffset(1, -1)
 			self.Castbar.Text:SetPoint('LEFT', self.Castbar, 'LEFT', 2, 0)
 			self.Castbar.Text:SetHeight(C.UF.Media.FontSize)
@@ -666,7 +666,7 @@ local Stylish = function(self, unit, isSingle)
 			end
 			
 			self.Castbar.Time = self.Castbar:CreateFontString('$parentCastBarTime', 'OVERLAY')
-			self.Castbar.Time:FontTemplate(C.Media.Font, 13)
+			self.Castbar.Time:FontTemplate(C.Media.SCTFont, 10)
 			self.Castbar.Time:SetShadowOffset(1, -1)
 			self.Castbar.Time:SetPoint('RIGHT', self.Castbar, 'RIGHT', -2, 0)
 			self.Castbar.Time:SetParent(self.Castbar)
@@ -706,7 +706,7 @@ local Stylish = function(self, unit, isSingle)
 			self.Castbar:SetPoint(unpack(C.UF.CastBars.Target.Position))
 			
 			self.Castbar.Text = self.Castbar:CreateFontString('$parentCastBarText', 'OVERLAY')
-			self.Castbar.Text:FontTemplate(C.Media.Font, 13)
+			self.Castbar.Text:FontTemplate(C.Media.SCTFont, 10)
 			self.Castbar.Text:SetShadowOffset(1, -1)
 			self.Castbar.Text:SetPoint('LEFT', self.Castbar, 'LEFT', 2, 0)
 			self.Castbar.Text:SetHeight(C.UF.Media.FontSize)
@@ -714,7 +714,7 @@ local Stylish = function(self, unit, isSingle)
 			self.Castbar.Text:SetJustifyH('LEFT')
 			
 			self.Castbar.Time = self.Castbar:CreateFontString('$parentCastBarTime', 'OVERLAY')
-			self.Castbar.Time:FontTemplate(C.Media.Font, 13)
+			self.Castbar.Time:FontTemplate(C.Media.SCTFont, 10)
 			self.Castbar.Time:SetShadowOffset(1, -1)
 			self.Castbar.Time:SetPoint('RIGHT', self.Castbar, 'RIGHT', -2, 0)
 			self.Castbar.CustomTimeText = function(self, duration)
@@ -751,7 +751,7 @@ local Stylish = function(self, unit, isSingle)
 		_G[bar]:SetHeight(18)
 		_G[bar]:SetWidth(200)
 		
-		_G[bar..'Text']:FontTemplate(CastingBarFrameText:GetFont(), 13)
+		_G[bar..'Text']:FontTemplate(CastingBarFrameText:GetFont(), 10)
 		_G[bar..'Text']:ClearAllPoints()
 		_G[bar..'Text']:SetPoint('CENTER', MirrorTimer1StatusBar)
 		
@@ -762,7 +762,7 @@ local Stylish = function(self, unit, isSingle)
 	-- Display the names
 	if (unit ~= 'player') then
 		local name = self.Health:CreateFontString('$parentName', 'OVERLAY')
-		name:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
+		name:FontTemplate(C.Media.SCTFont, C.UF.Media.FontSize)
 		name:SetShadowOffset(1, -1)
 		name:SetTextColor(1, 1, 1)
 		name:SetWidth(130)
@@ -843,7 +843,7 @@ local Stylish = function(self, unit, isSingle)
 	if (unit == 'player') then
 		self.Status = self.Health:CreateFontString(nil, 'OVERLAY')
         self.Status:SetParent(self.Overlay)
-        self.Status:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
+        self.Status:FontTemplate(C.Media.SCTFont, C.UF.Media.FontSize)
 		self.Status:SetPoint('LEFT', self.Health, 'TOPLEFT', 2, 2)
 		self.Status:SetDrawLayer('OVERLAY', 7)
 
@@ -1022,10 +1022,10 @@ local Stylish = function(self, unit, isSingle)
 			SolarBar:SetStatusBarColor(1, 3/5, 0)
 			EclipseBar.SolarBar = SolarBar
 
-			local EclipseBarText = EclipseBarBorder:CreateFontString(nil, 'OVERLAY')
+			--[[local EclipseBarText = EclipseBarBorder:CreateFontString(nil, 'OVERLAY')
 			EclipseBarText:SetPoint('CENTER', EclipseBarBorder, 'CENTER', 0, 0)
 			EclipseBarText:FontTemplate(C.Media.Font, C.UF.Media.FontSize, 'OUTLINE')
-			self:Tag(EclipseBarText, '[pereclipse]%')
+			self:Tag(EclipseBarText, '[pereclipse]%')]]
 
 			self.EclipseBar = EclipseBar
 		end
@@ -1034,7 +1034,7 @@ local Stylish = function(self, unit, isSingle)
 		if (F.MyClass == 'WARLOCK') then
 			local Shards = self:CreateFontString(nil, 'OVERLAY')
 			Shards:SetPoint('CENTER', self, 'RIGHT', 17, -2)
-			Shards:FontTemplate(C.Media.Font, 24, 'OUTLINE')
+			Shards:FontTemplate(C.Media.SCTFont, 24, 'OUTLINE')
 			Shards:SetJustifyH('CENTER')
 			self:Tag(Shards, '[LanShards]')
 		end
@@ -1043,7 +1043,7 @@ local Stylish = function(self, unit, isSingle)
 		if (F.MyClass == 'PALADIN') then
 			local HolyPower = self:CreateFontString(nil, 'OVERLAY')
 			HolyPower:SetPoint('CENTER', self, 'RIGHT', 17, -2)
-			HolyPower:FontTemplate(C.Media.Font, 24, 'OUTLINE')
+			HolyPower:FontTemplate(C.Media.SCTFont, 24, 'OUTLINE')
 			HolyPower:SetJustifyH('CENTER')
 			self:Tag(HolyPower, '[LanHolyPower]')
 		end
@@ -1052,7 +1052,7 @@ local Stylish = function(self, unit, isSingle)
 		if (F.MyClass == 'ROGUE') or (F.MyClass == 'DRUID') then
 			local ComboPoints = self:CreateFontString(nil, 'OVERLAY')
 			ComboPoints:SetPoint('CENTER', self, 'RIGHT', 17, -2)
-			ComboPoints:FontTemplate(C.Media.Font, 24, 'OUTLINE')
+			ComboPoints:FontTemplate(C.Media.SCTFont, 24, 'OUTLINE')
 			ComboPoints:SetJustifyH('CENTER')
 			self:Tag(ComboPoints, '[LanCombo]')
 		end
@@ -1061,7 +1061,7 @@ local Stylish = function(self, unit, isSingle)
 		if (F.MyClass == 'MONK') then
 			local Chi = self:CreateFontString(nil, 'OVERLAY')
 			Chi:SetPoint('CENTER', self, 'RIGHT', 17, 0)
-			Chi:FontTemplate(C.Media.Font, 24, 'OUTLINE')
+			Chi:FontTemplate(C.Media.SCTFont, 24, 'OUTLINE')
 			Chi:SetJustifyH('CENTER')
 			self:Tag(Chi, '[LanChi]')
 		end
@@ -1182,7 +1182,7 @@ local function StylishGroup(self, unit)
 	
 	-- Health value settings
 	self.Health.Value = self.Health:CreateFontString('$parentHealthValue', 'OVERLAY')
-	self.Health.Value:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
+	self.Health.Value:FontTemplate(C.Media.SCTFont, C.UF.Media.FontSize)
     
     -- Improve border drawing
     self.Overlay = CreateFrame('Frame', nil, self)
@@ -1193,7 +1193,7 @@ local function StylishGroup(self, unit)
 	-- Display group names
 	self.Name = self.Health:CreateFontString('$parentName', 'OVERLAY')
 	self.Name:SetPoint('LEFT', self.Health, 5, 1)
-	self.Name:FontTemplate(C.Media.Font, 13)
+	self.Name:FontTemplate(C.Media.SCTFont, 10)
 	self.Name:SetShadowOffset(1, -1)
     self.Name.frequentUpdates = 0.3
     
@@ -1230,7 +1230,7 @@ local function StylishGroup(self, unit)
 	
 	if unit == 'party' or unit == 'target' then
 		self.Status = self.Overlay:CreateFontString(nil, 'OVERLAY')
-        self.Status:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
+        self.Status:FontTemplate(C.Media.SCTFont, C.UF.Media.FontSize)
 		self.Status:SetPoint('RIGHT', self.Health, 'BOTTOMRIGHT', -2, 0)
 		self.Status:SetDrawLayer('OVERLAY', 7)
 
@@ -1382,7 +1382,7 @@ local function StylishRaid(self, unit)
 	
 	-- Health value settings
 	self.Health.Value = self.Health:CreateFontString('$parentHealthValue', 'OVERLAY')
-	self.Health.Value:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
+	self.Health.Value:FontTemplate(C.Media.SCTFont, C.UF.Media.FontSize)
     
     -- Improve border drawing
     self.Overlay = CreateFrame('Frame', nil, self)
@@ -1396,14 +1396,14 @@ local function StylishRaid(self, unit)
     if (C.UF.Units.Raid.Healer) then
 		self.Name = self.Health:CreateFontString('$parentName', 'OVERLAY')
 		self.Name:SetPoint('CENTER')
-		self.Name:FontTemplate(C.Media.Font, 13)
+		self.Name:FontTemplate(C.Media.SCTFont, 10)
 		self.Name:SetShadowOffset(1, -1)
 		self.Name:SetJustifyH('CENTER')
 		self:Tag(self.Name, '|cffffffff[LanRaidName]|r')
 	else
 		self.Name = self.Health:CreateFontString('$parentName', 'OVERLAY')
 		self.Name:SetPoint('CENTER')
-		self.Name:FontTemplate(C.Media.Font, 13)
+		self.Name:FontTemplate(C.Media.SCTFont, 10)
 		self.Name:SetShadowOffset(1, -1)
 		self:Tag(self.Name, '|cffffffff[LanName]|r')
 		self.Health:SetOrientation('HORIZONTAL')
@@ -1438,7 +1438,7 @@ local function StylishRaid(self, unit)
 	
 	-- Status Icons Display
     self.Status = self.Overlay:CreateFontString(nil, 'OVERLAY')
-    self.Status:FontTemplate(C.Media.Font, C.UF.Media.FontSize)
+    self.Status:FontTemplate(C.Media.SCTFont, C.UF.Media.FontSize)
     self.Status:SetPoint('RIGHT', self.Health, 'BOTTOMRIGHT', -2, 0)
 	self.Status:SetDrawLayer('OVERLAY', 7)
 
